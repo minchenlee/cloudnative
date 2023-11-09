@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String   @unique
+  username      String?
+  /// user role
+  role     Role     @default(PLAYER)
+}
+
+enum Role {
+  ADMIN
+  PLAYER
+  VENDOR
+}
