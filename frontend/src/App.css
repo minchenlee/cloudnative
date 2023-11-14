@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 在 Modal 開啟時這個 class 會添加到 body 中使其不能滑動 */
+.disable-scroll {
+  height: 100%;
+  overflow: hidden;
+}
+
+.leaflet-marker-icon{
+  filter: drop-shadow(rgb(0, 0, 0, 0.3) 0px 13px 5px);
+}
+
+/* 用來控制 modal 的 inset */
+#modal {
+  --modal-height: auto;
+  --modal-width: auto;
+}
+
+@layer utilities {
+  .modal {
+    inset: calc(50% - var(--modal-height) / 2) calc(50% - var(--modal-width) / 2);
+    height: var(--modal-height);
+    width: var(--modal-width);
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  }
+}
+
+
 @font-face {
   font-family: 'Noto Sans TC';
   src: url(./assets/Noto_Sans_TC/NotoSansTC-VariableFont_wght.ttf)

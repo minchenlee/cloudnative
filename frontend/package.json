@@ -17,15 +17,19 @@
     "@mui/icons-material": "^5.14.16",
     "@mui/material": "^5.14.16",
     "@mui/x-date-pickers": "^6.17.0",
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.0",
     "bootstrap-icons": "^1.11.1",
     "dayjs": "^1.11.10",
     "feather-icons-react": "^0.6.2",
     "ldrs": "^1.0.1",
+    "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.17.0"
+    "react-leaflet": "^4.2.1",
+    "react-router-dom": "^6.17.0",
+    "react-useanimations": "^2.10.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

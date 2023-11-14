@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import JoinContext from "../../contexts/JoinContext"
 import FeatherIcon from 'feather-icons-react';
 import { dayToDayCode, dayCodeToDay, dayCodeToChineseDay } from "../../utilities/DayCodeConverter";
@@ -18,11 +18,17 @@ function SelectDateButton() {
   // const [selectedDayCode, setSelectedDayCode] = useState(dayTodayCode(currentPage)); 
   const [selectedDate, setSelectedDate] = useState(joinJson[selectedDayCode].date);
   const [selectedDay, setSelectedDay] = useState(joinJson[selectedDayCode].day);
+  
+  // get current url, beside the root url
+  const location = useLocation();
+  let currentPage = location.pathname.split("/")
+  currentPage = currentPage.slice(0, -1).join("/")
+
   const handleSelectedDate = (date, day, dayCode) => {
     setSelectedDayCode(dayCode);
     setSelectedDate(date);
     setSelectedDay(dayCodeToChineseDay(dayCode));
-    navigate(`/findmate/join/${dayCodeToDay(dayCode)}`);
+    navigate(`${currentPage}/${dayCodeToDay(dayCode)}`);
     setIsSelecting(false);
   }
 

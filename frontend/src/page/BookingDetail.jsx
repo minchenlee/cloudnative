@@ -1,128 +1,122 @@
-import { useState, useRef, createContext } from "react"
-import FeatherIcon from 'feather-icons-react';
-import SearchBar from "../components/SearchBar";
-import FilterButton from "../components/buttons/FilterButton";
-import BackButton from "../components/buttons/BackButton";
-import SiteCard from "../components/cards/SiteCard";
-import SiteStatusDirection from "../components/directions/SiteStatusDirection";
-import TimeDirection from "../components/directions/TimeDirection";
+import { useState, useContext, useEffect } from "react"
+import FeatherIcon from "feather-icons-react";
+import SiteInfoCard from "../components/cards/SiteInfoCard"
+import BackButton from "../components/buttons/BackButton"
+import SelectDateButton from "../components/buttons/SelectDateButton"
+import CourtCard from "../components/cards/CourtCard";
+import { useMap, MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import marker from "../assets/map-pin.svg"
 
-import WeekPicker from "../components/input/WeekPicker";
-import { Modal } from '@mui/base/Modal';
+import Modal from "../components/modals/Modal"
+import JoinContext from "../contexts/JoinContext"
+import {dummyJson, dummyJson4BookingDetail} from "../dummyJson/bookingDummy"
+
+// 對資料進行處理
+const jsonData = dummyJson4BookingDetail[2];
+const stadiumName = jsonData.stadiumName;
+const stadiumInfo = jsonData.stadiumInfo;
+const stadiumInfoPreview = jsonData.stadiumInfo.slice(0, 4);
+const staiumPosition = jsonData.stadiumPosition;
+const courtInfo = jsonData.courtInfo;
+const courtNum = jsonData.courtInfo.length;
+
+function InfoRow({icon, content, additionalClass}){
+  return(
+    <div className={`w-full flex flex-row items-center ${additionalClass} py-7`}>
+      <div className="mr-8 text-dark-gray">
+        <FeatherIcon icon={icon} width="28" height="28" strokeWidth="2"/>
+      </div>
+      <div>
+        <p className="font-light">{content}</p>
+      </div> 
+    </div>
+  )
+}
+
+// Modal 設定
+function CourtInfoModal(){
+  return(
+    <div className="flex flex-col w-full overflow-auto divide-y-2 divide-silver">
+      {
+        stadiumInfo.map((info, index) => (
+          <InfoRow key={index} icon={info.icon} content={info.content}/>
+        ))
+      }
+      <InfoRow icon={''} content="" additionalClass={"invisible"}/>
+    </div>
+  )
+}
 
 
+function Map(){
+  const newicon = new L.icon({
+    iconUrl: marker,
+    iconSize: [42, 42],
+  });
+
+  return (
+    <MapContainer className="h-full z-10" center={staiumPosition} zoom={50}scrollWheelZoom={false}>
+      <TileLayer
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      />
+      <Marker 
+      position={staiumPosition}
+      icon={newicon}
+      >
+        <Popup>
+          {stadiumName}
+        </Popup>
+      </Marker>
+    </MapContainer>
+  )
+}
 
 function BookingDetailPage(){
-  const BookingDetailContext = createContext(null);
-  const [dayInterval, setDayInterval] = useState(0);
-
-  // 利用 curretPage 去 call 相對應的 API
-  const currentPage = window.location.href.split("/").pop();
-
-  // 假資料
-  const siteData = {
-    name: "新生籃球場",
-    img_url: "../src/assets/image/新生籃球場.jpg",
-    inOrOut: "室外",
-    numberOfCourts: 3,
-    weekStatus: {
-      Sun: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Mon: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Tue: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Wed: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Thu: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Fri: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      },
-      Sat: {
-        morning: "plenty",
-        afternoon: "some",
-        evening: "none"
-      }
-    }
-  };
-
-  // 用來控制 Carousel 的 scroll
-  const CarouselRef = useRef(null);
-  const scroll = (scrollOffset) => {
-    CarouselRef.current.scrollLeft += scrollOffset;
-  };
-
-  // 用來控制 Carousel 的 button
-  function CarouselButton(props){
-    const offset = props.offset || "";
-    const icon = props.icon || "";
-
-    return(
-      <button onClick={()=>scroll(offset)} className="text-dark-gray bg-white rounded-full hover:bg-dark-gray hover:text-white transition duration-300 flex justify-center p-2">
-        <FeatherIcon icon={icon} width="38" height="38" strokeWidth="4"/>
-      </button>
-    )
-  }
+  const { selectedSport } = useContext(JoinContext);
+  useEffect(() => {
+    window.localStorage.setItem("Stadium-selected-stadiumName", stadiumName);
+  }, [])
 
   return(
-    <BookingDetailContext.Provider value={{dayInterval, setDayInterval}}>
-      <div className="container mx-auto">
-        <div className="relative px-16  w-full max-w-[1280px] mx-auto mt-16 mb-10 flex flex-col">
-          <div className="flex flex-row justify-center items-center">
-            <div className="absolute left-0">
-              <BackButton linkMode={false}/>
+    <div className="container mx-auto">
+      <div className="relative px-24  w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
+        <div className="flex flex-row justify-center items-center">
+          <div className="absolute left-0">
+            <BackButton linkMode={true} linkTo={`/booking/${selectedSport}`}/>
+          </div>
+          <div className="w-full h-28 py-8 border-b-2 border-silver">
+            <div className="w-3/5 pe-16 h-full flex flex-row items-center justify-between">
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-semibold text-black">{stadiumName}</h1>
+                <div className="flex flex-row gap-6 text-xl font-semibold text-dark-gray">
+                  <h2 >室外</h2>
+                  <h2>{courtNum} 個球場</h2>
+                </div>
+              </div>
+              <SelectDateButton/>
             </div>
-            <div className="flex flex-row justify-center gap-3 h-14">
-              <SearchBar/>
-              <FilterButton/>
-            </div>
-            <div className="absolute z-40 top-16 invisible">
-              <WeekPicker/>
-            </div>
-          </div>
-          <div className="w-full mx-auto relative mt-12 px-8 py-2 flex flex-row justify-start overflow-x-auto gap-[34px] snap-x scrollbar scrollbar-none scroll-smooth" ref={CarouselRef}>
-            <SiteCard json={siteData}/>
-            <SiteCard json={siteData}/>
-            <SiteCard json={siteData}/>
-            <SiteCard json={siteData}/>
-            <SiteCard json={siteData}/>
-            <div className="invisible mx-8">
-              <SiteCard/>
-            </div>
-          </div>
-          <div className="mt-14">
-            <SiteStatusDirection/>
-          </div>
-          <div className="absolute bottom-[128px] left-0">
-            <TimeDirection/>
-          </div>
-          <div className="absolute bottom-72 right-0">
-            <CarouselButton offset={190} icon="chevron-right"/>
-          </div>
-          <div className="absolute bottom-72 left-0">
-            <CarouselButton offset={-190} icon="chevron-left"/>
           </div>
         </div>
+        <div className="w-full mt-14 flex flex-row">
+          <div className="h-full w-3/5 me-20 flex flex-col gap-6">
+            {
+              courtInfo.map((court, index) => (
+                <CourtCard key={index} court={court}/>
+              ))
+            }
+          </div>
+          <div className="w-2/5 flex justify-end bottom-0">
+            <SiteInfoCard previewData={stadiumInfoPreview}/>
+          </div>
+        </div>
+        <div className="w-full h-[600px] flex flex-col mt-16 mb-24">
+          <p className="text-2xl font-semibold mb-5">球場位置</p>
+          <Map/>
+        </div>
       </div>
-    </BookingDetailContext.Provider>
+      <Modal width="50rem" height="32rem" title="基本資訊" showClose={true} children={<CourtInfoModal/>}/>
+    </div>
   )
 }
 
