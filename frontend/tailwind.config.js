@@ -30,6 +30,7 @@ export default {
         "fade-blue":"#4D9F9E",
       },
       backgroundImage: {
+        "blur-dot-bg": "url(../src/assets/blur-dot-bg.svg)",
         "basketball-card": "url(../src/assets/image/basketball_bg.jpg)",
         "badminton-card": "url(../src/assets/image/badminton_bg.jpg)",
         "volleyball-card": "url(../src/assets/image/volleyball_bg.jpg)",
@@ -37,6 +38,7 @@ export default {
         "table-tennis-card": "url(../src/assets/image/table_tennis_bg.jpg)",
         "court-recruit-card": "url(../src/assets/image/court_recruit_bg.jpg)",
         "court-join-card": "url(../src/assets/image/court_join_bg.jpg)",
+        "booking-success-bg": "url(../src/assets/image/booking_success.jpg)",
       },
       backgroundSize: {
         '110': '110%',
