@@ -18,7 +18,10 @@ import Layout from "./page/Layout"
 import ScrollToTop from "./utilities/ScrollToTop";
 import ErrorPage from "./page/Error";
 import BookingPage from "./page/Booking"
+import BookingStadiumPage from "./page/BookingStadiumPage";
 import BookingDetailPage from "./page/BookingDetail";
+import BookingConfirmPage from "./page/BookingConfirm";
+import BookingSucessPage from "./page/BookingSucess";
 import MateFindingPage from "./page/MateFinding"
 import JoiningPage from "./page/Joining"
 import JoiningDetailPage from "./page/JoiningDetail";
@@ -35,7 +38,10 @@ const router = createBrowserRouter([
       { path: "findmate", element: <MateFindingPage /> },
       { path: "findmate/join", element: <JoiningPage /> },
       { path: "findmate/join/:day", element: <JoiningDetailPage /> },
-      { path: "booking/:sport", element: <BookingDetailPage /> },
+      { path: "booking/:sport", element: <BookingStadiumPage /> },
+      { path: "booking/:sport/detail/:day", element: <BookingDetailPage /> },
+      { path: "booking/confirm", element: <BookingConfirmPage /> },
+      { path: "booking/success", element: <BookingSucessPage /> },
       { path: "records", element: <RecordsPage /> },
     ],
   }
@@ -43,9 +49,13 @@ const router = createBrowserRouter([
 
 
 function App() {
-  // 選擇日期、選擇運動
+  // 選擇日期、選擇運動，由 Booking 流程和 Joining 流程共用
   const [selectedDayCode, setSelectedDayCode] = useState(0);
   const [selectedSport, setSelectedSport] = useState("basketball");
+
+  // Email, Password
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   // Modal 狀態追蹤
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,6 +67,8 @@ function App() {
   const joinContextValue = {
     selectedDayCode, setSelectedDayCode,
     selectedSport, setSelectedSport,
+    email, setEmail,
+    password, setPassword,
     isModalOpen, setIsModalOpen,
     selectedJoinId, setSelectedJoinId,
   }
@@ -70,7 +82,7 @@ function App() {
     console.log("selectedJoinId: ", selectedJoinId);
 
     if (selectedJoinId === undefined) return;
-    
+
     const data = JSON.parse(window.localStorage.getItem("joinDetailJson"));
     console.log(data.find(item => item.id === selectedJoinId));
   }, [selectedJoinId])
