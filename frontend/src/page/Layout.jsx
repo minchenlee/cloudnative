@@ -6,11 +6,11 @@ import ScrollToTop from "../utilities/ScrollToTop";
 
 function Layout() {
   return(
-    <div className="relative">
+    <>
       <ScrollToTop />
       <Header />
       <Outlet />
-    </div>
+    </>
   )
 }
 

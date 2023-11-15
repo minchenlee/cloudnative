@@ -15,7 +15,7 @@ function StatusDot(props) {
   }
 
   return (
-    <div className={`w-[30px] h-[30px] rounded-full ${color} border-1 border-silver shadow-[inset_0_1px_3px_0_rgba(0,0,0,0.25)]`}></div>
+    <div className={`w-[30px] h-[30px] rounded-full ${color} border-1 border-light-silver shadow-[inset_1px_2px_3px_0_rgba(0,0,0,0.4)]`}></div>
   );
 }
 

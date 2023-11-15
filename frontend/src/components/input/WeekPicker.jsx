@@ -1,5 +1,5 @@
 import {useState, useContext} from 'react';
-import BookingDetailContext from '../../page/BookingDetail';
+import BookingDetailContext from '../../page/BookingStadiumPage';
 
 import dayjs from 'dayjs';
 import isBetweenPlugin from 'dayjs/plugin/isBetween';

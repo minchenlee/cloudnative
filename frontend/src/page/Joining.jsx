@@ -84,15 +84,17 @@ function JoiningPage(){
 
   // 取得資料後存入 localStorage
   useEffect(() => {
+    console.log("call api");
     window.localStorage.setItem("joinJson", JSON.stringify(jsonData));
   }, [jsonData])
-
-
+  
+  const { selectedSport, setSelectedSport} = useContext(JoinContext);
   // 處理選擇的運動項目
-  const { selectedSport, setSelectedSport } = useContext(JoinContext);
   const handleSportClick = (sport) => {
     setSelectedSport(sport);
   }
+
+  
 
   // 重新 call API
   useEffect(() => {

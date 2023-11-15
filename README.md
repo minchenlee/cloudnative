@@ -11,7 +11,15 @@ This app is a stadium matching application that aims to help users find the most
 ### Dependencies
 
 #### Frontend
-React, React Router, Material UI, Axios, React-hook-form, Vite
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [React Router](https://reactrouter.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Material UI](https://material-ui.com/)
+- [Axios](https://axios-http.com/)
+- [React-hook-form](https://react-hook-form.com/)
+- [Leaftlet](https://leafletjs.com/)
+- [React-leaflet](https://react-leaflet.js.org/)
 
 #### Backend
 Express.js, PostgreSQL, Prisma, AWS
@@ -19,6 +27,7 @@ Express.js, PostgreSQL, Prisma, AWS
 ### Installing
 
 #### Frontend
+See the Executing program section for instructions on how to install the dependencies.
 
 #### Backend
 
@@ -35,6 +44,11 @@ npm install
 ### Executing program
 
 #### Frontend
+Start the frontend by running the following commands in the frontend directory:
+```
+yarn install
+yarn run dev
+```
 
 #### Backend
 
@@ -59,5 +73,5 @@ command to run if program contains helper info
 
 ## Authors
 
-Frontend: 旻宸、灝融、宥圻
+Frontend: [@minchenlee](https://github.com/minchenlee)、灝融、宥圻
 Backend: 立曄、[@brandon9912](https://github.com/brandon9912)、啟湘
