@@ -8,6 +8,7 @@
     "swagger-autogen": "node ./doc/swagger.js"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@prisma/client": "^5.5.2",
     "axios": "^1.6.1",
     "cookie-parser": "~1.4.4",

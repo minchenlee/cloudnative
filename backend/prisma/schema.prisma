@@ -15,10 +15,48 @@ model User {
   username      String?
   /// user role
   role     Role     @default(PLAYER)
+  stadiums Stadium[]
+}
+
+model Stadium {
+  id         Int      @id @default(autoincrement())
+  sport       Sports
+  status     Status
+  longitude  Decimal
+  latitude   Decimal
+  description Json
+  img_url   String
+  address   String
+  tel   String
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  courts Court[]
+}
+
+model Court {
+  id        Int      @id @default(autoincrement())
+  status   Status
+  stadiumId Int
+  stadium   Stadium @relation(fields: [stadiumId], references: [id])
+  createdAt   DateTime @default(now())
 }
 
 enum Role {
   ADMIN
   PLAYER
   VENDOR
+}
+
+enum Sports {
+  FOOTBALL
+  BASKETBALL
+  VOLLEYBALL
+  TENNIS
+  TABLETENNIS
+}
+
+enum Status {
+  AVAILABLE
+  UNAVAILABLE
 }
