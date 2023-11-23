@@ -41,6 +41,29 @@ const stadiumModel = {
             }
         });
         return stadium;
+    },
+    updateStadiumById: async (id, sport, status, longitude, latitude, description, img_url, address, tel, createdById) => {
+        const stadium = await prisma.stadium.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                sport,
+                status,
+                longitude,
+                latitude,
+                description,
+                img_url,
+                address,
+                tel,
+                createdBy: {
+                    connect: {
+                        id: createdById
+                    }
+                }
+            }
+        });
+        return stadium;
     }
 }
 

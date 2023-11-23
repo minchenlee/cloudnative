@@ -8,5 +8,7 @@ router.post('/stadium', stadiumController.createStadium);
 router.get('/stadiums', stadiumController.getAllStadiums);
 // Get a stadium by id
 router.get('/stadium/:id', stadiumController.getStadiumById);
+// Update a stadium by id
+router.patch('/stadium/:id', stadiumController.updateStadiumById);
 
 export default router;
