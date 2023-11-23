@@ -22,7 +22,15 @@ const stadiumModel = {
             }
         });
         return stadium;
-    }
+    },
+    getAllStadiums: async () => {
+        const stadiums = await prisma.stadium.findMany({
+            include: {
+                createdBy: true
+            }
+        });
+        return stadiums;
+    },
 }
 
 export { stadiumModel };

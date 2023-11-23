@@ -20,7 +20,16 @@ const stadiumController = {
                 stadium
             }
         });
-    }
+    },
+    getAllStadiums: async (req, res) => {
+        const stadiums = await stadiumModel.getAllStadiums();
+        res.status(200).json({
+            msg: "Get all stadiums successfully.",
+            data: {
+                stadiums
+            }
+        });
+    },
 }
 
 export default stadiumController;
