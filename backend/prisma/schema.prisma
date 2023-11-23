@@ -57,6 +57,7 @@ enum Sports {
 }
 
 enum Status {
-  AVAILABLE
-  UNAVAILABLE
+  OPEN
+  CLOSED
+  MAINTENANCE
 }

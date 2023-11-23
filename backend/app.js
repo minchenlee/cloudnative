@@ -1,20 +1,23 @@
 import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
+import logger from 'morgan';
 import express from 'express';
 import cors from 'cors';
 // swagger docs
 import * as swaggerUi from "swagger-ui-express";
 import { readFile } from "fs/promises";
 const swaggerFile = JSON.parse(
-  await readFile(new URL("./docs/swagger.json", import.meta.url))
+  await readFile(new URL("./doc/swagger.json", import.meta.url))
 );
 
 
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
+import stadiumsRouter from './routes/stadiums.js';
 
 const app = express();
 
+app.use(logger("dev"));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -23,6 +26,7 @@ app.use(cookieParser());
 // TODO: Add neccessary routesr
 app.use("/api/v1", indexRouter);
 app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/stadiums', stadiumsRouter);
 app.use('/api/v1/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // catch 404 and forward to error handler
@@ -38,7 +42,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.json('error');
 });
 
 process.on("unhandledRejection", (reason, promise) => {
