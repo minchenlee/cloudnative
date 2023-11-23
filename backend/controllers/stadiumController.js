@@ -30,6 +30,16 @@ const stadiumController = {
             }
         });
     },
+    getStadiumById: async (req, res) => {
+        const {id} = req.params;
+        const stadium = await stadiumModel.getStadiumById(id);
+        res.status(200).json({
+            msg: "Get stadium by id successfully.",
+            data: {
+                stadium
+            }
+        });
+    }
 }
 
 export default stadiumController;

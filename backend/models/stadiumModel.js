@@ -31,6 +31,17 @@ const stadiumModel = {
         });
         return stadiums;
     },
+    getStadiumById: async (id) => {
+        const stadium = await prisma.stadium.findUnique({
+            where: {
+                id: parseInt(id)
+            },
+            include: {
+                createdBy: true
+            }
+        });
+        return stadium;
+    }
 }
 
 export { stadiumModel };

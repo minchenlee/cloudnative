@@ -6,5 +6,7 @@ const router = express.Router();
 router.post('/stadium', stadiumController.createStadium);
 // Get all stadiums
 router.get('/stadiums', stadiumController.getAllStadiums);
+// Get a stadium by id
+router.get('/stadium/:id', stadiumController.getStadiumById);
 
 export default router;
