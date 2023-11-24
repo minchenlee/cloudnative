@@ -10,5 +10,7 @@ router.get('/stadiums', stadiumController.getAllStadiums);
 router.get('/stadium/:id', stadiumController.getStadiumById);
 // Update a stadium by id
 router.patch('/stadium/:id', stadiumController.updateStadiumById);
+// Delete a stadium by id
+router.delete('/stadium/:id', stadiumController.deleteStadiumById);
 
 export default router;

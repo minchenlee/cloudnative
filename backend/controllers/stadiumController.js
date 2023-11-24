@@ -59,6 +59,16 @@ const stadiumController = {
                 stadium
             }
         });
+    },
+    deleteStadiumById: async (req, res) => {
+        const {id} = req.params;
+        const stadium = await stadiumModel.deleteStadiumById(id);
+        res.status(200).json({
+            msg: "Delete stadium by id successfully.",
+            data: {
+                stadium
+            }
+        });
     }
 }
 

@@ -64,6 +64,14 @@ const stadiumModel = {
             }
         });
         return stadium;
+    },
+    deleteStadiumById: async (id) => {
+        const stadium = await prisma.stadium.delete({
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return stadium;
     }
 }
 
