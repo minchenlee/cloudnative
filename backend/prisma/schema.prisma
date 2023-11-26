@@ -57,28 +57,28 @@ model BookingRecord {
   sport                Sports
   date                 DateTime
   hour                 Int
-  activitiesRecords    ActivityRecord[]
 }
 
 model Activity {
   id          Int   @id @default(autoincrement())
   hostBy      User  @relation(fields: [hostId], references: [id])
   hostId      Int
-  note        String
+  sport       Sports
+  date        DateTime
+  startHour   Int
+  endHour     Int
+  note        String?
   capacity    Int
   activitiesRecords   ActivityRecord[]  
 }
 
 model ActivityRecord {
   id          Int   @id @default(autoincrement())
-  belongs     Activity  @relation(fields: [activutyId], references: [id])
-  activutyId  Int
-  bookwith    BookingRecord @relation(fields: [bookingId], references: [id])
-  bookingId   Int
-  sport       Sports
-  attend      User  @relation(fields: [memberId], references: [id])
-  memberId    Int
-  isAttend    Boolean
+  belongs     Activity  @relation(fields: [activityId], references: [id])
+  activityId  Int
+  attend      User  @relation(fields: [userId], references: [id])
+  userId      Int
+  isAttend    Boolean?
 }
 
 enum Role {

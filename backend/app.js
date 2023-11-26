@@ -14,6 +14,8 @@ const swaggerFile = JSON.parse(
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import stadiumsRouter from './routes/stadiums.js';
+import bookingsRouter from './routes/bookings.js';
+import activitiesRouter from './routes/activities.js';
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.use(cookieParser());
 app.use("/api/v1", indexRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/stadiums', stadiumsRouter);
+app.use('/api/v1/bookings', bookingsRouter);
+app.use('/api/v1/activities', activitiesRouter);
 app.use('/api/v1/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // catch 404 and forward to error handler
