@@ -8,38 +8,77 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  username      String?
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  email           String   @unique
+  username        String?
   /// user role
-  role     Role     @default(PLAYER)
-  stadiums Stadium[]
+  role            Role     @default(PLAYER)
+  stadiums        Stadium[]
+  bookingRecords  BookingRecord[]
+  activities          Activity[]
+  activitiesRecords   ActivityRecord[]
 }
 
 model Stadium {
-  id         Int      @id @default(autoincrement())
-  sport       Sports
-  status     Status
-  longitude  Decimal
-  latitude   Decimal
-  description Json
-  img_url   String
-  address   String
-  tel   String
-  createdAt   DateTime @default(now())
-  createdById Int
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  courts Court[]
+  id              Int      @id @default(autoincrement())
+  sport           Sports
+  status          Status @default(MAINTENANCE)
+  longitude       Decimal
+  latitude        Decimal
+  description     Json
+  img_url         String
+  address         String
+  tel             String
+  createdAt       DateTime @default(now())
+  createdById     Int
+  createdBy       User     @relation(fields: [createdById], references: [id])
+  courts          Court[]
 }
 
 model Court {
-  id        Int      @id @default(autoincrement())
-  status   Status
-  stadiumId Int
-  stadium   Stadium @relation(fields: [stadiumId], references: [id])
-  createdAt   DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  status          Status @default(MAINTENANCE)
+  stadiumId       Int
+  stadium         Stadium @relation(fields: [stadiumId], references: [id])
+  createdAt       DateTime @default(now())
+  bookingRecords  BookingRecord[]
+}
+
+model BookingRecord {
+  id          Int   @id @default(autoincrement())
+  maker       User  @relation(fields: [userId], references: [id])
+  userId      Int   
+  vendorId    Int
+  stadiumId   Int
+  place       Court @relation(fields: [courtId], references: [id])
+  courtId     Int
+  sport                Sports
+  date                 DateTime
+  hour                 Int
+  activitiesRecords    ActivityRecord[]
+}
+
+model Activity {
+  id          Int   @id @default(autoincrement())
+  hostBy      User  @relation(fields: [hostId], references: [id])
+  hostId      Int
+  note        String
+  capacity    Int
+  activitiesRecords   ActivityRecord[]  
+}
+
+model ActivityRecord {
+  id          Int   @id @default(autoincrement())
+  belongs     Activity  @relation(fields: [activutyId], references: [id])
+  activutyId  Int
+  bookwith    BookingRecord @relation(fields: [bookingId], references: [id])
+  bookingId   Int
+  sport       Sports
+  attend      User  @relation(fields: [memberId], references: [id])
+  memberId    Int
+  isAttend    Boolean
 }
 
 enum Role {
