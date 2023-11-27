@@ -24,6 +24,7 @@ const courtModel = {
         return courts;
     },
     getCourtById: async (id) => {
+        console.log(id);
         const court = await prisma.court.findUnique({
             where: {
                 id: parseInt(id)
@@ -32,22 +33,20 @@ const courtModel = {
                 stadium: true
             }
         });
+        
         return court;
     },
-    updateCourtById: async (id, status, stadiumId) => {
+    updateCourtById: async (id, status) => {
+        
         const court = await prisma.court.update({
             where: {
                 id: parseInt(id)
             },
             data: {
-                status,
-                stadium: {
-                    connect: {
-                        id: stadiumId
-                    }
-                }
+                status
             }
         });
+
         return court;
     },
     deleteCourtById: async (id) => {
