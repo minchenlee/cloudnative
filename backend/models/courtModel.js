@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-const courtModel = {
+const courtModel = (prisma) => ({
     createCourt: async (status, stadiumId) => {
         const court = await prisma.court.create({
             data: {
@@ -13,6 +13,7 @@ const courtModel = {
                 }
             }
         });
+        console.log(court)
         return court;
     },
     getAllCourts: async () => {
@@ -57,6 +58,7 @@ const courtModel = {
         });
         return court;
     }
-}
+});
 
+export const defaultCourtModel = courtModel(prisma);
 export { courtModel };
