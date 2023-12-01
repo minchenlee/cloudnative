@@ -20,8 +20,10 @@ model User {
 
 model Stadium {
   id         Int      @id @default(autoincrement())
+  name       String
   sport       Sports
   status     Status
+  isIndoor    Boolean
   longitude  Decimal
   latitude   Decimal
   description Json
@@ -49,7 +51,7 @@ enum Role {
 }
 
 enum Sports {
-  FOOTBALL
+  BADMINTON
   BASKETBALL
   VOLLEYBALL
   TENNIS
