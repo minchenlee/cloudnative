@@ -3,9 +3,10 @@ const prisma = new PrismaClient();
 
 
 const stadiumModel = {
-    createStadium: async (sport, status, longitude, latitude, description, img_url, address, tel, createdById) => {
+    createStadium: async (name, sport, status, longitude, latitude, description, img_url, address, tel, createdById) => {
         const stadium = await prisma.stadium.create({
             data: {
+                name,
                 sport,
                 status,
                 longitude,
@@ -14,6 +15,7 @@ const stadiumModel = {
                 img_url,
                 address,
                 tel,
+                isIndoor: false,
                 createdBy: {
                     connect: {
                         id: createdById
@@ -72,6 +74,14 @@ const stadiumModel = {
             }
         });
         return stadium;
+    },
+    getStadiumsBySport: async (sport) => {
+        const stadiums = await prisma.stadium.findMany({
+            where: {
+                sport: sport.toUpperCase()
+            }
+        });
+        return stadiums;
     }
 }
 

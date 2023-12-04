@@ -17,24 +17,26 @@ model User {
   role            Role     @default(PLAYER)
   stadiums        Stadium[]
   bookingRecords  BookingRecord[]
-  activities          Activity[]
   activitiesRecords   ActivityRecord[]
 }
 
 model Stadium {
-  id              Int      @id @default(autoincrement())
-  sport           Sports
-  status          Status @default(MAINTENANCE)
-  longitude       Decimal
-  latitude        Decimal
-  description     Json
-  img_url         String
-  address         String
-  tel             String
-  createdAt       DateTime @default(now())
-  createdById     Int
-  createdBy       User     @relation(fields: [createdById], references: [id])
-  courts          Court[]
+  id         Int      @id @default(autoincrement())
+  name       String
+  sport       Sports
+  status     Status
+  isIndoor    Boolean
+  longitude  Decimal
+  latitude   Decimal
+  description Json
+  img_url   String
+  address   String
+  tel   String
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  courts Court[]
+  bookingRecords BookingRecord[]
 }
 
 model Court {
@@ -51,31 +53,24 @@ model BookingRecord {
   maker       User  @relation(fields: [userId], references: [id])
   userId      Int   
   vendorId    Int
-  stadiumId   Int
+  stadiumAt   Stadium  @relation(fields: [stadiumId], references: [id])
+  stadiumId   Int 
   place       Court @relation(fields: [courtId], references: [id])
   courtId     Int
-  sport                Sports
-  date                 DateTime
-  hour                 Int
-}
-
-model Activity {
-  id          Int   @id @default(autoincrement())
-  hostBy      User  @relation(fields: [hostId], references: [id])
-  hostId      Int
   sport       Sports
   date        DateTime
   startHour   Int
   endHour     Int
+  isActivity  Boolean?
   note        String?
-  capacity    Int
+  capacity    Int?
   activitiesRecords   ActivityRecord[]  
 }
 
 model ActivityRecord {
   id          Int   @id @default(autoincrement())
-  belongs     Activity  @relation(fields: [activityId], references: [id])
-  activityId  Int
+  belongs     BookingRecord  @relation(fields: [bookingId], references: [id])
+  bookingId   Int
   attend      User  @relation(fields: [userId], references: [id])
   userId      Int
   isAttend    Boolean?
@@ -88,7 +83,7 @@ enum Role {
 }
 
 enum Sports {
-  FOOTBALL
+  BADMINTON
   BASKETBALL
   VOLLEYBALL
   TENNIS
