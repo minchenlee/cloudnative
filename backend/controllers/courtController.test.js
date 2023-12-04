@@ -8,11 +8,11 @@ import { mockDeep, mockReset } from 'jest-mock-extended';
 jest.mock('../models/courtModel');
 
 // In JavaScript, we can't specify types like in TypeScript, so just call mockDeep() without <Prisma.PrismaClient>
-const prismaMock = mockDeep();
+/*const prismaMock = mockDeep();
 
 beforeEach(() => {
   mockReset(prismaMock);
-});
+});*/
 
 describe('courtController.createCourt', () => {
   it('should create a court successfully', async () => {
@@ -57,10 +57,6 @@ describe('courtController.createCourt', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: "Invalid status." });
   });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   it('should return status 500 on server error', async () => {
     // Arrange
     const req = { body: { status: 'OPEN', stadiumId: 1 } };
@@ -102,9 +98,6 @@ describe('courtController.getAllCourts', () => {
         data: { courts: mockCourts }
       });
     });
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
       it('should return status 500 on server error', async () => {
         // Arrange
         const req = {};
@@ -145,9 +138,6 @@ describe('courtController.getAllCourts', () => {
         data: { court: mockCourt }
       });
     });
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
     it('should return status 404 when court is not found', async () => {
         // Arrange
         const req = { params: { id: '999' } }; // Assuming 999 is an ID that does not exist
@@ -164,9 +154,6 @@ describe('courtController.getAllCourts', () => {
         expect(res.status).toHaveBeenCalledWith(404);
         expect(res.json).toHaveBeenCalledWith({ msg: "Court not found." });
       });
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
     it('should return status 500 on server error', async () => {
         // Arrange
         const req = { params: { id: '1' } };
@@ -242,6 +229,51 @@ describe('courtController.getAllCourts', () => {
     });
   });
 
+  describe('deleteCourtById', () => {
+    it('should return 200 when court is successfully deleted', async () => {
+       
+        const req = { params: { id: 'validId' } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        const mockCourt = { id: 1, status: 'OPEN' };
+        courtModel.deleteCourtById.mockResolvedValue(mockCourt);
+        
+        await courtController.deleteCourtById(req, res);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({
+          msg: "Court deleted successfully.",
+          data: { court: mockCourt }
+        });
+    });
+
+    it('should return 404 when court is not found', async () => {
+        courtModel.deleteCourtById.mockResolvedValue(null);
+        const req = { params: { id: 'invalidId' } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        await courtController.deleteCourtById(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Court not found." });
+    });
+
+    it('should return 500 on server error', async () => {
+        courtModel.deleteCourtById.mockRejectedValue(new Error('Server error'));
+        const req = { params: { id: 'someId' } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        await courtController.deleteCourtById(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
+    });
+
+    it('should return 404 for Prisma error with code P2025', async () => {
+        const prismaError = new Prisma.PrismaClientKnownRequestError('Message', 'P2025', 'someVersion');
+        prismaError.code = 'P2025';
+        courtModel.deleteCourtById.mockRejectedValue(prismaError);
+        const req = { params: { id: 'someId' } };
+        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+        await courtController.deleteCourtById(req, res);
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({ msg: "Court not found." });
+    });
+});
 
   
   
