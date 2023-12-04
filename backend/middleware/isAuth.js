@@ -14,7 +14,6 @@ const isAuth = (req, res, next) => {
     return res.status(401).json({ message: 'Unauthorized: Invalid authorization header format' });
   }
 
-
   const token = tokenParts[1];
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
