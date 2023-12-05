@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react';
+import {useState, useContext, useEffect} from 'react';
 import BookingDetailContext from '../../page/BookingStadiumPage';
 
 import dayjs from 'dayjs';
@@ -6,6 +6,8 @@ import isBetweenPlugin from 'dayjs/plugin/isBetween';
 import { styled } from '@mui/material/styles';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
+
+
 
 dayjs.extend(isBetweenPlugin);
 
@@ -63,12 +65,34 @@ function Day(props) {
 export default function WeekPicker() {
   const [hoveredDay, setHoveredDay] = useState(null);
   const [value, setValue] = useState(dayjs());
+  const [selectedWeek, setSelectedWeek] = useState([]);
+
+
+  const handleDateChange = (newValue) => {
+    setValue(newValue);
+
+    const startOfWeek = newValue.clone().startOf('week');
+    const endOfWeek = newValue.clone().endOf('week');
+    setSelectedWeek([startOfWeek.$d, endOfWeek]);
+  };
+
+  useEffect(() => {
+    const startOfWeek = value.clone().startOf('week');
+    const endOfWeek = value.clone().endOf('week');
+    setSelectedWeek([startOfWeek.$d, endOfWeek.$d]);
+  }, [value])
+
+  useEffect(() => {
+    console.log('setSelectedWeek?????', selectedWeek)
+  }, [selectedWeek ])
 
   return (
     <DateCalendar
       className='bg-white rounded-2xl border-1'
       value={value}
-      onChange={(newValue) => setValue(newValue)}
+      onChange={(newValue) => {
+        handleDateChange(newValue)
+      }}
       showDaysOutsideCurrentMonth
       disablePast
       slots={{ day: Day }}

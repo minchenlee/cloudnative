@@ -11,6 +11,7 @@ import { dummyJson4StadiumData } from "../dummyJson/bookingDummy";
 import JoinContext from "../contexts/JoinContext";
 import WeekPicker from "../components/input/WeekPicker";
 
+import Modal from "../components/modals/Modal";
 
 const classifyWeekStatus = (weekStatus) => {
   const weekStatusArray = Object.values(weekStatus);
@@ -93,6 +94,16 @@ function BookingStadiumPage(){
     )
   }
 
+  const DateModal = () => {
+    return (
+      <div className="w-[298px] h-[298px]">
+      <WeekPicker></WeekPicker>
+      </div>
+    )
+  }
+
+  const [weekPickerOpen, setWeekPickerOpen] = useState(false)
+
   return(
     <BookingDetailContext.Provider value={{dayInterval, setDayInterval}}>
       <div className="container mx-auto">
@@ -102,12 +113,13 @@ function BookingStadiumPage(){
               <BackButton linkMode={true} linkTo={'/booking'}/>
             </div>
             <div className="flex flex-row justify-center gap-3 h-14">
-              <SearchBar/>
+              <SearchBar setWeekPickerOpen={setWeekPickerOpen} weekPickerOpen={weekPickerOpen} />
               <FilterButton/>
             </div>
-            <div className="absolute z-40 top-16 invisible">
+            <div className={`absolute z-40 top-16 ${weekPickerOpen ? null : 'invisible'}`} >
               <WeekPicker/>
             </div>
+            <Modal width="38.75rem" height="23rem" title="招募球友" showClose={true} children={<DateModal />} />
           </div>
           {/* using tailwind scrollbar package to control scrollbar*/}
           <div className="w-full mx-auto relative mt-12 px-8 py-2 flex flex-row justify-start overflow-x-auto gap-[34px] snap-x scrollbar scrollbar-none scroll-smooth" ref={CarouselRef}>
