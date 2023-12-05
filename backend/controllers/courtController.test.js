@@ -236,7 +236,7 @@ describe('courtController.getAllCourts', () => {
         const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
         const mockCourt = { id: 1, status: 'OPEN' };
         courtModel.deleteCourtById.mockResolvedValue(mockCourt);
-        
+
         await courtController.deleteCourtById(req, res);
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({

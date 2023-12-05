@@ -13,7 +13,6 @@ const courtModel = (prisma) => ({
                 }
             }
         });
-        console.log(court)
         return court;
     },
     getAllCourts: async () => {
@@ -25,7 +24,6 @@ const courtModel = (prisma) => ({
         return courts;
     },
     getCourtById: async (id) => {
-        console.log(id);
         const court = await prisma.court.findUnique({
             where: {
                 id: parseInt(id)

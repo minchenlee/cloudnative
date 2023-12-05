@@ -71,7 +71,6 @@ const courtController = {
                 }
             });
         } catch (error) {
-            console.log(error instanceof Prisma.PrismaClientKnownRequestError , error.code)
             // Check if the error is a Prisma error indicating that the record was not found
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 // Record not found
