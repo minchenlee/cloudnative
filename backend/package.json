@@ -5,7 +5,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./bin/www",
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
-    "swagger-autogen": "node ./doc/swagger.js"
+    "swagger-autogen": "node ./doc/swagger.js",
+    "test": "jest"
   },
   "dependencies": {
     "@faker-js/faker": "^8.3.1",
@@ -25,7 +26,18 @@
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
     "nodemon": "^3.0.1",
     "prisma": "^5.5.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.m?js$": "babel-jest"
+    },
+    "testEnvironment": "node"
   }
 }
