@@ -12,7 +12,7 @@ model User {
   createdAt DateTime @default(now())
   email     String   @unique
   username  String?
-  password String
+  password String @default("")
   /// user role
   role            Role     @default(PLAYER)
   stadiums        Stadium[]
@@ -34,7 +34,7 @@ model Stadium {
   tel   String
   createdAt   DateTime @default(now())
   createdById Int
-  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   courts Court[]
   bookingRecords BookingRecord[]
 }

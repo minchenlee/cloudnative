@@ -12,9 +12,6 @@ router.get('/', function(req, res, next) {
 // Create a new user
 router.post('/', createUser);
 
-// Get a user by id
-router.get('/:id', getUserById);
-
 // Update a user by id
 router.put('/:id', updateUser);
 
