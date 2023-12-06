@@ -2,9 +2,14 @@ import {userModel} from '../models/userModel.js';
 
 const userController = {
     createUser: async (req, res) => {
-        const {username, password} = req.body;
-        const user = await userModel.createUser(username, password);
-        res.json(user);
+        const {email, username} = req.body;
+        try {
+            const user = await userModel.createUser(email, username);
+            res.json(user);
+        } catch (error) {
+            console.log(error);
+            res.status(400).json({msg: error.message});
+        }
     },
     getUserbyId: async (req, res) => {
         const {id} = req.params;
