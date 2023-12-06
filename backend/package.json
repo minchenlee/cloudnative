@@ -1,0 +1,43 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production node ./bin/www",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
+    "swagger-autogen": "node ./doc/swagger.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "@prisma/client": "^5.5.2",
+    "axios": "^1.6.1",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "debug": "~2.6.9",
+    "dotenv": "^16.3.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "^1.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.5",
+    "@babel/preset-env": "^7.23.5",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^3.0.5",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.6.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.m?js$": "babel-jest"
+    },
+    "testEnvironment": "node"
+  }
+}

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "BookingRecord" ALTER COLUMN "capacity" DROP NOT NULL,
+ALTER COLUMN "isActivity" DROP NOT NULL,
+ALTER COLUMN "note" DROP NOT NULL;

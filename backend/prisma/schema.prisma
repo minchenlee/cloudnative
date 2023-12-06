@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  email           String   @unique
+  username        String?
+  /// user role
+  role            Role     @default(PLAYER)
+  stadiums        Stadium[]
+  bookingRecords  BookingRecord[]
+  activitiesRecords   ActivityRecord[]
+}
+
+model Stadium {
+  id         Int      @id @default(autoincrement())
+  name       String
+  sport       Sports
+  status     Status
+  isIndoor    Boolean
+  longitude  Decimal
+  latitude   Decimal
+  description Json
+  img_url   String
+  address   String
+  tel   String
+  createdAt   DateTime @default(now())
+  createdById Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  courts Court[]
+  bookingRecords BookingRecord[]
+}
+
+model Court {
+  id              Int      @id @default(autoincrement())
+  status          Status @default(MAINTENANCE)
+  stadiumId       Int
+  stadium         Stadium @relation(fields: [stadiumId], references: [id])
+  createdAt       DateTime @default(now())
+  bookingRecords  BookingRecord[]
+}
+
+model BookingRecord {
+  id          Int   @id @default(autoincrement())
+  maker       User  @relation(fields: [userId], references: [id])
+  userId      Int   
+  vendorId    Int
+  stadiumAt   Stadium  @relation(fields: [stadiumId], references: [id])
+  stadiumId   Int 
+  place       Court @relation(fields: [courtId], references: [id])
+  courtId     Int
+  sport       Sports
+  date        DateTime
+  startHour   Int
+  endHour     Int
+  isActivity  Boolean?
+  note        String?
+  capacity    Int?
+  activitiesRecords   ActivityRecord[]  
+}
+
+model ActivityRecord {
+  id          Int   @id @default(autoincrement())
+  belongs     BookingRecord  @relation(fields: [bookingId], references: [id])
+  bookingId   Int
+  attend      User  @relation(fields: [userId], references: [id])
+  userId      Int
+  isAttend    Boolean?
+}
+
+enum Role {
+  ADMIN
+  PLAYER
+  VENDOR
+}
+
+enum Sports {
+  BADMINTON
+  BASKETBALL
+  VOLLEYBALL
+  TENNIS
+  TABLETENNIS
+}
+
+enum Status {
+  OPEN
+  CLOSED
+  MAINTENANCE
+}

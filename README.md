@@ -1,27 +1,77 @@
-# cloudnative
-## 前端：旻宸、灝融、宥圻
-- Build Tool: Vite
+# Cloud Native Application Devleopment Final Project: Stadium Matching App
 
-- Frontend Library: React
+This is a project for the course Cloud Native Application Development in National Taiwan University. The project is a web application that aims to help users find the most suitable stadium for their needs and find other players to play with. The app also provides a platform for stadium owners to manage their stadiums and for players to manage their reservations.
 
-- CSS Library: Tailwind
+## Description
 
-- Router: React Router
+This app is a stadium matching application that aims to help users find the most suitable stadium for their needs and find other players to play with. The app also provides a platform for stadium owners to manage their stadiums and for players to manage their reservations. The app is built with React and Express.js and uses PostgreSQL as the database. The app is deployed on AWS.
 
-- API integration: Axios
+## Getting Started
 
-- Form validation and management: React-hook-form
+### Dependencies
 
-- Package Manager: yarn
+#### Frontend
+- [React](https://reactjs.org/)
+- [Vite](https://vitejs.dev/)
+- [React Router](https://reactrouter.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Material UI](https://material-ui.com/)
+- [Axios](https://axios-http.com/)
+- [React-hook-form](https://react-hook-form.com/)
+- [Leaftlet](https://leafletjs.com/)
+- [React-leaflet](https://react-leaflet.js.org/)
 
-## 後端：立曄、柏辰、啟湘
-- Express.js
-- Node.js
-## 資料庫
-- PostgreSQL
-## 其他
-- 雲服務：AZURE
-- [Trello](https://trello.com/b/Y6M5cD2I/stadium-matching-application)
-- [Google Drive](https://drive.google.com/drive/folders/1ArN7PnQFo2fXCwIgNrYx0iz59BsGc-6P?usp=share_link)
-- [版本控制規範](https://docs.google.com/document/d/1XG7mLlpiaNzBqoZFuP50J2mtONVJuMmbG1FRorD9R3Y/edit?usp=sharing)
-- GitHub: https://github.com/blackwingedkite/cloudnative 
+#### Backend
+Express.js, PostgreSQL, Prisma, AWS
+
+### Installing
+
+#### Frontend
+See the Executing program section for instructions on how to install the dependencies.
+
+#### Backend
+
+Before starting the server, you need to create a .env file in the backend directory and add the following environment variables:
+```
+DATABASE_URL="[database endpoint]"
+PORT="[port number]" 
+```
+After that, you need to install the dependencies by running the following command in the backend directory:
+```
+npm install
+```
+
+### Executing program
+
+#### Frontend
+Start the frontend by running the following commands in the frontend directory:
+```
+yarn install
+yarn run dev
+```
+
+#### Backend
+
+To start the server under developmment, run the following command in the backend directory:
+```
+npm run dev
+```
+To start the server under production, run the following command in the backend directory:
+```
+npm run start
+```
+To generate the swagger documentation, run the following command in the backend directory:
+```
+npm run swagger-autogen
+```
+## Help
+
+Any advise for common problems or issues.
+```
+command to run if program contains helper info
+```
+
+## Authors
+
+Frontend: [@minchenlee](https://github.com/minchenlee)、灝融、宥圻
+Backend: 立曄、[@brandon9912](https://github.com/brandon9912)、啟湘
