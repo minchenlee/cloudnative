@@ -6,7 +6,7 @@ const userController = {
     createUser: async (req, res) => {
         try {
             const {email, password, username, role} = req.body;
-            // user input validation
+            // TODO user input validation
 
             // hash password
             const salt = await bcrypt.genSalt(10);
@@ -27,16 +27,64 @@ const userController = {
             res.status(500).json({message: error});
         }
     },
-    getUserbyId: async (req, res) => {
-        const {id} = req.params;
-        const user = await userModel.getUserById(id);
-        res.json(user);
+    getUserById: async (req, res) => {
+        try {
+            const {id} = req.params;
+            const user = await userModel.getUserById(id);
+            res.json({
+                "message": "User retrieved successfully",
+                "user": user
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: error});
+        }
     },
     updateUser: async (req, res) => {
-        const {id} = req.params;
-        const {username, password} = req.body;
-        const user = await userModel.updateUser(id, username, password);
-        res.json(user);
+        try {
+            const {id} = req.params;
+            const {username, password} = req.body;
+            const user = await userModel.updateUser(id, username, password);
+            res.json({
+                "message": "User updated successfully",
+                "user": user
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: error});
+        }
+    },
+    deleteUser: async (req, res) => {
+        try {
+            const {id} = req.params;
+            const user = await userModel.deleteUser(id);
+            res.json({
+                "message": "User deleted successfully",
+                "user": user
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: error});
+        }
+    },
+    userLogin: async (req, res) => {
+        try {
+            const {email, password} = req.body;
+            const user = await userModel.userLogin(email, password);
+            if (user) {
+                const token = jwt.sign({email: email, role: user.role}, process.env.JWT_SECRET, {expiresIn: '3d'});
+                res.status(200).json({
+                    "message": "User logged in successfully",
+                    "user": user,
+                    "token": token
+                });
+            } else {
+                res.status(400).json({"message": "Invalid credentials"});
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({message: error});
+        }
     }
 }
 

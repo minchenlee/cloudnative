@@ -2,7 +2,7 @@ import express from 'express';
 import userController from '../controllers/userController.js';
 const router = express.Router();
 
-const {createUser, getUserById, updateUser} = userController;
+const {createUser, getUserById, updateUser, deleteUser, userLogin} = userController;
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -11,9 +11,14 @@ router.get('/', function(req, res, next) {
 
 // Create a new user
 router.post('/', createUser);
-
+// Get a user by id
+router.get('/:id', getUserById);
 // Update a user by id
 router.put('/:id', updateUser);
+// Delete a user by id
+router.delete('/:id', deleteUser);
+// User Login
+router.post('/login', userLogin);
 
 
 export default router;
