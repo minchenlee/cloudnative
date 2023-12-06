@@ -6,8 +6,16 @@ const userController = {
     createUser: async (req, res) => {
         try {
             const {email, password, username, role} = req.body;
-            // TODO user input validation
-
+            // user input validation
+            if (!email || !password || !username || !role) {
+                return res.status(400).json({"message": "Please fill in all fields"});
+            }
+            // check if user exists
+            const userExists = await userModel.getUserByEmail(email);
+            if (userExists) {
+                return res.status(400).json({"message": "User already exists"});
+            }
+            
             // hash password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);

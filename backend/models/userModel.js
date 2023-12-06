@@ -22,6 +22,14 @@ const userModel = {
         });
         return user;
     },
+    getUserByEmail: async (email) => {
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+        return user;
+    },
     updateUser: async (id, username, password) => {
         const user = await prisma.user.update({
             where: {
