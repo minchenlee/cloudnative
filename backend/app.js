@@ -16,6 +16,7 @@ import usersRouter from './routes/users.js';
 import stadiumsRouter from './routes/stadiums.js';
 import bookingsRouter from './routes/bookings.js';
 import activitiesRouter from './routes/activities.js';
+import courtRouter from './routes/courts.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/stadiums', stadiumsRouter);
 app.use('/api/v1/bookings', bookingsRouter);
 app.use('/api/v1/activities', activitiesRouter);
+app.use('/api/v1/courts', courtRouter); 
 app.use('/api/v1/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // catch 404 and forward to error handler
