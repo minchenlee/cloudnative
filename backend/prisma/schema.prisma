@@ -10,9 +10,9 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   email     String   @unique
-  username      String?
+  username  String?
+  password String
   /// user role
   role     Role     @default(PLAYER)
   stadiums Stadium[]
