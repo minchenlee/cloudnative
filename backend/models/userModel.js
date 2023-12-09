@@ -32,14 +32,16 @@ const userModel = {
         });
         return user;
     },
-    updateUser: async (id, username, password) => {
+    updateUser: async (id, username, password, tel, role) => {
         const user = await prisma.user.update({
             where: {
                 id: parseInt(id)
             },
             data: {
                 username: username,
-                password: password
+                password: password,
+                tel: tel,
+                role: role
             }
         });
         return user;

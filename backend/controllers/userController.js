@@ -13,7 +13,7 @@ const userController = {
             // check if user exists
             const userExists = await userModel.getUserByEmail(email);
             if (userExists) {
-                return res.status(400).json({"message": "User already exists"});
+                return res.status(409).json({"message": "User already exists"});
             }
             
             // hash password
@@ -41,6 +41,9 @@ const userController = {
         try {
             const {id} = req.params;
             const user = await userModel.getUserById(id);
+            if (!user) {
+                return res.status(404).json({"message": "User not found"});
+            }
             res.json({
                 "message": "User retrieved successfully",
                 "data": {
@@ -55,11 +58,13 @@ const userController = {
     updateUser: async (req, res) => {
         try {
             const {id} = req.params;
-            const {username, password} = req.body;
-            const user = await userModel.updateUser(id, username, password);
+            const {username, password, tel, role} = req.body;
+            const user = await userModel.updateUser(id, username, password, tel, role);
             res.json({
                 "message": "User updated successfully",
-                "user": user
+                "data": {
+                    "user": user
+                }
             });
         } catch (error) {
             console.log(error);
