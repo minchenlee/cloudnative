@@ -4,13 +4,14 @@ const prisma = new PrismaClient();
 
 
 const userModel = {
-    createUser: async (email, password, username, role) => {
+    createUser: async (email, password, username, role, tel) => {
         const user = await prisma.user.create({
             data: {
                 email: email,
                 password: password,
                 username: username,
-                role: role
+                role: role,
+                tel: tel
             }
         });
         return user;

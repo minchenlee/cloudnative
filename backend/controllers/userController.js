@@ -5,10 +5,10 @@ import bcrypt from 'bcrypt';
 const userController = {
     createUser: async (req, res) => {
         try {
-            const {email, password, username, role} = req.body;
+            const {email, password, username, role, tel} = req.body;
             // user input validation
-            if (!email || !password || !username || !role) {
-                return res.status(400).json({"message": "Please fill in all fields"});
+            if (!email || !password || !role) {
+                return res.status(400).json({"message": "Please fill in required fields"});
             }
             // check if user exists
             const userExists = await userModel.getUserByEmail(email);
@@ -23,12 +23,14 @@ const userController = {
             // create a jwt token
             const token = jwt.sign({email: email, role: role}, process.env.JWT_SECRET, {expiresIn: '3d'});
             // create a new user
-            const user = await userModel.createUser(email, hashedPassword, username, role);
+            const user = await userModel.createUser(email, hashedPassword, username, role, tel);
             // return user and jwt token
             res.status(200).json({
                 "message": "User created successfully",
-                "user": user,
-                "token": token
+                "data": {
+                    "user": user,
+                    "token": token
+                }
             });
         } catch (error) {
             console.log(error);
@@ -41,7 +43,9 @@ const userController = {
             const user = await userModel.getUserById(id);
             res.json({
                 "message": "User retrieved successfully",
-                "user": user
+                "data": {
+                    "user": user
+                }
             });
         } catch (error) {
             console.log(error);
@@ -68,7 +72,9 @@ const userController = {
             const user = await userModel.deleteUser(id);
             res.json({
                 "message": "User deleted successfully",
-                "user": user
+                "data": {
+                    "user": user
+                }
             });
         } catch (error) {
             console.log(error);
@@ -83,8 +89,10 @@ const userController = {
                 const token = jwt.sign({email: email, role: user.role}, process.env.JWT_SECRET, {expiresIn: '3d'});
                 res.status(200).json({
                     "message": "User logged in successfully",
-                    "user": user,
-                    "token": token
+                    "data": {
+                        "user": user,
+                        "token": token
+                    }
                 });
             } else {
                 res.status(400).json({"message": "Invalid credentials"});

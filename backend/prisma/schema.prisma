@@ -13,6 +13,7 @@ model User {
   email     String   @unique
   username  String?
   password String @default("")
+  tel String?
   /// user role
   role            Role     @default(PLAYER)
   stadiums        Stadium[]
