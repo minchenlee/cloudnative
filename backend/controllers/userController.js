@@ -71,7 +71,9 @@ const userController = {
             const {id} = req.params;
             const {username, password, tel, role} = req.body;
 
+
             // user input validation
+            const telRegex = /^\d{10}$/;
             if (tel && !telRegex.test(tel)) {
                 return res.status(400).json({"message": "Invalid phone number format"});
             }
