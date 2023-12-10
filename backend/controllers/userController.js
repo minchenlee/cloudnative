@@ -71,6 +71,10 @@ const userController = {
             const {id} = req.params;
             const {username, password, tel, role} = req.body;
 
+            // user input validation
+            if (tel && !telRegex.test(tel)) {
+                return res.status(400).json({"message": "Invalid phone number format"});
+            }
             // hash password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
