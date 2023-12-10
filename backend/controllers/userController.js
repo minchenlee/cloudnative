@@ -7,8 +7,19 @@ const userController = {
         try {
             const {email, password, username, role, tel} = req.body;
             // user input validation
+            // check if required fields are filled
             if (!email || !password || !role) {
                 return res.status(400).json({"message": "Please fill in required fields"});
+            }
+            // check if email is valid
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({"message": "Invalid email format"});
+            }
+            // check if tel is valid
+            const telRegex = /^\d{10}$/;
+            if (!telRegex.test(tel)) {
+                return res.status(400).json({"message": "Invalid phone number format"});
             }
             // check if user exists
             const userExists = await userModel.getUserByEmail(email);
@@ -59,7 +70,12 @@ const userController = {
         try {
             const {id} = req.params;
             const {username, password, tel, role} = req.body;
-            const user = await userModel.updateUser(id, username, password, tel, role);
+
+            // hash password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            const user = await userModel.updateUser(id, username, hashedPassword, tel, role);
             res.json({
                 "message": "User updated successfully",
                 "data": {
