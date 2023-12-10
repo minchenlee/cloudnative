@@ -55,7 +55,7 @@ const userController = {
             if (!user) {
                 return res.status(404).json({"message": "User not found"});
             }
-            res.json({
+            res.status(200).json({
                 "message": "User retrieved successfully",
                 "data": {
                     "user": user
@@ -80,7 +80,7 @@ const userController = {
             const hashedPassword = await bcrypt.hash(password, salt);
 
             const user = await userModel.updateUser(id, username, hashedPassword, tel, role);
-            res.json({
+            res.status(200).json({
                 "message": "User updated successfully",
                 "data": {
                     "user": user
@@ -95,7 +95,7 @@ const userController = {
         try {
             const {id} = req.params;
             const user = await userModel.deleteUser(id);
-            res.json({
+            res.status(200).json({
                 "message": "User deleted successfully",
                 "data": {
                     "user": user
