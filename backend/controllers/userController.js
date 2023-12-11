@@ -31,18 +31,23 @@ const userController = {
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(password, salt);
 
-            // create a jwt token
-            const token = jwt.sign({email: email, role: role}, process.env.JWT_SECRET, {expiresIn: '3d'});
             // create a new user
             const user = await userModel.createUser(email, hashedPassword, username, role, tel);
-            // return user and jwt token
-            res.status(200).json({
-                "message": "User created successfully",
-                "data": {
-                    "user": user,
-                    "token": token
-                }
-            });
+            if (!user) {
+                return res.status(500).json({"message": "User creation failed"});
+            } else {
+                // generate jwt token
+                const token = jwt.sign({email: user.email, role: user.role, id: user.id}, process.env.JWT_SECRET, {expiresIn: '3d'});
+                // return user and jwt token
+                res.status(200).json({
+                    "message": "User created successfully",
+                    "data": {
+                        "user": user,
+                        "token": token
+                    }
+                });
+            }
+
         } catch (error) {
             console.log(error);
             res.status(500).json({message: error});
@@ -113,7 +118,7 @@ const userController = {
             const {email, password} = req.body;
             const user = await userModel.userLogin(email, password);
             if (user) {
-                const token = jwt.sign({email: email, role: user.role}, process.env.JWT_SECRET, {expiresIn: '3d'});
+                const token = jwt.sign({email: email, role: user.role, id: user.id}, process.env.JWT_SECRET, {expiresIn: '3d'});
                 res.status(200).json({
                     "message": "User logged in successfully",
                     "data": {

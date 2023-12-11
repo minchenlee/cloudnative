@@ -6,7 +6,7 @@ const stadiumController = {
         const {name, sport, status, longitude, latitude, description, img_url, address, tel, createdById} = req.body;
         
         // validations
-        const sports = ["BASKETBALL", "BASEBALL", "VOLLEYBALL", "TENNIS", "TABLETENNIS"];
+        const sports = ["BASKETBALL", "BADMINTON", "VOLLEYBALL", "TENNIS", "TABLETENNIS"];
         if (!sports.includes(sport)) return res.status(400).json({msg: "Sport not found."});
 
         const statuses = ["OPEN", "CLOSED", "MAINTENANCE"];
