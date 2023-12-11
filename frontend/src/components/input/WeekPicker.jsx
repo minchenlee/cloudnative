@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext, useEffect, useRef} from 'react';
 import BookingDetailContext from '../../page/BookingStadiumPage';
 
 import dayjs from 'dayjs';
@@ -62,30 +62,21 @@ function Day(props) {
   );
 }
 
-export default function WeekPicker() {
+export default function WeekPicker({ setStartOfWeek, setEndOfWeek, setSelectValue }) {
   const [hoveredDay, setHoveredDay] = useState(null);
   const [value, setValue] = useState(dayjs());
   const [selectedWeek, setSelectedWeek] = useState([]);
 
+  // const startOfWeek = value.clone().startOf('week');
+  // const endOfWeek = value.clone().endOf('week');
 
   const handleDateChange = (newValue) => {
-    setValue(newValue);
-
-    const startOfWeek = newValue.clone().startOf('week');
-    const endOfWeek = newValue.clone().endOf('week');
-    setSelectedWeek([startOfWeek.$d, endOfWeek]);
+    // setSelectedWeek(newValue.clone().startOf('week'))
+    setValue(newValue)
+    setSelectedWeek(newValue.clone().startOf('week'));
   };
 
-  useEffect(() => {
-    const startOfWeek = value.clone().startOf('week');
-    const endOfWeek = value.clone().endOf('week');
-    setSelectedWeek([startOfWeek.$d, endOfWeek.$d]);
-  }, [value])
-
-  useEffect(() => {
-    console.log('setSelectedWeek?????', selectedWeek)
-  }, [selectedWeek ])
-
+  
   return (
     <DateCalendar
       className='bg-white rounded-2xl border-1'

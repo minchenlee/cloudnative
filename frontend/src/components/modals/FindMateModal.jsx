@@ -17,6 +17,7 @@ function NumButton({ icon, onClick, isMinusDisabled, onMouseDown, bgColor, textC
   )
 }
 const FindMateModal = () => {
+  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(JoinContext);
   const [recruitNumber, setRecruitNumber] = useState(1);
   const [recruitNote, setRecruitNote] = useState("");
   const [isWaiting, setIsWaiting] = useState(false);
@@ -62,7 +63,6 @@ const FindMateModal = () => {
 
     setTimeout(() => {
       setIsModalOpen(false);
-      navigate('/records ')
     }, 2000);
   }
 

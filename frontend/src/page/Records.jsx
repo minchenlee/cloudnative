@@ -155,17 +155,12 @@ function RecordsPage() {
 
 
   function BookingTimeIntervalSet({ groupJsonData, config, setModalCategory, setCancelModalCategory }) {
-    
+
     const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
     const { selectedJoinId, selectedDayCode } = useContext(JoinContext);
-      
+
     return (
       <div className="w-full flex flex-col mt-10 gap-4">
-        {
-          useEffect(() => {
-            console.log('groupJsonData???', groupJsonData)
-          }, [groupJsonData])
-        }
         {
           groupJsonData.map((item, index) => (
             <BookingCourtCard setModalCategory={setModalCategory} setCancelModalCategory={setCancelModalCategory} key={index} id={item.id} stadium={item.stadium} court={item.court} date={weekData[selectedDayCode]["date"]} startTime={item.startTime} endTime={item.endTime} master={item.master} alreadyRecruitNumber={item.alreadyRecruitNumber} recruitNumber={item.recruitNumber} />
@@ -183,7 +178,7 @@ function RecordsPage() {
 
 
   function SignUpTimeIntervalSet({ groupJsonData, config, setModalCategory, setCancelModalCategory }) {
-    
+
     const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
     const { selectedJoinId, selectedDayCode } = useContext(JoinContext);
 
@@ -263,14 +258,9 @@ function RecordsPage() {
         </div>
         <div className="flex flex-col gap-8 mb-20">
           {
-            useEffect(() => {
-              console.log('sortedJsonData???????????????????', sortedJsonData)
-            }, [sortedJsonData])
-          }
-          {
             rawJsonData.length === 0
               ?
-              <div className="h-[400px] mt-10">
+              <div className="h-[250px] mt-10">
                 <p className="text-xl font-semibold">還沒有預訂任何球場</p>
               </div>
               :
@@ -293,7 +283,7 @@ function RecordsPage() {
           {
             rawJsonData.length === 0
               ?
-              <div className="h-[400px] mt-10">
+              <div className="h-[200px] mt-10">
                 <p className="text-xl font-semibold">還沒有報名任何球局</p>
               </div>
               :
@@ -304,6 +294,27 @@ function RecordsPage() {
               </>
           }
           {/* <Modal width="38.75rem" height="23rem" title={ modalCategory === '招募球友' ?  '招募球友' : modalCategory === '查看詳細資訊' ?  "詳細資訊" : 'NULL' } showClose={true} children={ modalCategory === '招募球友' || modalCategory === '查看詳細資訊' ? <FindMateModal /> : <DetailModal /> }/>   */}
+
+          {/* {
+            modalCategory === '招募球友' && (
+              <Modal width="38.75rem" height="23rem" title="招募球友" showClose={true} children={<FindMateModal />} />
+            )
+          }
+          {
+            modalCategory === '查看詳細資訊' && (
+              <Modal width="38.75rem" height="23rem" title="詳細資訊" showClose={true} children={<DetailModal />} />
+            )
+          }
+          {
+            modalCategory === '取消預約' && (
+              <Modal width="38.75rem" height="23rem" title="取消預約" showClose={true} children={<CancelModal />} />
+            )
+          }
+          {
+            modalCategory === '取消報名' && (
+              <Modal width="38.75rem" height="23rem" title="取消報名" showClose={true} children={<CancelModal />} />
+            )
+          } */}
           {
             modalCategory === '招募球友' ?
               <Modal width="38.75rem" height="23rem" title="招募球友" showClose={true} children={<FindMateModal />} />
@@ -311,10 +322,10 @@ function RecordsPage() {
               modalCategory === '查看詳細資訊' ?
                 <Modal width="38.75rem" height="23rem" title="詳細資訊" showClose={true} children={<DetailModal />} />
                 :
-                modalCategory === '取消預約' ? 
-                <Modal width="38.75rem" height="23rem" title="取消預約" showClose={true} children={<CancelModal />} />                  
-                :
-                <Modal width="38.75rem" height="23rem" title="取消報名" showClose={true} children={<CancelModal />} />
+                modalCategory === '取消預約' ?
+                  <Modal width="38.75rem" height="23rem" title="取消預約" showClose={true} children={<CancelModal />} />
+                  :
+                  <Modal width="38.75rem" height="23rem" title="取消報名" showClose={true} children={<CancelModal />} />
           }
         </div>
       </div>
@@ -322,4 +333,4 @@ function RecordsPage() {
   )
 }
 
-      export default RecordsPage
+export default RecordsPage

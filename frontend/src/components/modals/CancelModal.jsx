@@ -40,11 +40,12 @@ const CancelModal = () => {
     console.log('selectedJoinData????', selectedJoinData)
   }, [selectedJoinId])
 
-  // 招募球友
+
   const { isModalOpen, setIsModalOpen } = useContext(JoinContext);
   const handleFindMate = () => {
     setIsModalOpen(true);
   }
+
 
   // 查看預約記錄
   const navigate = useNavigate();
@@ -52,6 +53,12 @@ const CancelModal = () => {
     navigate('/records');
   }
 
+  const selectYes = () => {
+    setIsModalOpen(false);
+  }
+  const selectNo = () => {
+    setIsModalOpen(false);
+  }
   if (!selectedJoinData) return null;
 
   return (
@@ -64,13 +71,13 @@ const CancelModal = () => {
           </div>
           <Divider /> */}
           <div className="h-2/5 flex flex-col justify-center gap-6">
-            <InfoRow className="" text1={selectedJoinData["stadium"]} text2={selectedJoinData["court"]}  />
+            <InfoRow className="" text1={selectedJoinData["stadium"]} text2={selectedJoinData["court"]} />
             <InfoRow className="" text1={weekData[selectedDayCode]["date"]} text2={`${selectedJoinData["startTime"]} ~ ${selectedJoinData["endTime"]}`} additionalClass="font-robotoMono" />
           </div>
           <Divider />
           <div className="flex flex-row gap-8">
-            <Button text="是" bgColor="primary" textColor="white" borderColor="dark-gray" hoverColor="black" onClick={handleFindMate} />
-            <Button text="否" bgColor="white" textColor="black" borderColor="black" hoverColor="light-silver" onClick={handleGoToRecord} />
+            <Button text="是" bgColor="primary" textColor="white" borderColor="dark-gray" hoverColor="black" onClick={selectYes} />
+            <Button text="否" bgColor="white" textColor="black" borderColor="black" hoverColor="light-silver" onClick={selectNo} />
           </div>
         </div>
       </div>
