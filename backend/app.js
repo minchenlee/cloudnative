@@ -9,6 +9,8 @@ import { readFile } from "fs/promises";
 const swaggerFile = JSON.parse(
   await readFile(new URL("./doc/swagger.json", import.meta.url))
 );
+import bookingReminderScheduler from './schedulers/bookingReminderScheduler.js'
+//const bookingReminderScheduler = require('./schedulers/bookingReminderScheduler'); // 修改为实际路径
 
 
 import indexRouter from './routes/index.js';

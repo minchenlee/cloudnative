@@ -1,6 +1,11 @@
-const { findAndSendBookingReminders, task } = require('./bookingReminderScheduler');
-const { PrismaClient } = require('@prisma/client');
-const emailService = require('../services/emailService');
+import bookingReminderScheduler from './bookingReminderScheduler.js';
+
+const { findAndSendBookingReminders, task } = bookingReminderScheduler;
+import { PrismaClient } from '@prisma/client';
+import emailService from '../services/emailService.js'; // 如果 emailService 是默认导出的
+// 或者如果 emailService 是命名导出的话，使用下面的语句
+//import { emailService } from '../services/emailService.js';
+
 
 jest.mock('@prisma/client', () => {
   const mPrisma = { bookingRecord: { findMany: jest.fn() } };

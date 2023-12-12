@@ -1,5 +1,5 @@
-const emailService = require('./emailService');
-const nodemailer = require('nodemailer');
+import {emailService} from './emailService.js'; // 确保路径正确
+import nodemailer from 'nodemailer';
 
 jest.mock('nodemailer');
 
@@ -24,3 +24,4 @@ describe('emailService', () => {
     expect(result).toHaveProperty('messageId', 'test-message-id');
   });
 });
+

@@ -1,6 +1,6 @@
-const cron = require('node-cron');
-const { PrismaClient } = require('@prisma/client');
-const emailService = require('../services/emailService');
+import cron from 'node-cron';
+import { PrismaClient } from '@prisma/client';
+import emailService from '../services/emailService.js'; // 确保路径正确
 
 const prisma = new PrismaClient();
 
@@ -44,7 +44,7 @@ const task = cron.schedule('0 0 * * *', () => {
   console.log('Executed the booking reminder task');
 });
 
-module.exports = {
-   findAndSendBookingReminders,
-   task
-}
+export default {
+    findAndSendBookingReminders,
+    task
+ };
