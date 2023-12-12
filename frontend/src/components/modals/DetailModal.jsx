@@ -14,20 +14,8 @@ const DetailModal = () => {
 
   useEffect(() => {
     setSelectedJoinData(joinDetailData.find(item => item.id === selectedJoinId));
-    console.log('selectedJoinData????', selectedJoinData)
   }, [selectedJoinId])
 
-  useEffect(() => {
-    console.log('selectedJoinData????', selectedJoinData)
-  }, [selectedJoinData])
-
-  useEffect(() => {
-    console.log('joinDetailData????', joinDetailData)
-  }, [joinDetailData])
-
-  useEffect(() => {
-    console.log('weekData????', weekData)
-  }, [weekData])
 
   function InfoRow({ title, content, additionalClass }) {
     return (
