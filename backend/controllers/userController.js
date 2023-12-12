@@ -76,16 +76,21 @@ const userController = {
             const {id} = req.params;
             const {username, password, tel, role} = req.body;
 
-
             // user input validation
             const telRegex = /^\d{10}$/;
             if (tel && !telRegex.test(tel)) {
                 return res.status(400).json({"message": "Invalid phone number format"});
             }
-            // hash password
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
 
+            // hash password
+            // 只有當使用者有輸入密碼時才會更新密碼
+            let hashedPassword = password;
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+                hashedPassword = await bcrypt.hash(password, salt);
+            }
+
+            // 用戶不更新密碼的情況
             const user = await userModel.updateUser(id, username, hashedPassword, tel, role);
             res.status(200).json({
                 "message": "User updated successfully",
