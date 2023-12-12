@@ -116,6 +116,17 @@ const userController = {
     userLogin: async (req, res) => {
         try {
             const {email, password} = req.body;
+            // check if user exists
+            const userExists = await userModel.getUserByEmail(email);
+            if (!userExists) {
+                return res.status(404).json({"message": "User not found"});
+            }
+            // check if password is correct
+            const validPassword = await bcrypt.compare(password, userExists.password);
+            if (!validPassword) {
+                return res.status(400).json({"message": "Invalid Password"});
+            }
+
             const user = await userModel.userLogin(email, password);
             if (user) {
                 const token = jwt.sign({email: email, role: user.role, id: user.id}, process.env.JWT_SECRET, {expiresIn: '3d'});
