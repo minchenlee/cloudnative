@@ -25,7 +25,6 @@ model Stadium {
   id         Int      @id @default(autoincrement())
   name       String
   sport       Sports
-  status     Status
   isIndoor    Boolean
   longitude  Decimal
   latitude   Decimal
@@ -33,6 +32,8 @@ model Stadium {
   img_url   String
   address   String
   tel   String
+  openTime  String
+  closeTime String
   createdAt   DateTime @default(now())
   createdById Int
   createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
