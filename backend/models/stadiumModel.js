@@ -3,19 +3,20 @@ const prisma = new PrismaClient();
 
 
 const stadiumModel = {
-    createStadium: async (name, sport, status, longitude, latitude, description, img_url, address, tel, createdById) => {
+    createStadium: async (name, sport, isIndoor, longitude, latitude, description, img_url, address, tel, openTime, closeTime, createdById) => {
         const stadium = await prisma.stadium.create({
             data: {
                 name,
                 sport,
-                status,
+                isIndoor,
                 longitude,
                 latitude,
                 description,
                 img_url,
                 address,
                 tel,
-                isIndoor: false,
+                openTime,
+                closeTime,
                 createdBy: {
                     connect: {
                         id: createdById
