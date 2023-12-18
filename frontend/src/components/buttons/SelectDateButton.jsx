@@ -24,7 +24,7 @@ function SelectDateButton() {
   const location = useLocation();
   let currentPage = location.pathname
   const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams.get("day"))
+  // console.log(searchParams.get("day"))
 
   const handleSelectedDate = (date, day, dayCode) => {
     setSelectedDayCode(dayCode);

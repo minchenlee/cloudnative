@@ -131,7 +131,6 @@ function BookingStadiumPage(){
           </div>
           {/* using tailwind scrollbar package to control scrollbar*/}
           <div className="w-full mx-auto relative mt-12 px-8 py-2 flex flex-row justify-start overflow-x-auto gap-[34px] snap-x scrollbar scrollbar-none scroll-smooth" ref={CarouselRef}>
-            { console.log(stadiumData) }
             { stadiumData && stadiumData.map((stadiumData, index) => {
               return(
                 <StadiumCard stadiumData={stadiumData} key={index}/>

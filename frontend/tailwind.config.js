@@ -40,6 +40,7 @@ export default {
         "court-join-card": "url(../src/assets/image/court_join_bg.jpg)",
         "booking-success-bg": "url(../src/assets/image/booking_success.jpg)",
         "login-bg": "url(../src/assets/admin_login_bg.svg)",
+        "default-court-basketball": "url(../src/assets/image/default_court_basketball.png)",
       },
       backgroundSize: {
         '110': '110%',

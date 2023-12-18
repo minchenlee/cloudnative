@@ -8,6 +8,7 @@ import CourtCard from "../components/cards/CourtCard";
 import { fetchData, postData } from "../utilities/api";
 import { useMap, MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import marker from "../assets/map-pin.svg"
+import dayjs from "dayjs";
 
 import Modal from "../components/modals/Modal"
 import JoinContext from "../contexts/JoinContext"
@@ -24,10 +25,6 @@ import {dummyJson, dummyJson4BookingDetail} from "../dummyJson/bookingDummy"
 
 function BookingDetailPage(){
   const [stadiumData, setStadiumData] = useState(null);
-  const [stadiumName, setStadiumName] = useState("");
-  const [stadiumInfo, setStadiumInfo] = useState([]);
-  const [stadiumInfoPreview, setStadiumInfoPreview] = useState([]);
-  const [staiumPosition, setStadiumPosition] = useState([]);
   const [courtInfo, setCourtInfo] = useState([]);
   const [courtNum, setCourtNum] = useState(0);
 
@@ -40,15 +37,46 @@ function BookingDetailPage(){
     const response = await fetchData(`stadiums/stadium/${searchParams.get("id")}`);
     const data = response.data.stadium;
     setStadiumData(data);
-
     console.log(data);
-    setStadiumName(data.name);
-    setStadiumInfo(data.description);
-    setStadiumPosition([parseFloat(data.latitude), parseInt(data.longitude)]);
+
+    // 產生 timeList
+    const timeList = [];
+    const openTime = data.openTime;
+    const closeTime = data.closeTime;
+    let currentHour = parseInt(openTime.split(':')[0]);
+    const closeHour = parseInt(closeTime.split(':')[0]);
+    while (currentHour < closeHour) {
+        timeList.push(`${currentHour.toString().padStart(2, '0')}:00`);
+        currentHour++;
+    }  
+
+    const response2 = await fetchData(`courts/courts/stadium/${data.id}`);
+    const data2 = response2.data.courts;
+
+    setCourtNum(data2.length);
+    console.log(data2);
+
+    for (let i = 0; i < data2.length; i++) {
+      const court = data2[i];
+      if (court.status === "CLOSED") {
+        continue;
+      }
+      const courtId = court.id;
+      const courtName = court.name;
+      const courtInfo = {
+        courtId: courtId,
+        courtName: courtName,
+        timeList: timeList,
+        notAvailableList: []
+      };
+      setCourtInfo(prev => [...prev, courtInfo]);
+    }
   }
 
   useEffect(() => {
-    window.localStorage.setItem("Stadium-selected-stadiumName", stadiumName);
+    if (stadiumData){
+    window.localStorage.setItem("Stadium-selected-stadiumName", stadiumData.name);
+    }
     getStadiumData();
   }, [])
 
@@ -67,7 +95,7 @@ function BookingDetailPage(){
 
   return(
     <div className="container mx-auto px-24 ">
-      {stadiumName &&
+      {stadiumData &&
         <>
           <div className="relative w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
             <div className="flex flex-row justify-center items-center">
@@ -101,11 +129,11 @@ function BookingDetailPage(){
             </div>
             <div className="w-full h-[600px] flex flex-col mt-16 mb-24">
               <p className="text-2xl font-semibold mb-5">球場位置</p>
-              <Map stadiumName={stadiumData.name} staiumPosition={staiumPosition}/>
+              <Map stadiumName={stadiumData.name} stadiumPosition={[parseFloat(stadiumData.latitude), parseFloat(stadiumData.longitude)]}/>
             </div>
           </div>
           <Modal width="50rem" height="32rem" title="基本資訊" showClose={true} children={
-          <CourtInfoModal stadiumInfo={stadiumInfo}/>
+          <CourtInfoModal stadiumInfo={stadiumData.description}/>
           }/>
         </>
       }
@@ -146,20 +174,22 @@ function CourtInfoModal(props){
 
 function Map(props){
   const stadiumName = props.stadiumName || "";
-  const staiumPosition = props.staiumPosition || [0, 0];
+  const stadiumPosition = props.stadiumPosition;
   const newicon = new L.icon({
     iconUrl: marker,
     iconSize: [42, 42],
   });
 
+  // console.log(stadiumPosition);
+
   return (
-    <MapContainer className="h-full z-10" center={staiumPosition} zoom={50}scrollWheelZoom={false}>
+    <MapContainer className="h-full z-10" center={stadiumPosition} zoom={50}scrollWheelZoom={false}>
       <TileLayer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       />
       <Marker 
-      position={staiumPosition}
+      position={stadiumPosition}
       icon={newicon}
       >
         <Popup>

@@ -61,7 +61,12 @@ function StadiumCard({stadiumData}) {
           <p>查看詳細資訊</p>
         </div>
         <div className={`w-full h-2/5 rounded-3xl overflow-hidden group-hover:blur-sm group-hover:brightness-90 transition duration-500`}>
+          {img_url === "" 
+          ? 
+          <div className="w-full h-full object-contain bg-default-court-basketball bg-cover"/> 
+          :
           <img src={img_url} alt="" className="w-full h-full object-cover"/>
+          }
         </div>
         <div className="w-full h-3/5 px-6 flex flex-col items-start">
           <p className="text-xl font-medium text-center mt-2">{name}</p>
