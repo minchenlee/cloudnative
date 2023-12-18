@@ -12,5 +12,7 @@ router.get('/court/:id', courtController.getCourtById);
 router.patch('/court/:id', courtController.updateCourtById);
 // Delete a court by id
 router.delete('/court/:id', courtController.deleteCourtById);
+// Get courts by stadium id
+router.get('/courts/stadium/:id', courtController.getCourtsByStadiumId);
 
 export default router;

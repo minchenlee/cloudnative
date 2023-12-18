@@ -55,6 +55,14 @@ const courtModel = (prisma) => ({
             }
         });
         return court;
+    },
+    getCourtsByStadiumId: async (stadiumId) => {
+        const court = await prisma.court.findMany({
+            where: {
+                stadiumId: parseInt(stadiumId)
+            }
+        });
+        return court;
     }
 });
 
