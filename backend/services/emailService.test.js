@@ -1,27 +1,32 @@
-import {emailService} from './emailService.js'; // 确保路径正确
+import emailService from './emailService'; // 確保使用正確的路徑
 import nodemailer from 'nodemailer';
+const {sendEmail} = emailService
 
 jest.mock('nodemailer');
 
 describe('emailService', () => {
-  it('should send an email', async () => {
-    const sendMailMock = jest.fn().mockResolvedValue({ messageId: 'test-message-id' });
-    nodemailer.createTransport.mockReturnValue({ sendMail: sendMailMock });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
-    const to = 'test@example.com';
+  it('should send an email successfully', async () => {
+    const mockSendMail = jest.fn().mockResolvedValue({ messageId: '123' });
+    nodemailer.createTransport.mockReturnValue({ sendMail: mockSendMail });
+
+    const to = 'example@ntu.edu.tw';
     const subject = 'Test Subject';
-    const text = 'Test email body';
+    const text = 'Hello world';
 
-    const result = await emailService.sendEmail(to, subject, text);
+    const result = await sendEmail(to, subject, text);
 
-    expect(sendMailMock).toHaveBeenCalled();
-    expect(sendMailMock).toHaveBeenCalledWith({
+    expect(mockSendMail).toHaveBeenCalledWith({
       from: '"stadium reminder" <cloudNativeStadium@gmail.com>',
       to: to,
       subject: subject,
       text: text,
     });
-    expect(result).toHaveProperty('messageId', 'test-message-id');
+    expect(result).toHaveProperty('messageId', '123');
   });
-});
 
+  // ... 其他測試 ...
+});

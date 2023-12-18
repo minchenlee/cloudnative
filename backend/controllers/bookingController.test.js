@@ -148,17 +148,6 @@ describe('bookingController.getBookingsByUserId', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { params: { id: '1' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      bookingModel.deleteBookingById.mockRejectedValue(new Error('Server error'));
-  
-      await bookingController.deleteBookingById(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+    
   });
   

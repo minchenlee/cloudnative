@@ -1,4 +1,7 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 function createTransporter() {
   return nodemailer.createTransport({
@@ -6,30 +9,29 @@ function createTransporter() {
     port: 465,
     secure: true,
     auth: {
-      user: 'henry326326@gmail.com',
-      pass: 'wrri xjnx lasz sqsj'
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
     }
   });
 }
 
-const emailService = {
-  async sendEmail(to, subject, text) {
-    const transporter = createTransporter();
-    try {
-      let info = await transporter.sendMail({
-        from: '"stadium reminder" <cloudNativeStadium@gmail.com>',
-        to: to,
-        subject: subject,
-        text: text,
-      });
+async function sendEmail(to, subject, text) {
+  const transporter = createTransporter();
+  try {
+    let info = await transporter.sendMail({
+      from: '"stadium reminder" <cloudNativeStadium@gmail.com>',
+      to: to,
+      subject: subject,
+      text: text,
+    });
 
-      console.log('Email sent: %s', info.messageId);
-      return info;
-    } catch (error) {
-      console.error('Error sending email:', error);
-      throw error;
-    }
+    console.log('Email sent: %s', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
   }
-};
+}
 
-export default{ emailService, createTransporter };
+
+export default{ sendEmail };

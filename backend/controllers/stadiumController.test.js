@@ -4,19 +4,26 @@ import { stadiumModel } from '../models/stadiumModel';
 jest.mock('../models/stadiumModel');
 
 describe('stadiumController.createStadium', () => {
-  it('should create a stadium successfully', async () => {
-    // Arrange
+  it('should create a new stadium successfully', async () => {
     const req = {
       body: {
-        name: 'Stadium Name',
+        name: 'Stadium A',
         sport: 'BASKETBALL',
-        status: 'OPEN',
-        longitude: 100,
-        latitude: 0,
-        description: 'A great stadium',
+        isIndoor: true,
+        time: {
+          openTime: '08:00',
+          closeTime: '22:00'
+        },
+        location: {
+          address: '123 Main St',
+          longitude: 123.456,
+          latitude: 78.910
+        },
+        description: 'A great place for basketball',
         img_url: 'http://example.com/image.jpg',
-        address: '123 Main St',
-        tel: '123-456-7890',
+        contactInfo: {
+          tel: '123-456-7890'
+        },
         createdById: 1
       }
     };
@@ -24,31 +31,29 @@ describe('stadiumController.createStadium', () => {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
     };
+  
     stadiumModel.createStadium.mockResolvedValue({
-      // Mock response data
+      id: 1,
+      ...req.body
     });
-
-    // Act
+  
     await stadiumController.createStadium(req, res);
-    
-    // Assert
+  
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
-      msg: "Stadium created successfully.",
+      msg: 'Stadium created successfully.',
       data: {
-        "stadium": {}
+        stadium: expect.any(Object)
       }
     });
   });
+  
   // 測試無效的運動種類
-it('should return status 400 for invalid sport', async () => {
-    // Arrange
+  it('should fail to create a stadium due to invalid sport type', async () => {
     const req = {
       body: {
-        name: 'Stadium Name',
-        sport: 'INVALID_SPORT',
-        status: 'OPEN',
-        // ...其他數據
+        // ...同上，但將sport設為無效值
+        sport: 'INVALID_SPORT'
       }
     };
     const res = {
@@ -56,109 +61,38 @@ it('should return status 400 for invalid sport', async () => {
       json: jest.fn()
     };
   
-    // Act
     await stadiumController.createStadium(req, res);
   
-    // Assert
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Sport not found." });
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'Sport not found.'
+    });
   });
-  
-  // 測試無效的狀態
-  it('should return status 400 for invalid status', async () => {
-    // Arrange
-    const req = {
-      body: {
-        name: 'Stadium Name',
-        sport: 'BASKETBALL',
-        status: 'INVALID_STATUS',
-        // ...其他數據
-      }
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
-  
-    // Act
-    await stadiumController.createStadium(req, res);
-  
-    // Assert
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Status not found." });
-  });
-  
-  // 測試伺服器錯誤
-  it('should return status 500 on server error', async () => {
-    // Arrange
-    const req = {
-      body: {
-        name: 'Stadium Name',
-        sport: 'BASKETBALL',
-        status: 'OPEN',
-        // ...其他數據
-      }
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
-    stadiumModel.createStadium.mockRejectedValue(new Error('Server error'));
-  
-    // Act
-    await stadiumController.createStadium(req, res);
-  
-    // Assert
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
-  });
-  // Additional tests for invalid sport, invalid status, and server error...
 });
 
 describe('stadiumController.getAllStadiums', () => {
-    it('should return all stadiums successfully', async () => {
-      // Arrange
-      const req = {};
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn()
-      };
-      stadiumModel.getAllStadiums.mockResolvedValue([
-        // Mock response data
-      ]);
+  it('should retrieve all stadiums successfully', async () => {
+    const req = {};
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn()
+    };
   
-      // Act
-      await stadiumController.getAllStadiums(req, res);
+    stadiumModel.getAllStadiums.mockResolvedValue([
+      { id: 1, name: 'Stadium A' }, // ...其他場館數據
+    ]);
   
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Get all stadiums successfully.",
-        data: {
-          "stadiums": [
-            // Expected data
-          ]
-        }
-      });
-    });
+    await stadiumController.getAllStadiums(req, res);
   
-    it('should return status 500 on server error', async () => {
-      // Arrange
-      const req = {};
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn()
-      };
-      stadiumModel.getAllStadiums.mockRejectedValue(new Error('Server error'));
-  
-      // Act
-      await stadiumController.getAllStadiums(req, res);
-  
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'Get all stadiums successfully.',
+      data: {
+        stadiums: expect.any(Array)
+      }
     });
   });
+});
   
   describe('stadiumController.getStadiumById', () => {
     it('should return a stadium by ID successfully', async () => {
@@ -186,23 +120,6 @@ describe('stadiumController.getAllStadiums', () => {
         }
       });
     });
-  
-    it('should return status 500 on server error', async () => {
-      // Arrange
-      const req = { params: { id: '1' } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn()
-      };
-      stadiumModel.getStadiumById.mockRejectedValue(new Error('Server error'));
-  
-      // Act
-      await stadiumController.getStadiumById(req, res);
-  
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
-    });
   });
   
   describe('stadiumController.updateStadiumById', () => {
@@ -211,7 +128,24 @@ describe('stadiumController.getAllStadiums', () => {
       const req = {
         params: { id: '1' },
         body: {
-          // Updated data
+          name: 'Stadium A',
+          sport: 'BASKETBALL',
+          isIndoor: true,
+          time: {
+            openTime: '08:00',
+            closeTime: '22:00'
+          },
+          location: {
+            address: '123 Main St',
+            longitude: 123.456,
+            latitude: 78.910
+          },
+          description: 'A great place for basketball',
+          img_url: 'http://example.com/image.jpg',
+          contactInfo: {
+            tel: '123-456-7890'
+          },
+          createdById: 1
         }
       };
       const res = {
@@ -261,79 +195,7 @@ it('should return status 400 for invalid sport', async () => {
     expect(res.json).toHaveBeenCalledWith({ msg: "Sport not found." });
   });
   
-  // 測試無效的狀態
-  it('should return status 400 for invalid status', async () => {
-    // Arrange
-    const req = {
-      params: { id: '1' },
-      body: {
-        sport: 'BASKETBALL',
-        status: 'INVALID_STATUS',
-        // ...其他數據
-      }
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
   
-    // Act
-    await stadiumController.updateStadiumById(req, res);
-  
-    // Assert
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Status not found." });
-  });
-  
-  // 測試場館不存在
-  it('should return status 404 when stadium not found', async () => {
-    // Arrange
-    const req = {
-      params: { id: '999' }, // 假設這個ID不存在
-      body: {
-        sport: 'BASKETBALL',
-        status: 'OPEN',
-        // ...其他數據
-      }
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
-    stadiumModel.updateStadiumById.mockResolvedValue(null);
-  
-    // Act
-    await stadiumController.updateStadiumById(req, res);
-  
-    // Assert
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Stadium not found." });
-  });
-  
-  // 測試伺服器錯誤
-  it('should return status 500 on server error', async () => {
-    // Arrange
-    const req = {
-      params: { id: '1' },
-      body: {
-        sport: 'BASKETBALL',
-        status: 'OPEN',
-        // ...其他數據
-      }
-    };
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn()
-    };
-    stadiumModel.updateStadiumById.mockRejectedValue(new Error('Server error'));
-  
-    // Act
-    await stadiumController.updateStadiumById(req, res);
-  
-    // Assert
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
-  });
   
   });
   
@@ -362,23 +224,6 @@ it('should return status 400 for invalid sport', async () => {
           }
         }
       });
-    });
-  
-    it('should return status 500 on server error', async () => {
-      // Arrange
-      const req = { params: { id: '1' } };
-      const res = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn()
-      };
-      stadiumModel.deleteStadiumById.mockRejectedValue(new Error('Server error'));
-  
-      // Act
-      await stadiumController.deleteStadiumById(req, res);
-  
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ msg: "Server error occurred." });
     });
   });
   

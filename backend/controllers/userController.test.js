@@ -1,7 +1,12 @@
 import userController from './userController';
 import { userModel } from '../models/userModel';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 
 jest.mock('../models/userModel');
+jest.mock('bcrypt');
+//jest.mock('jsonwebtoken');
 
 describe('userController.createUser', () => {
     it('should create a user successfully', async () => {
@@ -241,9 +246,13 @@ describe('userController.createUser', () => {
       });
   });
   
-  describe('userController.userLogin', () => {
-    it('should log in a user successfully', async () => {
-      // Arrange
+  describe('User Login Controller Tests', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+  
+    // 成功登入案例
+    it('should log in user successfully', async () => {
       const req = {
         body: {
           email: 'test@example.com',
@@ -254,17 +263,17 @@ describe('userController.createUser', () => {
         status: jest.fn().mockReturnThis(),
         json: jest.fn()
       };
-      userModel.userLogin.mockResolvedValue({
-        // Mock user data
-      });
   
-      // Act
+      userModel.getUserByEmail.mockResolvedValue({ email: 'test@example.com', password: '$2b$10$...' });
+      bcrypt.compare.mockResolvedValue(true);
+      userModel.userLogin.mockResolvedValue({ id: 1, email: 'test@example.com', role: 'user' });
+      //jwt.sign.mockReturnValue('token123');
+  
       await userController.userLogin(req, res);
   
-      // Assert
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
-        message: "User logged in successfully",
+        message: 'User logged in successfully',
         data: {
           user: expect.any(Object),
           token: expect.any(String)
@@ -272,40 +281,68 @@ describe('userController.createUser', () => {
       });
     });
   
-    it('should return status 400 for invalid credentials', async () => {
-      // Arrange
+    // 用戶不存在案例
+    it('should return 404 if user does not exist', async () => {
       const req = {
         body: {
-          email: 'wrong@example.com',
-          password: 'wrongPassword'
+          email: 'nonexistent@example.com',
+          password: 'password123'
         }
       };
       const res = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn()
       };
-      userModel.userLogin.mockResolvedValue(null);
   
-      // Act
+      userModel.getUserByEmail.mockResolvedValue(null);
+  
       await userController.userLogin(req, res);
   
-      // Assert
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: "Invalid credentials" });
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
     });
   
-    it('should return status 500 on server error', async () => {
-        userModel.userLogin.mockRejectedValue(new Error('Server error'));
-        const req = {
-          body: {
-            email: 'test@example.com',
-            password: 'password123'
-          }
-        };
-        const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-        await userController.userLogin(req, res);
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: Error('Server error') });
-      });
+    // 密碼錯誤案例
+    it('should return 400 if password is incorrect', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'wrongpassword'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+  
+      userModel.getUserByEmail.mockResolvedValue({ email: 'test@example.com', password: '$2b$10$...' });
+      bcrypt.compare.mockResolvedValue(false);
+  
+      await userController.userLogin(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid Password' });
+    });
+  
+    // 捕捉到異常案例
+    it('should handle exceptions and return 500', async () => {
+      const req = {
+        body: {
+          email: 'test@example.com',
+          password: 'password123'
+        }
+      };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn()
+      };
+  
+      userModel.getUserByEmail.mockRejectedValue(new Error('Database error'));
+  
+      await userController.userLogin(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ message: expect.any(Error) });
+    });
   });
   

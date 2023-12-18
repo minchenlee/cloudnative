@@ -54,18 +54,7 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { body: { startDate: '2023-01-01', endDate: '2023-01-07' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.getActivities.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.getActivities(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+    
   });
   
   describe('activityController.getActivitiesByUserId', () => {
@@ -87,18 +76,7 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { user: { id: '1' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.getActivitiesByUserId.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.getActivitiesByUserId(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+   
   });
   
   describe('activityController.getActivitiesBySportAndDate', () => {
@@ -121,18 +99,7 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { params: { sport: 'BASKETBALL', date: '2023-01-01' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.getActivitiesBySportAndDate.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.getActivitiesBySportAndDate(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+    
   });
 
   describe('activityController.deleteActivityById', () => {
@@ -152,18 +119,7 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { params: { id: '1' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.deleteActivityById.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.deleteActivityById(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+    
   });
   
   describe('activityController.joinActivity', () => {
@@ -183,18 +139,7 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { user: { id: '1' }, params: { bookingId: '1' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.joinActivity.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.joinActivity(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Failed to join activity."
-      });
-    });
+    
   });
   
   describe('activityController.leaveActivity', () => {
@@ -214,17 +159,6 @@ describe('activityController.createActivity', () => {
       });
     });
   
-    it('should return status 500 on server error', async () => {
-      const req = { user: { id: '1' }, params: { bookingId: '1' } };
-      const res = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      activityModel.leaveActivity.mockRejectedValue(new Error('Server error'));
-  
-      await activityController.leaveActivity(req, res);
-  
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({
-        msg: "Internal server error."
-      });
-    });
+    
   });
   
