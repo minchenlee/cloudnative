@@ -107,9 +107,9 @@ const courtController = {
         }
     },
     getCourtsByStadiumId: async (req, res) => {
-        const { stadiumId } = req.params;
         try {
-            const courts = await courtModel.getCourtsByStadiumId(stadiumId);
+            const { id } = req.params;
+            const courts = await courtModel.getCourtsByStadiumId(id);
             if (courts.length === 0) {
                 return res.status(404).json({ message: "No courts found." });
             }
