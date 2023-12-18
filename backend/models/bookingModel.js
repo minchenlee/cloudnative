@@ -1,5 +1,7 @@
-import {PrismaClient} from "@prisma/client";
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 const bookingModel = {
     getBookingsByUserId: async (userId) => {
@@ -11,7 +13,8 @@ const bookingModel = {
                 {
                     date: 'desc'
                 }
-            ]
+            ],
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return bookings;
     },
@@ -24,7 +27,8 @@ const bookingModel = {
                 maker: true,
                 activitiesRecords: true,
                 stadiumAt: true,
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return booking;
     },
@@ -36,7 +40,8 @@ const bookingModel = {
                     lte: new Date(endDate),
                     gte: new Date(startDate),
                 }
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return bookings;
     },
@@ -54,6 +59,7 @@ const bookingModel = {
                     startHour: 'asc'
                 }
             ],
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return bookings;
     },

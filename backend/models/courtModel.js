@@ -1,5 +1,7 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 const courtModel = (prisma) => ({
     createCourt: async (status, stadiumId) => {
@@ -19,7 +21,8 @@ const courtModel = (prisma) => ({
         const courts = await prisma.court.findMany({
             include: {
                 stadium: true
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return courts;
     },
@@ -30,7 +33,8 @@ const courtModel = (prisma) => ({
             },
             include: {
                 stadium: true
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         
         return court;
@@ -60,7 +64,8 @@ const courtModel = (prisma) => ({
         const court = await prisma.court.findMany({
             where: {
                 stadiumId: parseInt(stadiumId)
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return court;
     }
