@@ -25,3 +25,8 @@ npm start `or` npm start:dev
 ```bash=
 http://localhost:5000/api/v1
 ```
+
+## how generate coverage/
+```bash=
+npx jest --coverage
+```
