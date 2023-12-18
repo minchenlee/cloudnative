@@ -8,32 +8,32 @@ const courtController = {
 
         // Validations
         const statuses = ["OPEN", "CLOSED", "MAINTENANCE"];
-        if (!statuses.includes(status)) return res.status(400).json({ msg: "Invalid status." });
+        if (!statuses.includes(status)) return res.status(400).json({ message: "Invalid status." });
 
         // Create court
         try {
             const court = await courtModel.createCourt(status, stadiumId);
             res.status(200).json({
-                msg: "Court created successfully.",
+                message: "Court created successfully.",
                 data: {
                     court
                 }
             });
         } catch (error) {
-            res.status(500).json({ msg: "Server error occurred." });
+            res.status(500).json({ message: "Server error occurred." });
         }
     },
     getAllCourts: async (req, res) => {
         try {
             const courts = await courtModel.getAllCourts();
             res.status(200).json({
-                msg: "All courts retrieved successfully.",
+                message: "All courts retrieved successfully.",
                 data: {
                     courts
                 }
             });
         } catch (error) {
-            res.status(500).json({ msg: "Server error occurred." });
+            res.status(500).json({ message: "Server error occurred." });
         }
     },
     getCourtById: async (req, res) => {
@@ -42,16 +42,16 @@ const courtController = {
             const court = await courtModel.getCourtById(id);
             if (court) {
                 res.status(200).json({
-                    msg: "Court retrieved successfully.",
+                    message: "Court retrieved successfully.",
                     data: {
                         court
                     }
                 });
             } else {
-                res.status(404).json({ msg: "Court not found." });
+                res.status(404).json({ message: "Court not found." });
             }
         } catch (error) {
-            res.status(500).json({ msg: "Server error occurred." });
+            res.status(500).json({ message: "Server error occurred." });
         }
     },
     updateCourtById: async (req, res) => {
@@ -60,12 +60,12 @@ const courtController = {
     
         // Validations
         const statuses = ["OPEN", "CLOSED", "MAINTENANCE"];
-        if (!statuses.includes(status)) return res.status(400).json({ msg: "Invalid status." });
+        if (!statuses.includes(status)) return res.status(400).json({ message: "Invalid status." });
     
         try {
             const court = await courtModel.updateCourtById(id, status);
             res.status(200).json({
-                msg: "Court updated successfully.",
+                message: "Court updated successfully.",
                 data: {
                     court
                 }
@@ -74,10 +74,10 @@ const courtController = {
             // Check if the error is a Prisma error indicating that the record was not found
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 // Record not found
-                res.status(404).json({ msg: "Court not found." });
+                res.status(404).json({ message: "Court not found." });
             } else {
                 // Other server errors
-                res.status(500).json({ msg: "Server error occurred." });
+                res.status(500).json({ message: "Server error occurred." });
             }
         }
     },
@@ -87,23 +87,40 @@ const courtController = {
             const court = await courtModel.deleteCourtById(id);
             if (court) {
                 res.status(200).json({
-                    msg: "Court deleted successfully.",
+                    message: "Court deleted successfully.",
                     data: {
                         court
                     }
                 });
             } else {
-                res.status(404).json({ msg: "Court not found." });
+                res.status(404).json({ message: "Court not found." });
             }
         } catch (error) {
             // Check if the error is a Prisma error indicating that the record was not found
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
                 // Record not found
-                res.status(404).json({ msg: "Court not found." });
+                res.status(404).json({ message: "Court not found." });
             } else {
                 // Other server errors
-                res.status(500).json({ msg: "Server error occurred." });
+                res.status(500).json({ message: "Server error occurred." });
             }
+        }
+    },
+    getCourtsByStadiumId: async (req, res) => {
+        const { stadiumId } = req.params;
+        try {
+            const courts = await courtModel.getCourtsByStadiumId(stadiumId);
+            if (courts.length === 0) {
+                return res.status(404).json({ message: "No courts found." });
+            }
+            res.status(200).json({
+                message: "Courts retrieved successfully.",
+                data: {
+                    courts
+                }
+            });
+        } catch (error) {
+            res.status(500).json({ message: "Server error occurred." });
         }
     }
 }
