@@ -11,7 +11,7 @@ export default {
       robotoMono: ["Roboto Mono"]
     },
     fontSize: {
-      sm: "0.75rem",
+      sm: "0.875rem",
       base: "1rem",
       xl: "1.25rem",
       "2xl": "1.5rem",
@@ -39,6 +39,7 @@ export default {
         "court-recruit-card": "url(../src/assets/image/court_recruit_bg.jpg)",
         "court-join-card": "url(../src/assets/image/court_join_bg.jpg)",
         "booking-success-bg": "url(../src/assets/image/booking_success.jpg)",
+        "login-bg": "url(../src/assets/admin_login_bg.svg)",
       },
       backgroundSize: {
         '110': '110%',
