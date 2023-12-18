@@ -6,8 +6,8 @@ import TimeIntervalDirection from "../components/directions/TimeIntervalDirectio
 import SelectDateButton from "../components/buttons/SelectDateButton"
 import separateItemsByTime from "../utilities/seperateByTime"
 import Modal from "../components/modals/Modal"
+import LogInModal from "../components/modals/LoginModal";
 import JoinContext from "../contexts/JoinContext"
-
 
 
 // Modal 設定 
@@ -15,11 +15,11 @@ function JoiningDetailModal(){
   const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
   const joinDetailData = JSON.parse(window.localStorage.getItem("joinDetailJson"));
   const {selectedJoinId, selectedDayCode} = useContext(JoinContext);
+
   const [selectedJoinData, setSelectedJoinData] = useState();
   function convertNewlinesToBR(inputString) {
     return inputString.replace(/\n/g, '<br/>');
   }
-  
   
   useEffect(() => {
     setSelectedJoinData(joinDetailData.find(item => item.id === selectedJoinId));
@@ -188,6 +188,10 @@ function JoiningDetailPage(){
   
   const sortedJsonData = separateItemsByTime(rawJsonData);
 
+  // 控制 modal 類型
+  const { modalType, setModalType } = useContext(JoinContext);
+
+  // 當前的資料進行儲存
   useEffect(() => {
     // console.log(jsonData);
     window.localStorage.setItem("joinDetailJson", JSON.stringify(rawJsonData));
@@ -197,7 +201,12 @@ function JoiningDetailPage(){
   function TimeIntervalSet({groupJsonData, config}){
     return(
       <div className="w-full flex flex-col mt-10 gap-4">
-        <TimeIntervalDirection text={config.text} time={config.time} bg={config.bg} color={config.color}/>
+        <TimeIntervalDirection 
+          text={config.text} 
+          time={config.time} 
+          bg={config.bg} 
+          color={config.color}
+        />
         {groupJsonData.map((item, index) => (
           <MateCourtCard key={index} id={item.id} stadium={item.stadium} startTime={item.startTime} endTime={item.endTime} master={item.master} alreadyRecruitNumber={item.alreadyRecruitNumber} recruitNumber={item.recruitNumber}/>
         ))}
@@ -213,10 +222,10 @@ function JoiningDetailPage(){
   }
 
   return(
-    <div className="container mx-auto">
-      <div className="relative px-24  w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
+    <div className="container mx-auto px-24">
+      <div className="relative w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
         <div className="flex flex-row justify-center items-center">
-          <div className="absolute left-0">
+          <div className="absolute -left-24">
             <BackButton linkMode={true} linkTo="/findmate/join"/>
           </div>
           <div className="w-full h-28 flex flex-row items-center py-8 border-b-2 border-silver">
@@ -229,12 +238,43 @@ function JoiningDetailPage(){
           </div>
         </div>
         <div className="flex flex-col gap-8 mb-20">
-          <TimeIntervalSet groupJsonData={sortedJsonData["08:00-12:00"]} config={{text:"上午", time:"08:00 ~ 12:00", bg:"light-green", color:"dark-gray"}}/>
-          <TimeIntervalSet groupJsonData={sortedJsonData["12:00-18:00"]} config={{text:"下午", time:"12:00 ~ 18:00", bg:"peach", color:"dark-gray"}}/>
-          <TimeIntervalSet groupJsonData={sortedJsonData["18:00-22:00"]}config={{text:"晚上", time:"18:00 ~ 22:00", bg:"fade-blue", color:"white"}}/>
+          <TimeIntervalSet 
+            groupJsonData={sortedJsonData["08:00-12:00"]} 
+            config={{
+              text:"上午", 
+              time:"08:00 ~ 12:00", 
+              bg:"light-green", 
+              color:"dark-gray"
+              }}
+            />
+          <TimeIntervalSet 
+            groupJsonData={sortedJsonData["12:00-18:00"]} 
+            config={{
+              text:"下午", 
+              time:"12:00 ~ 18:00", 
+              bg:"peach", 
+              color:"dark-gray"
+            }}
+            />
+          <TimeIntervalSet 
+            groupJsonData={sortedJsonData["18:00-22:00"]}
+            config={{
+              text:"晚上", 
+              time:"18:00 ~ 22:00", 
+              bg:"fade-blue", 
+              color:"white"
+            }}
+          />
         </div>
       </div>
-      <Modal width="40rem" title="詳細資訊" showClose={true} children={<JoiningDetailModal/>}/>
+      <Modal 
+        width={modalType === "detail" ? "40rem" : "29rem"}
+        height={modalType === "detail" ? "" : "18rem"}
+        title={modalType === "detail" ? "詳細資訊" : "登入"}
+        showClose={true}
+        showDivide={modalType === "detail" ? false : true}
+        children={modalType === "detail" ? <JoiningDetailModal/> : <LogInModal isForBooking={false}/>}
+      />
     </div>
   )
 }

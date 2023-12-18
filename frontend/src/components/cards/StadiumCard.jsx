@@ -20,24 +20,25 @@ function StatusColumn(props){
 // 一週的狀態
 function StatusGrid(props) {
   const weekStatus = props.weekStatus || "";
+  const weekStatusArray = Object.values(weekStatus);
   
   function Weekday(props) {
     return(
       <div className="flex gap-2">
-        <StatusColumn day="Mon" dayStatus={weekStatus.Mon}/>
-        <StatusColumn day="Tue" dayStatus={weekStatus.Tue}/>
-        <StatusColumn day="Wed" dayStatus={weekStatus.Wed}/>
-        <StatusColumn day="Thu" dayStatus={weekStatus.Thu}/>
-        <StatusColumn day="Fri" dayStatus={weekStatus.Fri}/>
+        <StatusColumn day="Mon" dayStatus={weekStatusArray[0]}/>
+        <StatusColumn day="Tue" dayStatus={weekStatusArray[1]}/>
+        <StatusColumn day="Wed" dayStatus={weekStatusArray[2]}/>
+        <StatusColumn day="Thu" dayStatus={weekStatusArray[3]}/>
+        <StatusColumn day="Fri" dayStatus={weekStatusArray[4]}/>
       </div>
     )
   }
 
   return (
     <div className="flex justify-between w-full">
-      <StatusColumn day="Sun" dayStatus={weekStatus.Sun}/>
+      <StatusColumn day="Sun" dayStatus={weekStatusArray[6]}/>
       <Weekday/>
-      <StatusColumn day="Sat" dayStatus={weekStatus.Sat}/>
+      <StatusColumn day="Sat" dayStatus={weekStatusArray[5]}/>
     </div>
   );
 }
@@ -46,7 +47,7 @@ function StatusGrid(props) {
 function StadiumCard({stadiumData}) {
   const img_url = stadiumData.img_url || "";
   const name = stadiumData.name || "";
-  const inOrOut = stadiumData.inOrOut || "";
+  const isIndoor = stadiumData.isIndoor || "";
   const numberOfCourts = stadiumData.numberOfCourts || "";
   const weekStatus = stadiumData.weekStatus || "";
 
@@ -55,7 +56,7 @@ function StadiumCard({stadiumData}) {
   const currentPage = location.pathname.split("/").pop();
 
   return (
-      <Link to={`/booking/${currentPage}/detail/sun`} className="relative w-[340px] h-[480px] group flex flex-col items-center rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] overflow-hidden shrink-0 snap-center">
+      <Link to={`/booking/${currentPage}/detail?day=sun&id=${stadiumData.id}`} className="relative w-[340px] h-[480px] group flex flex-col items-center rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] overflow-hidden shrink-0 snap-center">
         <div className="opacity-0 group-hover:opacity-100 absolute top-20 z-30 font-semibold text-white tracking-wide transition duration-300">
           <p>查看詳細資訊</p>
         </div>
@@ -65,7 +66,7 @@ function StadiumCard({stadiumData}) {
         <div className="w-full h-3/5 px-6 flex flex-col items-start">
           <p className="text-xl font-medium text-center mt-2">{name}</p>
           <div className="flex flex-row gap-4 w-full mt-1 text-base font-semibold text-dark-gray">
-            <p className="">{inOrOut}</p>
+            <p className="">{isIndoor ? "室內" : "室外"}</p>
             <p className="">{numberOfCourts} 個球場</p>
           </div>
           <div className="mt-11 w-full">

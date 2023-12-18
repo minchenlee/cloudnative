@@ -11,7 +11,7 @@ const DetailModal = () => {
     return inputString.replace(/\n/g, '<br/>');
   }
 
-
+  // 當 selectedJoinId 改變時，更新 selectedJoinData
   useEffect(() => {
     setSelectedJoinData(joinDetailData.find(item => item.id === selectedJoinId));
   }, [selectedJoinId])

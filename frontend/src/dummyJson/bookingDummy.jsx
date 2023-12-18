@@ -108,46 +108,46 @@ const dummyJson = [
   }
 ]
 
-
+// plenty, some, none
 const dummyJson4StadiumData = [
   {
     "name": "籃球場1",
     "img_url": "../src/assets/image/新生籃球場.jpg",
-    "inOrOut": "室內",
+    "isIndoor": true,
     "numberOfCourts": 4,
     "weekStatus": {
       "Sun": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Mon": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Tue": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Wed": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Thu": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Fri": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Sat": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       }
@@ -156,41 +156,41 @@ const dummyJson4StadiumData = [
   {
     "name": "籃球場2",
     "img_url": "../src/assets/image/新生籃球場.jpg",
-    "inOrOut": "室外",
+    "isIndoor":  false,
     "numberOfCourts": 3,
     "weekStatus": {
       "Sun": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Mon": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Tue": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Wed": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "none",
         "evening": "some"
       },
       "Thu": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Fri": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Sat": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       }
@@ -199,41 +199,41 @@ const dummyJson4StadiumData = [
   {
     "name": "籃球場3",
     "img_url": "../src/assets/image/新生籃球場.jpg",
-    "inOrOut": "室內",
+    "isIndoor": true,
     "numberOfCourts": 6,
     "weekStatus": {
       "Sun": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Mon": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "none",
         "evening": "some"
       },
       "Tue": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Wed": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Thu": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Fri": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Sat": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       }
@@ -242,41 +242,41 @@ const dummyJson4StadiumData = [
   {
     "name": "籃球場4",
     "img_url": "../src/assets/image/新生籃球場.jpg",
-    "inOrOut": "室外",
+    "isIndoor":  false,
     "numberOfCourts": 2,
     "weekStatus": {
       "Sun": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Mon": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Tue": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Wed": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "none",
         "evening": "some"
       },
       "Thu": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Fri": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Sat": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       }
@@ -285,42 +285,42 @@ const dummyJson4StadiumData = [
   {
     "name": "籃球場5",
     "img_url": "../src/assets/image/新生籃球場.jpg",
-    "inOrOut": "室內",
+    "isIndoor": true,
     "numberOfCourts": 7,
     "weekStatus": {
       "Sun": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Mon": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Tue": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "some",
         "evening": "none"
       },
       "Wed": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       },
       "Thu": {
         "morning": "some",
         "afternoon": "none",
-        "evening": "plenty"
+        "evening": "some"
       },
       "Fri": {
-        "morning": "plenty",
+        "morning": "some",
         "afternoon": "none",
         "evening": "some"
       },
       "Sat": {
         "morning": "none",
-        "afternoon": "plenty",
+        "afternoon": "some",
         "evening": "some"
       }
     }

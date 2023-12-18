@@ -2,9 +2,10 @@ import { useState, useContext, useEffect } from "react"
 import { dayCodeToChineseDay } from "../utilities/DayCodeConverter"
 import JoinContext from "../contexts/JoinContext"
 import BackButton from "../components/buttons/BackButton"
-import SearchBar from "../components/SearchBar"
+import SearchBar from "../components/input/SearchBar"
 import FilterButton from "../components/buttons/FilterButton"
 import MateDayStatusCard from "../components/cards/MateDayStatusCard"
+import Modal from "../components/modals/Modal"
 
 function JoiningPage(){
   // Dummy Data
@@ -122,10 +123,10 @@ function JoiningPage(){
   }
 
   return(
-    <div className="container mx-auto">
-      <div className="relative px-24  w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
+    <div className="container mx-auto px-24 ">
+      <div className="relative w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
         <div className="flex flex-row justify-center items-center">
-          <div className="absolute left-0">
+          <div className="absolute -left-24">
             <BackButton linkMode={true} linkTo="/findmate"/>
           </div>
           <div className="w-full h-28 flex flex-row items-center py-8 border-b-2 border-silver">

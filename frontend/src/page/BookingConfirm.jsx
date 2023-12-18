@@ -3,60 +3,47 @@ import { Link, useNavigate } from "react-router-dom"
 import JoinContext from "../contexts/JoinContext"
 import BackButton from "../components/buttons/BackButton"
 import Modal from "../components/modals/Modal"
+import LogInModal from "../components/modals/LoginModal"
+import toast from 'react-hot-toast';
 import 'ldrs/ring2'
 
-function LogInModal(){
-  const { email, setEmail, password, setPassword, setIsModalOpen } = useContext(JoinContext);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const navigate = useNavigate();
+function BookingConfirmPage(){
+  const {selectedDayCode} = useContext(JoinContext);
 
-  // 這邊假裝 call API 並等待 1.5 秒 (實際上是直接跳轉到 /booking)
-  useEffect(() => {
-    if (isProcessing){
-      setTimeout(() => {
-        setIsModalOpen(false);
-        setIsProcessing(false);
-        navigate("/booking/success");
-      }, 1500);
-    }
-  }, [isProcessing])
-
-  const handleSubmit = () => {
-    setIsProcessing(true);
-  }
+  // 從 local storage 取得 bookingInfo
+  let bookingInfo = JSON.parse(window.localStorage.getItem("Stadium-bookingInfo"));
+  bookingInfo[selectedDayCode] = selectedDayCode;
+  bookingInfo["stadiumName"] = window.localStorage.getItem("Stadium-selected-stadiumName");
 
   return(
-    <div className="flex flex-col gap-6">
-      <input 
-        className="w-full h-7 ps-2 border-1 rounded-md bg-transparent" 
-        placeholder="電子郵件" 
-        type="email"
-        value={email} 
-        onChange={(e) => setEmail(e.target.value)}
+    <div className="container mx-auto px-24">
+      <div className="relative w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
+        <div className="flex flex-row justify-center items-center">
+          <div className="absolute -left-24">
+            <BackButton linkMode={false}/>
+          </div>
+          <div className="w-full h-28 py-8 border-b-2 border-silver">
+            <div className="h-full flex flex-row items-center justify-between">
+              <h1 className="text-2xl font-semibold text-black"> 預約球場 </h1>
+            </div>
+          </div>
+        </div>
+        <div className="h-[352px] flex flex-row items-start mt-14">
+          <div className="w-3/5 h-full flex flex-col justify-between pe-20">
+            <BookingInfo bookingInfo={bookingInfo}/>
+            <div className="border-t-2 border-silver"></div>
+            <LogInBlock/>
+          </div>
+          <div className="w-2/5 flex justify-end">
+            <CourtAbstract bookingInfo={bookingInfo}/>
+          </div>
+        </div>
+      </div>
+      <Modal width="29rem" height="18rem" title="登入" 
+        showClose={true} 
+        showDivide={false} 
+        children={<LogInModal isForBooking={true}/>}
       />
-      <input
-        className="w-full h-7 ps-2 border-1 rounded-md bg-transparent"
-        placeholder="密碼"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button className="w-full font-medium text-white bg-primary rounded-full h-9 flex items-center justify-center" 
-      onClick={handleSubmit}>
-        {isProcessing
-          ?
-          <l-ring-2
-            size="24"
-            stroke="5"
-            stroke-length="0.25"
-            bg-opacity="0.1"
-            speed="0.7"
-            color="white" 
-          ></l-ring-2> 
-          :
-          <p>登入</p>
-        }
-      </button>
     </div>
   )
 }
@@ -132,47 +119,6 @@ function LogInBlock(){
           繼續
         </button>
       </div>
-    </div>
-  )
-}
-
-function BookingConfirmPage(){
-  const {selectedDayCode} = useContext(JoinContext);
-
-  // 從 local storage 取得 bookingInfo
-  let bookingInfo = JSON.parse(window.localStorage.getItem("Stadium-bookingInfo"));
-  bookingInfo[selectedDayCode] = selectedDayCode;
-  bookingInfo["stadiumName"] = window.localStorage.getItem("Stadium-selected-stadiumName");
-
-  return(
-    <div className="container mx-auto">
-      <div className="relative px-24  w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
-        <div className="flex flex-row justify-center items-center">
-          <div className="absolute left-0">
-            <BackButton linkMode={false}/>
-          </div>
-          <div className="w-full h-28 py-8 border-b-2 border-silver">
-            <div className="h-full flex flex-row items-center justify-between">
-              <h1 className="text-2xl font-semibold text-black"> 預約球場 </h1>
-            </div>
-          </div>
-        </div>
-        <div className="h-[352px] flex flex-row items-start mt-14">
-          <div className="w-3/5 h-full flex flex-col justify-between pe-20">
-            <BookingInfo bookingInfo={bookingInfo}/>
-            <div className="border-t-2 border-silver"></div>
-            <LogInBlock/>
-          </div>
-          <div className="w-2/5 flex justify-end">
-            <CourtAbstract bookingInfo={bookingInfo}/>
-          </div>
-        </div>
-      </div>
-      <Modal width="29rem" height="18rem" title="登入" 
-        showClose={true} 
-        showDivide={false} 
-        children={<LogInModal/>}
-      />
     </div>
   )
 }

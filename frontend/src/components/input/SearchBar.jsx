@@ -62,12 +62,12 @@ function Day(props) {
     />
   );
 }
+
 function SearchBar(props) {
-
-
   const [weekPickerOpen, setWeekPickerOpen] = useState(false)
   const [hoveredDay, setHoveredDay] = useState(null);
   const [value, setValue] = useState(dayjs());
+  const [selectedYear, setSelectedYear] = useState([]);
   const [selectedWeek, setSelectedWeek] = useState([]);
 
 
@@ -85,15 +85,24 @@ function SearchBar(props) {
   // .$D 日 => 12
   
   useEffect(() => {
+    setSelectedYear([value.clone().startOf('week').$y,
+    value.clone().endOf('week').$y]);
     setSelectedWeek([value.clone().startOf('week').$M +1,
     value.clone().startOf('week').$D, 
     value.clone().endOf('week').$M +1,
     value.clone().endOf('week').$D]);
   }, [value])
 
+  // useEffect(() => {
+  //   console.log("value", value)
+  // }, [value])
+
   useEffect(() => {
-    console.log("value", value)
-  }, [value])
+    console.log("selectedYear", selectedYear)
+    console.log("selectedWeek", selectedWeek)
+    window.localStorage.setItem("Stadium-selectedYear", selectedYear);
+    window.localStorage.setItem("Stadium-selectedWeek", selectedWeek);
+  }, [selectedWeek])
 
   return (
     <>

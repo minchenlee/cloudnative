@@ -40,6 +40,7 @@ const bookingController = {
             for (const stadium of stadiums) {
                 data[stadium.id] = {
                     "name": stadium.name,
+                    "isIndoor": stadium.isIndoor,
                 }
             }
             // initial date range

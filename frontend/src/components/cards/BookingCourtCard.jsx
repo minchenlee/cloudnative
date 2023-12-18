@@ -17,13 +17,10 @@ function NumButton({icon, onClick, isMinusDisabled, onMouseDown, bgColor, textCo
     </button>
   )
 }
+    
 
 function BookingCourtCard(props) {
-
-
   const setModalCategory = props.setModalCategory
-  const setCancelModalCategory = props.setCancelModalCategory
-
 
   // 詳細資訊、加入按鈕
   function Button(props) {
@@ -36,7 +33,7 @@ function BookingCourtCard(props) {
     const isProcessing = props.isProcessing || false;
 
     return (
-      <button className={`flex flex-row justify-center items-center text-${color} font-medium bg-${bg} w-48 py-3 border-1 border-gray rounded-full hover:bg-${hoverBg} hover:text-${hoverColor} transition duration-500`} onClick={onClick}>
+      <button className={`flex flex-row justify-center items-center text-${color} font-medium bg-${bg} w-44 h-11  border-1 border-gray rounded-full hover:bg-${hoverBg} hover:text-${hoverColor} transition duration-500`} onClick={onClick}>
         {isProcessing
           ?
           <l-ring-2
@@ -99,23 +96,21 @@ function BookingCourtCard(props) {
 
   }, [isProcessing])
 
-
-
   return (
     <div className="flex flex-row items-center w-full px-7 py-8 border-2 border-silver rounded-3xl shadow-[1px_1px_5px_1px_rgba(0,0,0,0.1)]">
-      <div className="w-3/5 flex flex-row gap-4">
-        <div className="w-1/2 flex flex-col items-start gap-4">
-          <p className="text-xl font-semibold">{stadium}</p>
-          <p className="text-xl font-medium font-robotoMono">{date}</p>
+      <div className="w-3/5 flex flex-row gap-20 items-center text-xl font-semibold">
+        <div className={`flex flex-row items-center gap-8 `}>
+          <p>{stadium}</p>
+          <p className="font-robotoMono">{date}</p>
         </div>
-        <div className="w-1/2 flex flex-col items-start gap-4">
-          <p className="truncate text-xl font-semibold">{court}</p>
-          <p className="font-robotoMono text-xl font-medium font-robotoMono">{startTime} ~ {endTime}</p>
+        <div className="flex flex-row items-center gap-8 text-base">
+          <p>{court}</p>
+          <p className="font-robotoMono">{`${startTime} ~ ${endTime}`}</p>
         </div>
       </div>
-      <div className="w-2/5 flex flex-row gap-7">
+      <div className="w-2/5 flex flex-row justify-end gap-6">
         <Button text="招募球友" bg="primary" color="white" hoverBg="black" onClick={() => openModal(id)} />
-        <Button text="取消預約" bg="white" color="black" hoverBg="light-silve" isProcessing={isProcessing} onClick={() => openCancelModal(id)} />
+        <Button text="取消預約" bg="white" color="black" hoverBg="light-silver" isProcessing={isProcessing} onClick={() => openCancelModal(id)} />
       </div>
     </div>
   );

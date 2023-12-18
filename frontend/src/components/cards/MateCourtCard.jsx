@@ -16,7 +16,7 @@ function MateCourtCard(props) {
     const isProcessing = props.isProcessing || false;
     
     return(
-      <button className={`flex flex-row justify-center items-center text-${color} font-medium bg-${bg} w-48 py-3 border-1 border-gray rounded-full hover:bg-${hoverBg} hover:text-${hoverColor} transition duration-500`} onClick={onClick}>
+      <button className={`flex flex-row justify-center items-center text-${color} font-medium bg-${bg} w-44 h-11 border-1 border-gray rounded-full hover:bg-${hoverBg} hover:text-${hoverColor} transition duration-500`} onClick={onClick}>
         {isProcessing
         ?
         <l-ring-2
@@ -45,8 +45,14 @@ function MateCourtCard(props) {
   const recruitNumber = props.recruitNumber || "";
 
   // 詳細資訊 modal
-  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(JoinContext);
-  const openModal = (id) => {
+  const { 
+    isModalOpen, setIsModalOpen, 
+    modalType, setModalType,
+    selectedJoinId, setSelectedJoinId 
+  } = useContext(JoinContext);
+
+  const handleDetail = (id) => {
+    setModalType("detail");
     setIsModalOpen(true);
     setSelectedJoinId(id);
   }
@@ -54,6 +60,8 @@ function MateCourtCard(props) {
   // 送出加入 request
   const [isProcessing, setIsProcessing] = useState(false);
   const handleJoin = () => {
+    setModalType("join");
+    setIsModalOpen(true);
     setIsProcessing(true);
   }
 
@@ -65,6 +73,7 @@ function MateCourtCard(props) {
     if (isProcessing) {
       setTimeout(() => {
         setIsProcessing(false);
+        setIsModalOpen(false);
         navigate("/records");
       }, 2000);
     }
@@ -76,7 +85,7 @@ function MateCourtCard(props) {
       <div className="w-3/5 flex flex-row gap-4">
         <div className="w-1/2 flex items-center gap-10">
           <p className="text-xl font-semibold">{stadium}</p>
-          <p className="text-xl font-medium font-robotoMono">{startTime} ~ {endTime}</p>
+          <p className="text-base font-medium font-robotoMono">{startTime} ~ {endTime}</p>
         </div>
         <div className="w-1/2 flex items-center justify-center gap-10 text-base font-semibold text-gray underline underline-offset-4">
           <p className="w-1/2 truncate text-center">{master}</p>
@@ -84,7 +93,8 @@ function MateCourtCard(props) {
         </div>
       </div>
       <div className="w-2/5 flex flex-row gap-7">
-        <Button text="詳細資訊" bg="white" color="black" hoverBg="light-silver" onClick={() => openModal(id)}/>
+        <Button text="詳細資訊" bg="white" color="black" hoverBg="light-silver" onClick={() => handleDetail(id)
+        }/>
         <Button text="加入" bg="primary" color="white" hoverBg="black" isProcessing={isProcessing} onClick={handleJoin}/>
       </div>
     </div>

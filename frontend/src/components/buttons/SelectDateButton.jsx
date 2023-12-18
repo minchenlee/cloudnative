@@ -1,5 +1,6 @@
-import { useState, useContext, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useContext, useEffect, useRef } from "react"
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
+import useOutsideClick from "../../utilities/useOutsideClick";
 import JoinContext from "../../contexts/JoinContext"
 import FeatherIcon from 'feather-icons-react';
 import { dayToDayCode, dayCodeToDay, dayCodeToChineseDay } from "../../utilities/DayCodeConverter";
@@ -21,14 +22,15 @@ function SelectDateButton() {
   
   // get current url, beside the root url
   const location = useLocation();
-  let currentPage = location.pathname.split("/")
-  currentPage = currentPage.slice(0, -1).join("/")
+  let currentPage = location.pathname
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(searchParams.get("day"))
 
   const handleSelectedDate = (date, day, dayCode) => {
     setSelectedDayCode(dayCode);
     setSelectedDate(date);
     setSelectedDay(dayCodeToChineseDay(dayCode));
-    navigate(`${currentPage}/${dayCodeToDay(dayCode)}`);
+    navigate(`${currentPage}?day=${dayCodeToDay(dayCode)}`);
     setIsSelecting(false);
   }
 
@@ -54,6 +56,14 @@ function SelectDateButton() {
     )
   }
 
+  // 處理點擊 component 外的事件
+  const handleClickOutside = () => {
+    setIsSelecting(false);
+  };
+
+  const wrapperRef = useRef(null);
+  useOutsideClick(wrapperRef, handleClickOutside);
+
   return (
     <div className="relative">
       <button className={`text-dark-gray text-xl font-bold bg-white w-42 px-5 py-5 rounded-full border-solid border-silver border-2 shadow-md flex gap-3 items-center`} onClick={handleSelecting} >
@@ -63,7 +73,7 @@ function SelectDateButton() {
           <FeatherIcon icon="calendar" width="24" height="24" strokeWidth="3"/>
         </span>
       </button>
-      <div className={`absolute top-20 flex flex-col bg-white w-full border-1 border-silver shadow-md rounded-3xl overflow-hidden ${isSelecting ? "" : "invisible"}`}>
+      <div ref={wrapperRef} className={`absolute top-20 flex flex-col bg-white w-full border-1 border-silver shadow-md rounded-3xl overflow-hidden ${isSelecting ? "" : "invisible"}`}>
         {joinJson && joinJson.map(({ date, day, dayCode }) => (
           <CandidateButton key={date} date={date} day={day} dayCode={dayCode}/>
         ))}

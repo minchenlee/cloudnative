@@ -9,9 +9,9 @@ function Modal({width, height, title, showClose, showDivide = true, children}) {
   const [ modalSmoother, setModalSmoother ] = useState(false);
 
   // 確保 Modal 預設為關閉狀態
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, [])
+  // useEffect(() => {
+  //   setIsModalOpen(false);
+  // }, [])
 
 
   useEffect(() => {
@@ -62,6 +62,8 @@ function Modal({width, height, title, showClose, showDivide = true, children}) {
       <div className="w-[50rem] h-[32rem] hidden">Booking Detail Modal</div>
       <div className="w-[29rem] hidden">Booking Confirm Modal</div>
       <div className="w-[38.75rem] h-[23rem] hidden">Booking Success Modal</div>
+      <div className="w-[66rem] h-[34rem] hidden">Booking Fail Modal</div>
+      <div className="w-[26.25rem] h-[18rem] hidden">Record Cancel sModal</div>
     </>
   );
 };
