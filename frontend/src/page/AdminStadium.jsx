@@ -287,9 +287,15 @@ function CourtToggleBlock(props){
   ]
 
   const [courtData, setCourtData] = useState(rawCourtData);
+  
+  // 移除球場
+  const removeCourt = (courtName) => {
+    setCourtData(courtData => courtData.filter(court => court.name !== courtName));
+  }
 
   // 控制球場開放狀態的 toggle card
-  function CourtToggle({name}){
+  function CourtToggle({name, id, courtNum}){
+    const isLastCourt = (id === courtNum - 1) && (courtNum !== 1);
     const [isOpen, setIsOpen] = useState(true);
     // const handleClick = () => {
     //   setCourtData(courtData => courtData.map((court) => {
@@ -303,18 +309,48 @@ function CourtToggleBlock(props){
 
     // create toggle button
     function ToggleButton(){
+      if (isEditing){
+        return(
+          <div className={`relative w-12 h-8 rounded-full border-4 flex items-center px-1 cursor-pointer`} onClick={()=>setIsOpen(!isOpen)}>
+            <div className={`absolute w-4 h-4 rounded-full border-4 transition-transform duration-500 ${isOpen ? "translate-x-full" : ""}`}/>
+          </div>
+        )
+      }
+
       return(
-        <div className={`relative w-12 h-8 rounded-full border-4 flex items-center px-1 cursor-pointer`} onClick={()=>setIsOpen(!isOpen)}>
+        <div className={`relative w-12 h-8 rounded-full border-4 flex items-center px-1`}>
           <div className={`absolute w-4 h-4 rounded-full border-4 transition-transform duration-500 ${isOpen ? "translate-x-full" : ""}`}/>
         </div>
       )
     }
 
-    return(
-      <div className={`relative flex sm:flex-row sm:gap-y-0 flex-col py-6 gap-y-2 items-center justify-between px-6 h-min-[95px] w-[291px] border-1 rounded-3xl shadow-[2px_4px_4px_1px_rgba(0,0,0,0.1)] ${isOpen ? 'bg-white text-primary' : 'bg-light-silver text-gray'} duration-500 transition-colors`}>
+    if (isLastCourt){
+      return(
+        <div className={`relative flex sm:flex-row sm:gap-y-0 flex-col py-6 gap-y-2 items-center justify-between px-6 h-[82px] w-[291px] border-1 rounded-3xl shadow-[2px_4px_4px_1px_rgba(0,0,0,0.1)] ${isOpen ? 'bg-white text-primary' : 'bg-light-silver text-gray'} duration-500 transition-colors group`}>
+          <div className={`status-dot absolute top-3 right-3 w-3 h-3 rounded-full bg-light-green border-1 ${isOpen ? "opacity-100":"opacity-0"} duration-500`}/>
+            <p className="text-xl font-semibold">{name}</p>
+            <p className="opacity-100 group-hover:opacity-0 duration-500"> 
+              {isOpen ? "球場開放中" : "球場關閉中"}
+            </p>
+            <button 
+              className="absolute w-24 h-10 flex items-center justify-center top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 opacity-0 duration-500 group-hover:opacity-100  hover:bg-silver rounded-full" 
+              onClick={() => removeCourt(name)}
+            >
+              <p className="text-xl font-semibold">刪除</p>
+              <FeatherIcon icon="trash" width="24" height="24" strokeWidth="3" className="ms-2"/>
+            </button>
+          <ToggleButton/>
+        </div>
+      )
+    }
+
+    return (
+      <div className={`relative flex sm:flex-row sm:gap-y-0 flex-col py-6 gap-y-2 items-center justify-between px-6 h-[82px] w-[291px] border-1 rounded-3xl shadow-[2px_4px_4px_1px_rgba(0,0,0,0.1)] ${isOpen ? 'bg-white text-primary' : 'bg-light-silver text-gray'} duration-500 transition-colors group`}>
         <div className={`status-dot absolute top-3 right-3 w-3 h-3 rounded-full bg-light-green border-1 ${isOpen ? "opacity-100":"opacity-0"} duration-500`}/>
-        <p className="text-xl font-semibold">{name}</p>
-        <p>{isOpen ? "球場開放中" : "球場關閉中"}</p>
+          <p className="text-xl font-semibold">{name}</p>
+          <p> 
+            {isOpen ? "球場開放中" : "球場關閉中"}
+          </p>
         <ToggleButton/>
       </div>
     )
@@ -322,7 +358,7 @@ function CourtToggleBlock(props){
 
   function AddNewCourt(){
     const addNewCourt = () => {
-      console.log("add new court");
+      
       const number = courtData.length + 1;
       const code = String.fromCharCode(64 + number);
       setCourtData(courtData => [...courtData, {name: `球場 ${code}`, isOpen: false}]);
@@ -330,7 +366,7 @@ function CourtToggleBlock(props){
     
     return(
       <button 
-      className={`relative flex flex-row items-center justify-center px-6 h-[95px] w-[291px] border-1 rounded-3xl bg-white text-gray shadow-[2px_4px_4px_1px_rgba(0,0,0,0.1)]`}
+      className={`relative flex flex-row items-center justify-center px-6 h-[82px] w-[291px] border-1 rounded-3xl bg-white text-gray shadow-[2px_4px_4px_1px_rgba(0,0,0,0.1)]`}
       onClick={()=>addNewCourt()}
       >
         <p className="text-xl font-semibold">新增球場</p>
@@ -343,7 +379,7 @@ function CourtToggleBlock(props){
     return(
       <div className="lg:justify-normal justify-center xl:px-6 py-6 lg:px-16 flex flex-wrap gap-y-6 xl:gap-x-14 lg:gap-x-14">
         {courtData.map((court, index) => (
-          <CourtToggle key={index} name={court.name} isOpen={court.isOpen}/>
+          <CourtToggle key={index} id={index} name={court.name} isOpen={court.isOpen} courtNum={courtData.length}/>
         ))}
         <AddNewCourt/>
       </div>

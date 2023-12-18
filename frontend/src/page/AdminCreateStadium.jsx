@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom";
-import { postAuthData } from "../utilities/api"
+import { postAuthData, postData } from "../utilities/api"
 import JoinContext from "../contexts/JoinContext";
 import BackButton from "../components/buttons/BackButton";
 import AdminStadiumInfoCard from "../components/cards/AdminStadiumInfoCard";
@@ -71,6 +71,7 @@ function AdminCreateStadiumPage(){
   const [editedData, setEditedData] = useState([]); // 儲存編輯的資料
   const [images, setImages] = useState([]); // 儲存上傳的圖片
   const [isWaiting, setIsWaiting] = useState(false); // 紀錄是否正在等待後端回應
+  const [courtData, setCourtData] = useState([{name: "球場 A", isOpen: true}]); // 球場資料
 
   // 檢查是否有登入
   const navigate = useNavigate();
@@ -155,15 +156,22 @@ function AdminCreateStadiumPage(){
     setIsWaiting(true);
     console.log("send data");
     console.log(editedData);
-    console.log(images);
+    console.log(images[0]);
     const token = window.localStorage.getItem("Stadium-vendor-token")
     const userId = parseInt(jwtDecode(token).id);
   
     // 透過 Google Map API 將地址轉換成經緯度
     const address = editedData.location.address;
-    const geoCode = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&region=tw&language=zh-TW&key=AIzaSyDR2GpqLQ_KsXA1_2WSIcv2EJFOgw5LOdo`,{headers:null});
-    const latitude = geoCode.data.results[0].geometry.location.lat;
-    const longitude = geoCode.data.results[0].geometry.location.lng;
+    let latitude;
+    let longitude;
+    try{
+      const geoCode = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${address}&region=tw&language=zh-TW&key=AIzaSyDR2GpqLQ_KsXA1_2WSIcv2EJFOgw5LOdo`,{headers:null});
+      latitude = geoCode.data.results[0].geometry.location.lat;
+      longitude = geoCode.data.results[0].geometry.location.lng;
+    } catch {
+      latitude = 0;
+      longitude = 0;
+    }
 
     // console.log(geoCode);
     // console.log(geoCode.data.results[0].geometry.location);
@@ -179,20 +187,31 @@ function AdminCreateStadiumPage(){
       createdById: userId,
     }
 
-    try {
-      const response = await postAuthData("stadiums/stadium", data, token);
-      console.log(response);
+    // console.log(courtData);
 
-      if (response.data){
-        toast.success("儲存成功");
-        setIsEditingInfo(false);
-        setIsEditingCourt(false);
+    try {
+      let response = await postAuthData("stadiums/stadium", data, token);
+      // console.log(response);
+      const stadiumId = response.data.stadium.id;
+      console.log(courtData);
+      for (let i = 0; i < courtData.length; i++){
+        const court = {
+          status: courtData[i].isOpen ? "OPEN" : "CLOSED",
+          stadiumId: stadiumId
+        }
+        response = await postData(`courts/court`, court);
+        // console.log(response);
       }
 
+      toast.success("儲存成功");
+      setIsEditingInfo(false);
+      setIsEditingCourt(false);
+      navigate("/admin");
     } catch (error) {
       console.log(error);
       toast.error("請將錯誤訊息截圖，並聯繫客服："  + error.message);
     }
+
 
     setTimeout(() => {
       setIsWaiting(false);
@@ -238,7 +257,7 @@ function AdminCreateStadiumPage(){
           />
           <Block 
           name="管理球場" 
-          children={<CourtToggleBlock isEditing={isEditingCourt}/>}
+          children={<CourtToggleBlock isEditing={isEditingCourt} courtData={courtData} setCourtData={setCourtData}/>}
           />
           <div className="w-full justify-center flex flex-row gap-6 border-2 border-silver rounded-2xl py-8 mb-10">
             <Button 
@@ -282,14 +301,8 @@ function Block({name, subTitle, children}){
 
 function CourtToggleBlock(props){
   const isEditing = props.isEditing || false;
-  const rawCourtData = [
-    {
-      name: "球場 A",
-      isOpen: true,
-    }
-  ]
-
-  const [courtData, setCourtData] = useState(rawCourtData);
+  const courtData = props.courtData || [];
+  const setCourtData = props.setCourtData || null;
   
   // 移除球場
   const removeCourt = (courtName) => {
@@ -353,10 +366,9 @@ function CourtToggleBlock(props){
 
   function AddNewCourt(){
     const addNewCourt = () => {
-      
       const number = courtData.length + 1;
       const code = String.fromCharCode(64 + number);
-      setCourtData(courtData => [...courtData, {name: `球場 ${code}`, isOpen: false}]);
+      setCourtData(courtData => [...courtData, {name: `球場 ${code}`, isOpen: true}]);
     }
     
     return(
@@ -382,6 +394,7 @@ function CourtToggleBlock(props){
   }
 
   return(
+    courtData &&
     <div className="lg:justify-normal justify-center xl:px-6 py-6 lg:px-16 flex flex-wrap gap-y-6 xl:gap-x-14 lg:gap-x-14">
       {courtData.map((court, index) => (
         <CourtToggle key={index} name={court.name} isOpen={court.isOpen}/>
