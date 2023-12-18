@@ -26,6 +26,36 @@ const stadiumModel = {
         });
         return stadium;
     },
+    updateStadiumImageById: async (id, img_url) => {
+        const stadium = await prisma.stadium.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                img_url: img_url
+            }
+        });
+        return stadium;
+    },
+    getStadiumImageById: async (id) => {
+        const stadium = await prisma.stadium.findUnique({
+            where: {
+                id: parseInt(id)
+            }
+        });
+        return stadium;
+    },
+    deleteStadiumImageById: async (id) => {
+        const stadium = await prisma.stadium.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                img_url: null
+            }
+        });
+        return stadium;
+    },
     getAllStadiums: async () => {
         const stadiums = await prisma.stadium.findMany({
             include: {
