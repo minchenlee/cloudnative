@@ -60,18 +60,38 @@ const activityModel = {
         });
         return activities;
     },
-    deleteActivityById: async (id) => {
-        const activity = await prisma.activityRecord.delete({
+    updateActivityById: async (id, sport, date, startHour, endHour, courtId, capacity, note, isActivity) => {
+        const activity = await prisma.bookingRecord.update({
             where: {
                 id: parseInt(id),
             },
+            data: {
+                sport,
+                date,
+                startHour,
+                endHour,
+                courtId,
+                capacity,
+                note,
+                isActivity,
+            },
+        });
+        return activity;
+    },
+    deleteActivityByBookingId: async (id) => {
+        const activity = await prisma.activityRecord.deleteMany({
+            where: {
+                bookingId: {
+                    equals: parseInt(id)
+                }
+            },            
         });
         return activity;
     },
     joinActivity: async (userId, bookingId) => {
         const activityRecord = await prisma.activityRecord.create({
             data: {
-                id: parseInt(bookingId),
+                bookingId: parseInt(bookingId),
                 userId: parseInt(userId),
             },
         });
