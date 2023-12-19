@@ -1,6 +1,7 @@
 import { bookingModel } from "../models/bookingModel.js";
 import { stadiumModel } from "../models/stadiumModel.js";
-// import { courtModel } from "../models/courtModel.js"};
+import { activityModel } from "../models/activityModel.js";
+import { defaultCourtModel as courtModel } from '../models/courtModel.js';
 
 const bookingController = {
     getBookingsByUserId: async (req, res) => {
@@ -102,18 +103,14 @@ const bookingController = {
         }
     },
     createBooking: async (req, res) => {
-        // const userId = req.user.id;
-        const userId = 1;
+        const userId = req.user.id;
         const { courtId, bookingDate, bookingStartHour, bookingEndHour} = req.body;
-        // TODO: get vendorId and stadiumId from courtId or get from frontend
-        // const stadium = await stadiumModel.getStadiumByCourtId(courtId);
-        // const court = await courtModel.getStadiumByCourtId(courtId);
-        const vendorId = 1
-        const stadiumId = 1
-        const sport = "BASKETBALL"
-        // TODO: validations and transactions
-        // create booking
         try {
+            const court = await courtModel.getCourtById(courtId);
+            const stadiumId = court.stadiumId;
+            const stadium = await stadiumModel.getStadiumById(stadiumId);
+            const vendorId = stadium.createdById;
+            const sport = stadium.sport;
             await bookingModel.createBooking(userId, vendorId, stadiumId, courtId, sport, bookingDate, bookingStartHour, bookingEndHour);
             res.status(200).json({
                 msg: "Booking created successfully."
@@ -128,13 +125,19 @@ const bookingController = {
     },
     deleteBookingById: async (req, res) => {
         const {id} = req.params;
-        const booking = await bookingModel.deleteBookingById(id);
-        res.status(200).json({
-            msg: "Booking deleted successfully.",
-            data: {
-                booking
-            }
-        });
+        // delete activity records
+        try {
+            await activityModel.deleteActivityByBookingId(id);
+            await bookingModel.deleteBookingById(id);
+            res.status(200).json({
+                msg: "Booking deleted successfully.",
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Internal server error."
+            });
+        }
     },
 }
 export default bookingController;
