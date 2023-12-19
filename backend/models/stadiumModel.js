@@ -1,5 +1,7 @@
-import {PrismaClient} from '@prisma/client';
-const prisma = new PrismaClient();
+import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 
 const stadiumModel = {
@@ -41,7 +43,8 @@ const stadiumModel = {
         const stadium = await prisma.stadium.findUnique({
             where: {
                 id: parseInt(id)
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return stadium;
     },
@@ -60,7 +63,8 @@ const stadiumModel = {
         const stadiums = await prisma.stadium.findMany({
             include: {
                 createdBy: true
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 },
         });
         return stadiums;
     },
@@ -71,7 +75,8 @@ const stadiumModel = {
             },
             include: {
                 createdBy: true
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return stadium;
     },
@@ -82,7 +87,6 @@ const stadiumModel = {
             },
             data: {
                 sport,
-                status,
                 longitude,
                 latitude,
                 description,
@@ -110,7 +114,8 @@ const stadiumModel = {
         const stadiums = await prisma.stadium.findMany({
             where: {
                 sport: sport.toUpperCase()
-            }
+            },
+            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return stadiums;
     }
