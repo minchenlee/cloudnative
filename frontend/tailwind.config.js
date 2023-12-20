@@ -41,6 +41,10 @@ export default {
         "booking-success-bg": "url(../src/assets/image/booking_success.jpg)",
         "login-bg": "url(../src/assets/admin_login_bg.svg)",
         "default-court-basketball": "url(../src/assets/image/default_court_basketball.png)",
+        "default-court-badminton": "url(../src/assets/image/default_court_badminton.png)",
+        "default-court-tennis": "url(../src/assets/image/default_court_tennis.png)",
+        "default-court-volleyball": "url(../src/assets/image/default_court_volleyball.png)",
+        "default-court-tabletennis": "url(../src/assets/image/default_court_tabletennis.png)",
       },
       backgroundSize: {
         '110': '110%',
