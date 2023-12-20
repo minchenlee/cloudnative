@@ -161,10 +161,10 @@ function BookingStadiumPage(){
         const afternoonBookingSlots = dayBookingData[1]
         const eveningBookingSlots = dayBookingData[2]
 
-        console.log(key);
-        console.log(morningBookingSlots, morningSlotsPerDay);
-        console.log(afternoonBookingSlots, afternoonSlotsPerDay);
-        console.log(eveningBookingSlots, eveningSlotsPerDay);
+        // console.log(key);
+        // console.log(morningBookingSlots, morningSlotsPerDay);
+        // console.log(afternoonBookingSlots, afternoonSlotsPerDay);
+        // console.log(eveningBookingSlots, eveningSlotsPerDay);
 
         // 上午狀態判斷
         if (morningBookingSlots >= morningSlotsPerDay) {
@@ -188,9 +188,8 @@ function BookingStadiumPage(){
         }
       })
     }
-
-
-    console.log(bookingDataList);
+    
+    // console.log(bookingDataList);
     setStadiumData(bookingDataList);
   }
 
