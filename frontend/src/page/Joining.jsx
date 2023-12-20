@@ -152,8 +152,13 @@ function JoiningPage(){
       }
     })
 
-    // console.log(rawActivityData);
-    setActivityData(rawActivityData);
+    // 把 activitiesNum === 0 的日期刪掉
+    const filteredActivityData = rawActivityData.filter((data) => {
+      return data.activitiesNum !== 0;
+    })
+
+    // console.log(filteredActivityData);
+    setActivityData(filteredActivityData);
     setIsWaiting(false);
   }
   
@@ -181,6 +186,7 @@ function JoiningPage(){
       </div>
     )
   }
+  console.log(activityData);
 
   return(
     <div className="container mx-auto px-24 ">
@@ -205,6 +211,11 @@ function JoiningPage(){
             <CategoryCard/>
           </div>
           <div className="w-1/2">
+            {(activityData !== null && activityData.length === 0 && !isWaiting) && 
+            <div className="flex items-center justify-center h-full">
+              <p className="text-2xl font-semibold text-black">本週無可報名球場</p>
+            </div>
+            }
             {isWaiting || activityData === null ? 
             <div className="flex items-center justify-center h-full">
               <div className="scale-125">

@@ -99,7 +99,7 @@ export const postAuthData = async (endpoint, data, token, contentType = 'applica
 };
 
 export const putAuthData = async (endpoint, data, token, contentType = 'application/json') => {
-  console.log(data);
+  // console.log(data);
   try {
     const response = await axios.put(`${API_BASE_URL}/${endpoint}`, data, {
       headers: {

@@ -27,13 +27,38 @@ function InfoRow({icon, content}){
 }
 
 
-function SiteInfoCard({previewData}) {
-  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
+function SiteInfoCard({previewData, img_url}) {
+  const {isModalOpen, setIsModalOpen, selectedSport} = useContext(AllContext);
 
+  let defalutImage;
+  switch (selectedSport) {
+    case "basketball":
+      defalutImage = "bg-default-court-basketball";
+      break;
+    case "badminton":
+      defalutImage = "bg-default-court-badminton";
+      break;
+    case "tennis":
+      defalutImage = "bg-default-court-tennis";
+      break;
+    case "volleyball":
+      defalutImage = "bg-default-court-volleyball";
+      break;
+    case "tabletennis":
+      defalutImage = "bg-default-court-tabletennis";
+      break;
+  }
+  
   return (
     <div className={`group sticky top-24 z-0 w-[419px] h-[600px] bg-white rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] overflow-hidden `}>
       <div className="h-full w-full flex flex-col">
-        <div className="w-full h-2/5 rounded-3xl bg-gray"></div>
+        {img_url === "" || "none"
+          ? 
+          <div className={`w-full h-2/5 rounded-3xl object-contain ${defalutImage} bg-cover`}></div>
+          :
+          <img src={img_url} alt="" className="w-full h-full object-cover"/>
+        }
+        
         <div className="w-full h-3/5 flex flex-col px-7 text-black">
           <p className="text-xl font-semibold my-4">基本資訊</p>
           <div className="flex flex-col gap-4">

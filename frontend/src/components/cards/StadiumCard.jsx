@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import AllContext from "../../contexts/AllContext";
 import { Link, useLocation } from "react-router-dom"
 import StatusDot from "../general/StatusDot";
 
@@ -48,6 +49,7 @@ function StatusGrid(props) {
 
 
 function StadiumCard({stadiumData}) {
+  const {selectedSport} = useContext(AllContext);
   const img_url = stadiumData.img_url || "";
   const name = stadiumData.name || "";
   const isIndoor = stadiumData.isIndoor || "";
@@ -58,6 +60,26 @@ function StadiumCard({stadiumData}) {
   const location = useLocation();
   const currentPage = location.pathname.split("/").pop();
 
+  let defalutImage;
+  switch (selectedSport) {
+    case "basketball":
+      defalutImage = "bg-default-court-basketball";
+      break;
+    case "badminton":
+      defalutImage = "bg-default-court-badminton";
+      break;
+    case "tennis":
+      defalutImage = "bg-default-court-tennis";
+      break;
+    case "volleyball":
+      defalutImage = "bg-default-court-volleyball";
+      break;
+    case "tabletennis":
+      defalutImage = "bg-default-court-tabletennis";
+      break;
+  }
+    
+
   return (
       <Link to={`/booking/${currentPage}/detail?day=sun&id=${stadiumData.id}`} className="relative w-[340px] h-[480px] group flex flex-col items-center rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] overflow-hidden shrink-0 snap-center">
         <div className="opacity-0 group-hover:opacity-100 absolute top-20 z-30 font-semibold text-white tracking-wide transition duration-300">
@@ -66,7 +88,7 @@ function StadiumCard({stadiumData}) {
         <div className={`w-full h-2/5 rounded-3xl overflow-hidden group-hover:blur-sm group-hover:brightness-90 transition duration-500`}>
           {img_url === "" || "none"
           ? 
-          <div className="w-full h-full object-contain bg-default-court-basketball bg-cover"/> 
+          <div className={`w-full h-full object-contain ${defalutImage} bg-cover`}/> 
           :
           <img src={img_url} alt="" className="w-full h-full object-cover"/>
           }

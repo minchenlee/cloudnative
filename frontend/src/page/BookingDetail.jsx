@@ -27,6 +27,7 @@ function BookingDetailPage(){
   const [stadiumData, setStadiumData] = useState(null);
   const [courtInfo, setCourtInfo] = useState([]);
   const [courtNum, setCourtNum] = useState(0);
+  const [isWaiting, setIsWaiting] = useState(false);
   const { selectedSport, selectedDayCode } = useContext(AllContext);
   const dateCodeTable = JSON.parse(window.localStorage.getItem("Stadium-dateCodeTable"));
   // 用來取得 url 中的參數
@@ -34,6 +35,7 @@ function BookingDetailPage(){
   // console.log(searchParams.get("id"))
 
   const getStadiumData = async () => {
+    setIsWaiting(true);
     // 取得 stadium 資訊  
     const response = await fetchData(`stadiums/stadium/${searchParams.get("id")}`);
     const data = response.data.stadium;
@@ -126,23 +128,12 @@ function BookingDetailPage(){
     }
 
     setCourtInfo(courtInfoList);
+    setIsWaiting(false);
   }
 
   useEffect(() => {
     getStadiumData();
   }, [selectedDayCode])
-
-  // const response = await fetchData(`stadiums/stadiums`);
-  // let stadiumData = response.data.stadiums;
-  // const response = await fetchData(`booking/${stadium.id}/date/${year}-${month}-${day}`)
-  //     const data = response.data;
-  //     if (data.has(stadium.id)) {
-  //       const bookingList = data.get(stadium.id);
-  //       for (booking of bookingList) {
-  //         const startTime = booking.start_time + ":00";
-  //         const endTime = booking.end_time + ":00";
-  //     }
-  //   }
 
   if (!stadiumData) {
     return(
@@ -159,7 +150,6 @@ function BookingDetailPage(){
       </div>
     )
   }
-
 
   return(
     <div className="container mx-auto px-24 ">
@@ -182,15 +172,27 @@ function BookingDetailPage(){
           </div>
         </div>
         <div className="w-full mt-14 flex flex-row">
-          <div className="h-full w-3/5 me-20 flex flex-col gap-6">
-            {
-              courtInfo.map((court, index) => (
-                <CourtCard key={index} court={court}/>
-              ))
-            }
-          </div>
+          {isWaiting ? 
+            <div className="h-100 w-3/5 flex items-center justify-center gap-6">
+              <div className="scale-125">
+                <l-mirage
+                size="75"
+                speed="2.5"
+                color="black"
+                />
+              </div>
+            </div>
+            :
+            <div className="h-full w-3/5 me-20 flex flex-col gap-6">
+              {
+                courtInfo.map((court, index) => (
+                  <CourtCard key={index} court={court}/>
+                ))
+              }
+            </div>
+          }
           <div className="w-2/5 flex justify-end bottom-0">
-            <SiteInfoCard previewData={stadiumData.description.slice(0, 4)}/>
+            <SiteInfoCard previewData={stadiumData.description.slice(0, 4)} img_url={stadiumData.img_url}/>
           </div>
         </div>
         <div className="w-full h-[600px] flex flex-col mt-16 mb-24">

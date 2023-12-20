@@ -56,12 +56,41 @@ function BookingConfirmPage(){
 
 
 function CourtAbstract({bookingInfo}){
+  // console.log(bookingInfo);
   const courtName = bookingInfo.courtName;
   const stadiumName = bookingInfo.stadiumName;
+  const stadiumImgUrl = bookingInfo.stadiumImgUrl;
+  const {selectedSport} = useContext(AllContext);
+
+  let defalutImage;
+  switch (selectedSport) {
+    case "basketball":
+      defalutImage = "bg-default-court-basketball";
+      break;
+    case "badminton":
+      defalutImage = "bg-default-court-badminton";
+      break;
+    case "tennis":
+      defalutImage = "bg-default-court-tennis";
+      break;
+    case "volleyball":
+      defalutImage = "bg-default-court-volleyball";
+      break;
+    case "tabletennis":
+      defalutImage = "bg-default-court-tabletennis";
+      break;
+  }
 
   return(
     <div className="flex flex-col w-[418px] border-2 border-silver rounded-3xl">
-      <img className="rounded-3xl" src="../src/assets/image/新生籃球場.jpg"></img>
+      {
+        stadiumImgUrl === "" || "none"
+        ? 
+        <div className={`h-[248px] rounded-3xl object-contain ${defalutImage} bg-cover`}></div>
+        :
+        <img src={stadiumImgUrl} alt="" className="h-[248px] object-cover rounded-3xl"/>
+      }
+      {/* <img className="rounded-3xl" src="../src/assets/image/新生籃球場.jpg"></img> */}
       <div className="flex flex-col text-xl font-semibold my-5 mx-6">
         <p className="">{stadiumName}</p>
         <p className="text-dark-gray">{courtName}</p>
