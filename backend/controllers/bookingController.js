@@ -22,6 +22,23 @@ const bookingController = {
             });
         }
     },
+    getBookingById: async (req, res) => {
+        const {id} = req.params;
+        try {
+            const booking = await bookingModel.getBookingById(id);
+            res.status(200).json({
+                msg: "Get booking by id successfully.",
+                data: {
+                    booking
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Internal server error."
+            });
+        }
+    },
     getBookingBySportAndDates: async (req, res) => {
         const { sport } = req.params;
         const { startDate, endDate } = req.body;
@@ -112,9 +129,10 @@ const bookingController = {
             const stadium = await stadiumModel.getStadiumById(stadiumId);
             const vendorId = stadium.createdById;
             const sport = stadium.sport;
-            await bookingModel.createBooking(userId, vendorId, stadiumId, courtId, sport, bookingDate, bookingStartHour, bookingEndHour);
+            const result = await bookingModel.createBooking(userId, vendorId, stadiumId, courtId, sport, bookingDate, bookingStartHour, bookingEndHour);
             res.status(200).json({
-                msg: "Booking created successfully."
+                msg: "Booking created successfully.",
+                data: result
             });
         } catch (err) {
             console.log(err);
