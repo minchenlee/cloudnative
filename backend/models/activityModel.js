@@ -28,7 +28,6 @@ const activityModel = {
                     equals: true
                 }
             },
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return activities;
     },
@@ -40,7 +39,6 @@ const activityModel = {
             include: {
                 belongs: true
             },
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return activities;
     },
@@ -56,7 +54,6 @@ const activityModel = {
                 activitiesRecords: true,
                 stadiumAt: true
             },
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return activities;
     },
