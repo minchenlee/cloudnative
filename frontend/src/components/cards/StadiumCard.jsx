@@ -10,9 +10,12 @@ function StatusColumn(props){
   return(
     <div className="flex flex-col items-center gap-2">
       <p className="text-sm font-bold text-dark-gray mb-2">{day}</p>
-      <StatusDot status={dayStatus.morning}/>
+      <StatusDot status={dayStatus[0]}/>
+      <StatusDot status={dayStatus[1]}/>
+      <StatusDot status={dayStatus[2]}/>
+      {/* <StatusDot status={dayStatus.morning}/>
       <StatusDot status={dayStatus.afternoon}/>
-      <StatusDot status={dayStatus.evening}/>
+      <StatusDot status={dayStatus.evening}/> */}
     </div>
   )
 }
@@ -25,20 +28,20 @@ function StatusGrid(props) {
   function Weekday(props) {
     return(
       <div className="flex gap-2">
-        <StatusColumn day="Mon" dayStatus={weekStatusArray[0]}/>
-        <StatusColumn day="Tue" dayStatus={weekStatusArray[1]}/>
-        <StatusColumn day="Wed" dayStatus={weekStatusArray[2]}/>
-        <StatusColumn day="Thu" dayStatus={weekStatusArray[3]}/>
-        <StatusColumn day="Fri" dayStatus={weekStatusArray[4]}/>
+        <StatusColumn day="Mon" dayStatus={weekStatusArray[1]}/>
+        <StatusColumn day="Tue" dayStatus={weekStatusArray[2]}/>
+        <StatusColumn day="Wed" dayStatus={weekStatusArray[3]}/>
+        <StatusColumn day="Thu" dayStatus={weekStatusArray[4]}/>
+        <StatusColumn day="Fri" dayStatus={weekStatusArray[5]}/>
       </div>
     )
   }
 
   return (
     <div className="flex justify-between w-full">
-      <StatusColumn day="Sun" dayStatus={weekStatusArray[6]}/>
+      <StatusColumn day="Sun" dayStatus={weekStatusArray[0]}/>
       <Weekday/>
-      <StatusColumn day="Sat" dayStatus={weekStatusArray[5]}/>
+      <StatusColumn day="Sat" dayStatus={weekStatusArray[6]}/>
     </div>
   );
 }
@@ -61,7 +64,7 @@ function StadiumCard({stadiumData}) {
           <p>查看詳細資訊</p>
         </div>
         <div className={`w-full h-2/5 rounded-3xl overflow-hidden group-hover:blur-sm group-hover:brightness-90 transition duration-500`}>
-          {img_url === "" 
+          {img_url === "" || "none"
           ? 
           <div className="w-full h-full object-contain bg-default-court-basketball bg-cover"/> 
           :

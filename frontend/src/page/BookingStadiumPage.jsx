@@ -42,7 +42,7 @@ function BookingStadiumPage(){
     const endYear = selectedDate.endOf('week').$y;
     const endMonth = selectedDate.endOf('week').$M + 1;
     const endDay = selectedDate.endOf('week').$D;
-    let response = await postData(`bookings/sport/${selectedSport}`, {
+    let bookingDataList = await postData(`bookings/sport/${selectedSport}`, {
       startDate: `${startYear}-${startMonth}-${startDay}`,
       endDate: `${endYear}-${endMonth}-${endDay}`
     })
@@ -94,12 +94,12 @@ function BookingStadiumPage(){
     setDateCodeTable(mergeData);
     window.localStorage.setItem("Stadium-dateCodeTable", JSON.stringify(mergeData));
     
-    // 把 response.data key 爲時間的資料放到 weekStatus 裏面
-    response = Object.keys(response.data).map(key => {
+    // 把 bookingDataList.data key 爲時間的資料放到 weekStatus 裏面
+    bookingDataList = Object.keys(bookingDataList.data).map(key => {
       const weekStatus = {};
       const nonDateData = {};
 
-      Object.entries(response.data[key]).forEach(([dataKey, value]) => {
+      Object.entries(bookingDataList.data[key]).forEach(([dataKey, value]) => {
         if (dataKey.match(/\d{4}-\d{2}-\d{2}/)) { // Check if the key is a date
           // Add this data to the weekStatus
           weekStatus[dataKey] = value;
@@ -116,8 +116,82 @@ function BookingStadiumPage(){
       };
     });
 
-    console.log(response);
-    setStadiumData(response);
+    // 透過 id 去取得 stadium 資訊
+    const stadiumData = [];
+    for (let i = 0; i < bookingDataList.length; i++) {
+      const stadiumId = bookingDataList[i].id;
+      const stadiumResponse = await fetchData(`stadiums/stadium/${stadiumId}`);
+      const stadiumInfo = stadiumResponse.data.stadium;
+
+      // 取得屬於這個 stadium 的 court 資訊
+      const courtResponse = await fetchData(`courts/courts/stadium/${stadiumId}`);
+      const courtData = courtResponse.data.courts;
+      stadiumInfo.courtNum = courtData.length;
+      stadiumData.push(stadiumInfo);
+    }
+
+    // console.log(stadiumData);
+    // 根據 stadium id 去把 stadium 資訊加到 bookingDataList 裏面
+    for (let i = 0; i < bookingDataList.length; i++) {
+      // 產生 timeList
+      const openTime = stadiumData[i].openTime;
+      const closeTime = stadiumData[i].closeTime;
+      let currentHour = parseInt(openTime.split(':')[0]);
+      const closeHour = parseInt(closeTime.split(':')[0]);
+      const timeList = [];
+      while (currentHour < closeHour) {
+        timeList.push(`${currentHour.toString().padStart(2, '0')}:00`);
+        currentHour++;
+      }
+      
+      // 產生上午(12:00 前)、下午（12:00 ~ 18:00）、晚上（18:00 後） stadium 的總時間區塊數量
+      const morningTimeList = timeList.filter(time => parseInt(time.split(":")[0]) <= 12);
+      const afternoonTimeList = timeList.filter(time => parseInt(time.split(":")[0]) > 12 && parseInt(time.split(":")[0]) <= 18);
+      const eveningTimeList = timeList.filter(time => parseInt(time.split(":")[0]) > 18);
+      const morningSlotsPerDay = (morningTimeList.length - 1) * stadiumData[i].courtNum;
+      const afternoonSlotsPerDay = (afternoonTimeList.length) * stadiumData[i].courtNum;
+      const eveningSlotsPerDay = (eveningTimeList.length) * stadiumData[i].courtNum;
+
+      bookingDataList[i].img_url = stadiumData[i].img_url;
+
+      // 產生 weekStatus
+      Object.keys(bookingDataList[i].weekStatus).forEach(key => {
+        let dayBookingData = bookingDataList[i].weekStatus[key];
+        const morningBookingSlots = dayBookingData[0]
+        const afternoonBookingSlots = dayBookingData[1]
+        const eveningBookingSlots = dayBookingData[2]
+
+        console.log(key);
+        console.log(morningBookingSlots, morningSlotsPerDay);
+        console.log(afternoonBookingSlots, afternoonSlotsPerDay);
+        console.log(eveningBookingSlots, eveningSlotsPerDay);
+
+        // 上午狀態判斷
+        if (morningBookingSlots >= morningSlotsPerDay) {
+          bookingDataList[i].weekStatus[key][0] = "none";
+        } else {
+          bookingDataList[i].weekStatus[key][0] = "some";
+        }
+
+        // 下午狀態判斷
+        if (afternoonBookingSlots >= afternoonSlotsPerDay) {
+          bookingDataList[i].weekStatus[key][1] = "none";
+        } else {
+          bookingDataList[i].weekStatus[key][1] = "some";
+        }
+
+        // 晚上狀態判斷
+        if (eveningBookingSlots >= eveningSlotsPerDay) {
+          bookingDataList[i].weekStatus[key][2] = "none";
+        } else {
+          bookingDataList[i].weekStatus[key][2] = "some";
+        }
+      })
+    }
+
+
+    console.log(bookingDataList);
+    setStadiumData(bookingDataList);
   }
 
   useEffect(() => {
