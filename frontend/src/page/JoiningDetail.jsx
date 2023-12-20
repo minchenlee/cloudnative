@@ -18,7 +18,6 @@ function JoiningDetailModal(){
   const dateCodeTable = JSON.parse(window.localStorage.getItem("Stadium-dateCodeTable"));
   const joinDetailData = JSON.parse(window.localStorage.getItem("joinDetailJson"));
   const {selectedJoinId, selectedDayCode} = useContext(AllContext);
-
   const [selectedJoinData, setSelectedJoinData] = useState();
   function convertNewlinesToBR(inputString) {
     return inputString.replace(/\n/g, '<br/>');
@@ -236,7 +235,7 @@ function JoiningDetailPage(){
         note: data.note
       }
 
-      console.log(formattedData);
+      // console.log(formattedData);
       formattedDataList.push(formattedData);      
     }
 
@@ -285,6 +284,14 @@ function JoiningDetailPage(){
   }
 
   if (!activityData) return null;
+  let isEmpty = true;
+  for (const item of Object.values(activityData)) {
+    if (item.length !== 0) {
+      isEmpty = false;
+      break;
+    }
+  }
+
 
   return(
     <div className="container mx-auto px-24">
@@ -302,35 +309,41 @@ function JoiningDetailPage(){
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-8 mb-20">
-          <TimeIntervalSet 
-            groupJsonData={activityData["08:00-12:00"]} 
-            config={{
-              text:"上午", 
-              time:"08:00 ~ 12:00", 
-              bg:"light-green", 
-              color:"dark-gray"
+        {isEmpty ?
+          <div className="flex items-center justify-center h-[60vh]">
+            <p className="text-2xl font-semibold text-black">本日無可報名球場</p>
+          </div>
+        :
+          <div className="flex flex-col gap-8 mb-20">
+            <TimeIntervalSet 
+              groupJsonData={activityData["08:00-12:00"]} 
+              config={{
+                text:"上午", 
+                time:"08:00 ~ 12:00", 
+                bg:"light-green", 
+                color:"dark-gray"
+                }}
+              />
+            <TimeIntervalSet 
+              groupJsonData={activityData["12:00-18:00"]} 
+              config={{
+                text:"下午", 
+                time:"12:00 ~ 18:00", 
+                bg:"peach", 
+                color:"dark-gray"
+              }}
+              />
+            <TimeIntervalSet 
+              groupJsonData={activityData["18:00-22:00"]}
+              config={{
+                text:"晚上", 
+                time:"18:00 ~ 22:00", 
+                bg:"fade-blue", 
+                color:"white"
               }}
             />
-          <TimeIntervalSet 
-            groupJsonData={activityData["12:00-18:00"]} 
-            config={{
-              text:"下午", 
-              time:"12:00 ~ 18:00", 
-              bg:"peach", 
-              color:"dark-gray"
-            }}
-            />
-          <TimeIntervalSet 
-            groupJsonData={activityData["18:00-22:00"]}
-            config={{
-              text:"晚上", 
-              time:"18:00 ~ 22:00", 
-              bg:"fade-blue", 
-              color:"white"
-            }}
-          />
-        </div>
+          </div>
+        }
       </div>
       <Modal 
         width={modalType === "detail" ? "40rem" : "29rem"}
