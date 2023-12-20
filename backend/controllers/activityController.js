@@ -45,6 +45,7 @@ const activityController = {
         for (const activity of activities) {
             const booking = await bookingModel.getBookingById(activity.bookingId);
             records.push({
+                "activityId": activity.id,
                 "id": activity.bookingId,
                 "date": activity.belongs.date.toISOString().split('T')[0],
                 "startHour": activity.belongs.startHour,
@@ -69,7 +70,6 @@ const activityController = {
     getActivitiesBySportAndDate: async (req, res) => {
         const {sport, date} = req.params;
         const activities = await activityModel.getActivitiesBySportAndDate(sport, date);
-        console.log(activities)
         const records = []
         for (const activity of activities) {
             records.push({
@@ -152,7 +152,7 @@ const activityController = {
     leaveActivity: async (req, res) => {
         // TODO: user validation
         const userId = req.user.id;
-        const bookingId= req.params;
+        const {bookingId}= req.params;
         try {
             const activityRecord = await activityModel.leaveActivity(userId, bookingId);
             res.status(200).json({

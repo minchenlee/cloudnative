@@ -1,6 +1,6 @@
 import {useState, useEffect, useContext, createContext} from "react"
 import { useNavigate } from "react-router-dom";
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 import FeatherIcon from "feather-icons-react";
 // import TimePicker from "../input/TimerPicker"
 import TimePickerDirection from "../directions/TimePickerDireaction";

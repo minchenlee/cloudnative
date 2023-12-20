@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom";
-import JoinContext from "../contexts/JoinContext";
+import AllContext from "../contexts/AllContext";
 import { jwtDecode } from "jwt-decode";
 import toast from 'react-hot-toast';
 
@@ -22,7 +22,7 @@ function AddNewButton(){
 
 function AdminMainPage(){
   const navigate = useNavigate();
-  const {isLogin, setIsLogin} = useContext(JoinContext);
+  const {isLogin, setIsLogin} = useContext(AllContext);
   // 檢查是否有登入
   useEffect(() => {
     const token = window.localStorage.getItem("Stadium-vendor-token")

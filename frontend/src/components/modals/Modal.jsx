@@ -1,11 +1,11 @@
 import React from "react";
 import { useState, useEffect, useContext } from "react";
 import FeatherIcon from 'feather-icons-react';
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 
 // inset 可以想成 margin 的概念，inset 越多，Modal 距離螢幕邊緣越遠，也就越小
 function Modal({width, height, title, showClose, showDivide = true, children}) {
-  const { isModalOpen, setIsModalOpen } = useContext(JoinContext);
+  const { isModalOpen, setIsModalOpen } = useContext(AllContext);
   const [ modalSmoother, setModalSmoother ] = useState(false);
 
   // 確保 Modal 預設為關閉狀態

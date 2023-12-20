@@ -1,12 +1,12 @@
 import { useState, useRef, useContext, useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom";
-import JoinContext from "../contexts/JoinContext";
+import AllContext from "../contexts/AllContext";
 import useOutsideClick from "../utilities/useOutsideClick";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon"
 import toast from 'react-hot-toast';
 
 function Header() {
-  const {isLogin, setIsLogin} = useContext(JoinContext);
+  const {isLogin, setIsLogin} = useContext(AllContext);
   const navigate = useNavigate();
   const [isOpenAccountMenu, setIsOpenAccountMenu] = useState(false);
 

@@ -1,12 +1,12 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import JoinContext from "../../contexts/JoinContext";
-import Modal from "../../components/modals/Modal"
+import AllContext from "../../contexts/AllContext";
+import Modal from "../modals/Modal"
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import 'ldrs/ring2'
 
 
-function SignUpGameCard(props) {
+function JoiningCard (props) {
   const setModalCategory = props.setModalCategory
 
   // 詳細資訊、加入按鈕
@@ -50,7 +50,7 @@ function SignUpGameCard(props) {
   const recruitNumber = props.recruitNumber || "";
 
   // 詳細資訊 modal
-  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(JoinContext);
+  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(AllContext);
   const openModal = (id) => {
     setIsModalOpen(true);
     setSelectedJoinId(id);
@@ -105,4 +105,4 @@ function SignUpGameCard(props) {
   );
 };
 
-export default SignUpGameCard;
+export default JoiningCard ;

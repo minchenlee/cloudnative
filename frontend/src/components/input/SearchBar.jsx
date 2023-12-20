@@ -10,8 +10,8 @@ import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 
 
 
+// search bar
 dayjs.extend(isBetweenPlugin);
-
 const CustomPickersDay = styled(PickersDay, {
   shouldForwardProp: (prop) => prop !== 'isSelected' && prop !== 'isHovered',
 })(({ theme, isSelected, isHovered, day }) => ({
@@ -66,14 +66,8 @@ function Day(props) {
 function SearchBar(props) {
   const [weekPickerOpen, setWeekPickerOpen] = useState(false)
   const [hoveredDay, setHoveredDay] = useState(null);
-  const [value, setValue] = useState(dayjs());
-  const [selectedYear, setSelectedYear] = useState([]);
-  const [selectedWeek, setSelectedWeek] = useState([]);
-
-
-  const handleDateChange = (newValue) => {
-    setValue(newValue)
-  };
+  const value = props.selectedDate;
+  const setValue = props.setSelectedDate;
   
   // 可以存下 startofWeek 的 年 月 日
   // 可以存下 endofWeek 的 年 月 日
@@ -83,46 +77,29 @@ function SearchBar(props) {
   // .$y 年 => 2023
   // .$M + 1 月 => 11+1
   // .$D 日 => 12
-  
-  useEffect(() => {
-    setSelectedYear([value.clone().startOf('week').$y,
-    value.clone().endOf('week').$y]);
-    setSelectedWeek([value.clone().startOf('week').$M +1,
-    value.clone().startOf('week').$D, 
-    value.clone().endOf('week').$M +1,
-    value.clone().endOf('week').$D]);
-  }, [value])
-
-  // useEffect(() => {
-  //   console.log("value", value)
-  // }, [value])
 
   useEffect(() => {
-    console.log("selectedYear", selectedYear)
-    console.log("selectedWeek", selectedWeek)
-    window.localStorage.setItem("Stadium-selectedYear", selectedYear);
-    window.localStorage.setItem("Stadium-selectedWeek", selectedWeek);
-  }, [selectedWeek])
+    console.log(weekPickerOpen)
+  }, [weekPickerOpen])
 
   return (
-    <>
-      <div className="relative text-dark-gray font-semibold bg-white w-[378px] px-2 py-3 rounded-full border-solid border-silver border-2 shadow-md flex items-center">
-        <div className="w-full h-full pe-8 divide-x-2">
-          <button className="w-1/2 h-full text-base text-center">所有場地</button>
-          <button className="w-1/2 h-full text-base text-start ps-3 font-robotoMono"
-            onClick={() => setWeekPickerOpen(!weekPickerOpen)}> {selectedWeek[0]}/{selectedWeek[1]} - {selectedWeek[2]}/{selectedWeek[3]}
-          </button>
-        </div>
-        <button className="absolute right-2 p-2 rounded-full bg-primary text-white flex justify-center items-center">
-          <FeatherIcon icon="search" width="24" height="24" strokeWidth="4" />
+    <div className="relative text-dark-gray font-semibold bg-white w-[378px] px-2 py-3 rounded-full border-solid border-silver border-2 shadow-md flex items-center">
+      <div className="w-full h-full pe-8 divide-x-2">
+        <button className="w-1/2 h-full text-base text-center">所有場地</button>
+        <button className="w-1/2 h-full text-base text-start ps-3 font-robotoMono"
+          onClick={() => setWeekPickerOpen(!weekPickerOpen)}> 
+          {value.startOf('week').$M + 1}/{value.startOf('week').$D} - {value.endOf('week').$M +1}/{value.endOf('week').$D}
         </button>
       </div>
+      <button className="absolute right-2 p-2 rounded-full bg-primary text-white flex justify-center items-center">
+        <FeatherIcon icon="search" width="24" height="24" strokeWidth="4" />
+      </button>
       <div className={`absolute z-40 top-20 ${weekPickerOpen ? null : 'invisible'}`}>
         <DateCalendar
           className='bg-white rounded-2xl border-1'
           value={value}
           onChange={(newValue) => {
-            handleDateChange(newValue)
+            setValue(newValue)
           }}
           showDaysOutsideCurrentMonth
           disablePast
@@ -140,7 +117,7 @@ function SearchBar(props) {
           }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import JoinContext from "../../contexts/JoinContext";
-import Modal from "../../components/modals/Modal"
+import AllContext from "../../contexts/AllContext";
 import FeatherIcon from "feather-icons-react/build/FeatherIcon";
 import 'ldrs/ring2'
 
@@ -60,11 +59,12 @@ function BookingCourtCard(props) {
   const date = props.date || "";
   const master = props.master || "";
   const alreadyRecruitNumber = props.alreadyRecruitNumber || "";
-  // const recruitNumber = props.recruitNumber || "";
+  const recruitNumber = props.recruitNumber || 0;
 
   // 詳細資訊 modal
-  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(JoinContext);
+  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(AllContext);
   const openModal = (id) => {
+    // console.log(id);
     setIsModalOpen(true);
     setSelectedJoinId(id);
     setModalCategory('招募球友')
@@ -78,23 +78,6 @@ function BookingCourtCard(props) {
 
   // 送出加入 request
   const [isProcessing, setIsProcessing] = useState(false);
-  const handleJoin = () => {
-    setIsProcessing(true);
-  }
-
-
-  // wait 2 sec and then set isProcessing to false, useNavigate to /record
-  // 假裝 call API 並等待 2 秒 (實際上是直接跳轉到 /record)
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isProcessing) {
-      setTimeout(() => {
-        setIsProcessing(false);
-        navigate("/records");
-      }, 2000);
-    }
-
-  }, [isProcessing])
 
   return (
     <div className="flex flex-row items-center w-full px-7 py-8 border-2 border-silver rounded-3xl shadow-[1px_1px_5px_1px_rgba(0,0,0,0.1)]">
@@ -109,7 +92,11 @@ function BookingCourtCard(props) {
         </div>
       </div>
       <div className="w-2/5 flex flex-row justify-end gap-6">
-        <Button text="招募球友" bg="primary" color="white" hoverBg="black" onClick={() => openModal(id)} />
+        { recruitNumber ?
+          <Button text="查看招募資訊" bg="primary" color="white" hoverBg="black" onClick={() => openModal(id)} />
+          :
+          <Button text="招募球友" bg="primary" color="white" hoverBg="black" onClick={() => openModal(id)} />
+        }
         <Button text="取消預約" bg="white" color="black" hoverBg="light-silver" isProcessing={isProcessing} onClick={() => openCancelModal(id)} />
       </div>
     </div>

@@ -15,7 +15,7 @@ import Modal from "../components/modals/Modal";
 function CourtModal(){
   // const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
   // const joinDetailData = JSON.parse(window.localStorage.getItem("joinDetailJson"));
-  // const {selectedJoinId, selectedDayCode} = useContext(JoinContext);
+  // const {selectedJoinId, selectedDayCode} = useContext(AllContext);
 
   // const [selectedCourtData, setsSelectedCourtData] = useState();
   const selectedCourtData = {

@@ -5,7 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 import "./App.css"
 import "bootstrap-icons/font/bootstrap-icons.css";
-import JoinContext from "./contexts/JoinContext"
+import AllContext from "./contexts/AllContext"
 import Layout from "./layout/Layout"
 import ScrollToTop from "./utilities/ScrollToTop";
 import ErrorPage from "./page/Error";
@@ -74,6 +74,9 @@ function App() {
     window.localStorage.setItem("Stadium-isLogin", isLogin);
   }, [isLogin])
 
+  // 日期與日代碼的轉換表
+  const [dateCodeTable, setDateCodeTable] = useState([]);
+
   // 選擇日期、選擇運動，由 Booking 流程和 Joining 流程共用
   const [selectedDayCode, setSelectedDayCode] = useState(0);
   const [selectedSport, setSelectedSport] = useState("basketball");
@@ -90,9 +93,10 @@ function App() {
   // Join Detail view
   const [selectedJoinId, setSelectedJoinId] = useState();
   
-  // Join Context
-  const joinContextValue = {
+  // All Context
+  const AllContextValue = {
     isLogin, setIsLogin,
+    dateCodeTable, setDateCodeTable,
     selectedDayCode, setSelectedDayCode,
     selectedSport, setSelectedSport,
     selectedYearAndDay, setSelectedYearAndDay,
@@ -103,6 +107,11 @@ function App() {
     selectedJoinId, setSelectedJoinId,
   }
 
+  // 用來從 localStorage 取得選擇的日期
+  useEffect(() => {
+    setSelectedDayCode(window.localStorage.getItem("Stadium-selectedDayCode"));
+  }, [])
+
   useEffect(() => {
     console.log("selectedDayCode: ", selectedDayCode);
     console.log("selectedSport: ", selectedSport);
@@ -110,18 +119,16 @@ function App() {
 
   useEffect(() => {
     console.log("selectedJoinId: ", selectedJoinId);
-
     if (selectedJoinId === undefined) return;
-
     const data = JSON.parse(window.localStorage.getItem("joinDetailJson"));
-    console.log(data.find(item => item.id === selectedJoinId));
+    // console.log(data.find(item => item.id === selectedJoinId));
   }, [selectedJoinId])
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <JoinContext.Provider value={joinContextValue}>
+      <AllContext.Provider value={AllContextValue}>
           <RouterProvider router={router}/>
-      </JoinContext.Provider>
+      </AllContext.Provider>
     </LocalizationProvider>
   )
 }

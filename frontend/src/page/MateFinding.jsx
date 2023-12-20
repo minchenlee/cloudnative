@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from "react"
 import MateFindingCard from "../components/cards/MateFindingCard"
 import BookingQuickButton from "../components/buttons/BookingQuickButton"
-import JoinContext from "../contexts/JoinContext"
+import AllContext from "../contexts/AllContext"
 
 function MateFindingPage(){
   // 重置選擇的運動項目
-  const { selectedSport, setSelectedSport} = useContext(JoinContext);
+  const { selectedSport, setSelectedSport} = useContext(AllContext);
   useEffect(() => {
     setSelectedSport("basketball");
   }, [])

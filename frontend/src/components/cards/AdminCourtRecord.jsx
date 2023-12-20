@@ -1,11 +1,11 @@
 import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import FeatherIcon from "feather-icons-react";
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 
 
 function InfoRow(){
-	const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+	const {isModalOpen, setIsModalOpen} = useContext(AllContext);
 
   return(
 		<div className="h-36 w-full flex flex-row items-center border-b-1 last:border-none">
@@ -30,7 +30,7 @@ function InfoRow(){
 
 
 function AdminCourtRecordCard({previewData}) {
-  const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
 
   return (
     <div className={`group sticky top-28 z-0 w-full h-[700px] bg-white rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] flex flex-col border-2 border-silver`}>

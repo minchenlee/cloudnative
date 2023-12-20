@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import { postAuthData, postData } from "../utilities/api"
-import JoinContext from "../contexts/JoinContext";
+import AllContext from "../contexts/AllContext";
 import BackButton from "../components/buttons/BackButton";
 import AdminStadiumInfoCard from "../components/cards/AdminStadiumInfoCard";
 import FeatherIcon from 'feather-icons-react';
@@ -64,7 +64,7 @@ let stadiumDataDummy = {
 
 
 function AdminCreateStadiumPage(){
-  const {isLogin, setIsLogin} = useContext(JoinContext);
+  const {isLogin, setIsLogin} = useContext(AllContext);
   const [isEditingInfo, setIsEditingInfo] = useState(false); // 紀錄是否正在編輯基本資訊
   const [isEditingCourt, setIsEditingCourt] = useState(false); // 紀錄是否正在編輯球場
   const [stadiumData, setStadiumData] = useState([]); // 儲存球場資料

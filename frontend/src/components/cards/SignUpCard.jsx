@@ -2,13 +2,13 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { postData } from "../../utilities/api"
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 import toast from 'react-hot-toast';
 import 'ldrs/ring2'
 
 
 function SignUpCard({isForAdmin}){
-  const { isLogin, setIsLogin } = useContext(JoinContext);
+  const { isLogin, setIsLogin } = useContext(AllContext);
   const [isWaiting, setIsWaiting] = useState(false);
   const navigate = useNavigate();
   const {

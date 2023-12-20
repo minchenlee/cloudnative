@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import FeatherIcon from "feather-icons-react";
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 import Modal from "../modals/Modal";
 
 
@@ -28,7 +28,7 @@ function InfoRow({icon, content}){
 
 
 function SiteInfoCard({previewData}) {
-  const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
 
   return (
     <div className={`group sticky top-24 z-0 w-[419px] h-[600px] bg-white rounded-3xl shadow-[2px_4px_8px_1px_rgba(0,0,0,0.25)] overflow-hidden `}>

@@ -1,11 +1,14 @@
 import { useState, useContext, useEffect } from "react"
 import { dayCodeToChineseDay } from "../utilities/DayCodeConverter"
-import JoinContext from "../contexts/JoinContext"
+import AllContext from "../contexts/AllContext"
 import BackButton from "../components/buttons/BackButton"
 import SearchBar from "../components/input/SearchBar"
 import FilterButton from "../components/buttons/FilterButton"
 import MateDayStatusCard from "../components/cards/MateDayStatusCard"
 import Modal from "../components/modals/Modal"
+import { fetchData, postData } from "../utilities/api"
+import dayjs from "dayjs"
+import 'ldrs/mirage'
 
 function JoiningPage(){
   // Dummy Data
@@ -72,6 +75,11 @@ function JoiningPage(){
     }
   ];
 
+  const [isWaiting, setIsWaiting] = useState(false);
+  const {dateCodeTable, setDateCodeTable} = useContext(AllContext); // 用來儲存日期和日期代碼的對應表
+  const [activityData, setActivityData] = useState(null);  // 用來儲存球場資料
+  const [selectedDate, setSelectedDate] = useState(dayjs()); // SearchBar, MUI Date Picker 會用到
+
   // merge data
   const jsonData = rawJsonData.map((data, index) => {
     return {
@@ -82,25 +90,77 @@ function JoiningPage(){
       link: fixedData[index].link
     }
   })
-
-  // 取得資料後存入 localStorage
-  useEffect(() => {
-    console.log("call api");
-    window.localStorage.setItem("joinJson", JSON.stringify(jsonData));
-  }, [jsonData])
   
-  const { selectedSport, setSelectedSport} = useContext(JoinContext);
+  const { selectedSport, setSelectedSport} = useContext(AllContext);
   // 處理選擇的運動項目
   const handleSportClick = (sport) => {
     setSelectedSport(sport);
   }
-
   
+  // 每當 selectedDate 改變，就會 call API
+  const getStadiumData = async () => {
+    setIsWaiting(true);
+    const startYear = selectedDate.startOf('week').$y;
+    const startMonth = selectedDate.startOf('week').$M + 1;
+    const startDay = selectedDate.startOf('week').$D;
+    const endYear = selectedDate.endOf('week').$y;
+    const endMonth = selectedDate.endOf('week').$M + 1;
+    const endDay = selectedDate.endOf('week').$D;
 
+    // 處理時間
+    // generate date between start and end date
+    const dateArray = [];
+    const startDate = dayjs(`${startYear}-${startMonth}-${startDay}`);
+    const endDate = dayjs(`${endYear}-${endMonth}-${endDay}`);
+    const diff = endDate.diff(startDate, 'day');
+    for (let i = 0; i <= diff; i++) {
+      dateArray.push(startDate.add(i, 'day').format('YYYY/MM/DD'));
+    }
+
+    // 用來讓 selectDateButton 取得日期
+    const mergeData = dateArray.map((data, index) => {
+      return {
+        date: data.slice(5), // 用來顯示在 selectDateButton 上面，不需要年份
+        fullDate: data, // 用來傳給 API
+        dayCode: fixedData[index].dayCode,
+        day: dayCodeToChineseDay(fixedData[index].dayCode),
+        link: fixedData[index].link
+      }
+    })
+
+    // console.log(mergeData);
+    setDateCodeTable(mergeData);
+    window.localStorage.setItem("Stadium-dateCodeTable", JSON.stringify(mergeData));
+
+    const activitiesNumList = [];
+    for ( const date of dateArray ) {
+      let response = await fetchData(`activities/sport/${selectedSport}/date/${date.replaceAll('/', '-')}`);
+      const data = response.data.activities;
+      activitiesNumList.push(data.length);
+    }
+    // console.log(activitiesNumList);
+    
+    // 用來傳給 MateDayStatusCard
+    const rawActivityData = mergeData.map((data, index) => {
+      return {
+        date: data.date,
+        fullDate: data.fullDate,
+        dayCode: data.dayCode,
+        day: data.day,
+        link: data.link,
+        activitiesNum: activitiesNumList[index]
+      }
+    })
+
+    // console.log(rawActivityData);
+    setActivityData(rawActivityData);
+    setIsWaiting(false);
+  }
+  
   // 重新 call API
   useEffect(() => {
-    // console.log("call api");
-  }, [selectedSport])
+    getStadiumData();
+  }, [selectedSport, selectedDate])
 
   // 分類項目
   function CategoryItem({text, sport, selected, onClick}){
@@ -134,8 +194,8 @@ function JoiningPage(){
               <h1 className="text-2xl font-semibold text-black">尋找球場報名</h1>
             </div>
             <div className="flex flex-row justify-center gap-3 h-14">
-              <SearchBar/>
-              <FilterButton/>
+              <SearchBar selectedDate={selectedDate} setSelectedDate={setSelectedDate}/>
+              {/* <FilterButton/> */}
             </div>
             <div className="w-1/3"/>
           </div>
@@ -145,18 +205,30 @@ function JoiningPage(){
             <CategoryCard/>
           </div>
           <div className="w-1/2">
+            {isWaiting || activityData === null ? 
+            <div className="flex items-center justify-center h-full">
+              <div className="scale-125">
+                <l-mirage
+                size="75"
+                speed="2.5"
+                color="black"
+                />
+              </div>
+            </div>
+            :
             <div className="flex flex-col gap-6 items-center">
-              {jsonData.map((card, index) => (
+              {activityData.map((data, index) => (
                 <MateDayStatusCard
                   key={index}
-                  date={card.date}
-                  numberOfCourts={card.numberOfCourts}
-                  dayCode={card.dayCode}
-                  day={card.day}
-                  link={card.link}
+                  date={data.date}
+                  day={data.day}
+                  dayCode={data.dayCode}
+                  link={data.link}
+                  activitiesNum={data.activitiesNum}
                 />
               ))}
             </div>
+            }
           </div>
           <div className="w-1/4"></div>
         </div>

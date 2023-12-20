@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef, useContext, createContext} from "react"
 import { useNavigate } from "react-router-dom";
 import useOutsideClick from "../../utilities/useOutsideClick";
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 import FeatherIcon from "feather-icons-react";
 import TimePicker from "../input/TimerPicker"
 import TimePickerDirection from "../directions/TimePickerDireaction";
@@ -52,7 +52,7 @@ function SelectMenu({defaultTitle, optionList, addtionalClass, selectedOption, s
 
 function CourtCard({court}){
   const courtName = court.courtName;
-  const courtID = court.id;
+  const courtId = court.courtId;
   const timeList = court.timeList;
   const notAvailableList = court.notAvailableList
   // console.log("notAvailableList: ", notAvailableList);
@@ -161,9 +161,9 @@ function CourtCard({court}){
     // 如果沒有 bookingInfo，則不載入上次選擇的時間
     if (!bookingInfo) return;
     
-    const savedCourtID = bookingInfo.courtID;
+    const savedcourtId = bookingInfo.courtId;
     // 如果使用者當初按下預約的場地不是現在這個場地，則不將時間設定為上次選擇的時間
-    if (savedCourtID !== courtID) return;
+    if (savedcourtId !== courtId) return;
 
     const savedStartTime = bookingInfo.startTime;
     const savedEndTime = bookingInfo.endTime;
@@ -187,15 +187,16 @@ function CourtCard({court}){
       return;
     }
 
-    // 將 bookingInfo 存入 localStorage
-    const bookingInfo = {
-      courtID: courtID,
-      courtName: courtName,
-      startTime: startTime,
-      endTime: endTime,
-    }
-    window.localStorage.setItem("Stadium-bookingInfo", JSON.stringify(bookingInfo));
 
+    // 將 bookingInfo 存入 localStorage
+    let bookingInfo = window.localStorage.getItem("Stadium-bookingInfo");
+    bookingInfo = JSON.parse(bookingInfo);
+    bookingInfo.courtId = courtId;
+    bookingInfo.courtName = courtName;
+    bookingInfo.startTime = startTime;
+    bookingInfo.endTime = endTime;
+    window.localStorage.setItem("Stadium-bookingInfo", JSON.stringify(bookingInfo));
+    // date: window.localStorage.getItem("Stadium-selected-day")
     
     // wait 2 sec and then set isProcessing to false, useNavigate to /record
     // 假裝 call API 並等待 2 秒 (實際上是直接跳轉到 /record)
@@ -203,7 +204,7 @@ function CourtCard({court}){
     setTimeout(() => {
       setIsProcessing(false);
       navigate("/booking/confirm");
-    }, 1500);
+    }, 1200);
   }
 
   return (

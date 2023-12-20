@@ -9,7 +9,7 @@ import codeSportConverter  from "../../utilities/codeSportConverter.jsx"
 
 // 引入 Modal
 import Modal from "../modals/Modal";
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 
 import FeatherIcon from 'feather-icons-react';
 import Cropper from 'react-easy-crop'
@@ -34,7 +34,7 @@ function AdminStadiumInfoCard(props){
   const setImages = props.setImages || null;
 
   // 控制 Modal
-  const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
   
   // 當 editedData 改變時，console 出來
   // useEffect(()=>{
@@ -262,7 +262,7 @@ function ImageBlock(){
 }
 
 function ImageEditBlock(props){
-  const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
   const images = props.images || [];
   const setImages = props.setImages || null;
   const maxNumber = 1;
@@ -344,7 +344,7 @@ function ImageEditBlock(props){
 
 
 function ImageCropModal(props){
-  const {isModalOpen, setIsModalOpen} = useContext(JoinContext);
+  const {isModalOpen, setIsModalOpen} = useContext(AllContext);
   const images = props.images || [];
   const setImages = props.setImages || null;
 

@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { useLocation } from "react-router-dom";
+import { fetchData, postData } from "../utilities/api"
 import BackButton from "../components/buttons/BackButton"
 import MateCourtCard from "../components/cards/MateCourtCard"
 import TimeIntervalDirection from "../components/directions/TimeIntervalDirection"
@@ -7,14 +8,16 @@ import SelectDateButton from "../components/buttons/SelectDateButton"
 import separateItemsByTime from "../utilities/seperateByTime"
 import Modal from "../components/modals/Modal"
 import LogInModal from "../components/modals/LoginModal";
-import JoinContext from "../contexts/JoinContext"
+import AllContext from "../contexts/AllContext"
+import dayjs from "dayjs";
+import {dayCodeToChineseDay} from "../utilities/DayCodeConverter"
 
 
 // Modal 設定 
 function JoiningDetailModal(){
-  const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
+  const dateCodeTable = JSON.parse(window.localStorage.getItem("Stadium-dateCodeTable"));
   const joinDetailData = JSON.parse(window.localStorage.getItem("joinDetailJson"));
-  const {selectedJoinId, selectedDayCode} = useContext(JoinContext);
+  const {selectedJoinId, selectedDayCode} = useContext(AllContext);
 
   const [selectedJoinData, setSelectedJoinData] = useState();
   function convertNewlinesToBR(inputString) {
@@ -35,15 +38,16 @@ function JoiningDetailModal(){
   }
 
   if (!selectedJoinData) return null;
+  const contact = selectedJoinData["contact"] || "未提供";
 
   return(
     <div className="flex flex-col w-full h-[298px] gap-5 overflow-scroll">
       <InfoRow title="球場" content={selectedJoinData["stadium"]}/>
       <InfoRow title="場地" content={selectedJoinData["court"]}/>
-      <InfoRow title="日期" content={weekData[selectedDayCode]["date"]}/>
+      <InfoRow title="日期" content={dateCodeTable[selectedDayCode]["date"]}/>
       <InfoRow title="時段" content={`${selectedJoinData["startTime"]} ~ ${selectedJoinData["endTime"]}`}/>
       <InfoRow title="成員" content={`${selectedJoinData["master"]}, ${selectedJoinData["member"]}`}/>
-      <InfoRow title="聯絡方式" content={`${selectedJoinData["contact"]}`}/>
+      <InfoRow title="聯絡方式" content={`${contact}`}/>
       <InfoRow title="附註" content={`${selectedJoinData["note"]}`} additionalClass="pe-10 whitespace-pre-line"/>
     </div>
   )
@@ -189,16 +193,75 @@ function JoiningDetailPage(){
   const sortedJsonData = separateItemsByTime(rawJsonData);
 
   // 控制 modal 類型
-  const { modalType, setModalType } = useContext(JoinContext);
+  const { modalType, setModalType } = useContext(AllContext);
+  const { selectedSport, setSelectedSport } = useContext(AllContext);
+  const { selectedDayCode, setSelectedDayCode } = useContext(AllContext);
+  const dateCodeTable = JSON.parse(window.localStorage.getItem("Stadium-dateCodeTable"));
+  const [activityData, setActivityData ] = useState(null);
+
+
+  // 每當 selectedDate 改變，就會 call API
+  const getActivityData = async () => {
+    const date = dateCodeTable[selectedDayCode]["fullDate"].replaceAll("/", "-");
+    let response = await fetchData(`activities/sport/${selectedSport}/date/${date.replaceAll('/', '-')}`);
+    const dataList = response.data.activities;
+
+    let formattedDataList = []
+    for (const data of dataList) {
+      // console.log(data);
+
+      // 取得 court 資訊
+      response = await fetchData(`courts/courts/stadium/${data.stadiumId}`);
+      const courtDataList = response.data.courts;
+      // 找出預定的 court 球場是 stadium 中的第幾個
+      const courtIndex = courtDataList.findIndex((court) => court.id === data.court);
+      const courtName = `球場 ${String.fromCharCode(65 + courtIndex)}`;
+
+      // startTime and endTime should be in format of "XX:XX", padding 0 if necessary
+      // do not use dayjs here, it will cause error
+      const startTime = data.startHour < 10 ? `0${data.startHour}:00` : `${data.startHour}:00`;
+      const endTime = data.endHour < 10 ? `0${data.endHour}:00` : `${data.endHour}:00`;
+
+      const formattedData = {
+        id: data.id,
+        stadium: data.stadium,
+        court: courtName,
+        startTime: startTime,
+        endTime: endTime,
+        master: data.maker,
+        member: data.participants.map(item => item.name).join(", "),
+        alreadyRecruitNumber: data.participants.length,
+        recruitNumber: data.capacity + 1,
+        contact: data.contact,
+        note: data.note
+      }
+
+      console.log(formattedData);
+      formattedDataList.push(formattedData);      
+    }
+
+    window.localStorage.setItem("joinDetailJson", JSON.stringify(formattedDataList));
+    formattedDataList = separateItemsByTime(formattedDataList);
+    
+    // console.log(formattedDataList);
+    setActivityData(formattedDataList);
+  }
+
+  // 每當 selectedDayCode 改變，就會 call API
+  useEffect(() => {
+    getActivityData();
+  }, [selectedSport, selectedDayCode])
+
 
   // 當前的資料進行儲存
-  useEffect(() => {
-    // console.log(jsonData);
-    window.localStorage.setItem("joinDetailJson", JSON.stringify(rawJsonData));
-  }, [rawJsonData])
+  // useEffect(() => {
+  //   // console.log(jsonData);
+  //   window.localStorage.setItem("joinDetailJson", JSON.stringify(rawJsonData));
+  // }, [rawJsonData])
 
   // 每個時間區間的球場資訊
   function TimeIntervalSet({groupJsonData, config}){
+    if (groupJsonData.length === 0) return null;
     return(
       <div className="w-full flex flex-col mt-10 gap-4">
         <TimeIntervalDirection 
@@ -221,6 +284,8 @@ function JoiningDetailPage(){
     )
   }
 
+  if (!activityData) return null;
+
   return(
     <div className="container mx-auto px-24">
       <div className="relative w-full max-w-[1280px] mx-auto mt-4 mb-10 flex flex-col">
@@ -239,7 +304,7 @@ function JoiningDetailPage(){
         </div>
         <div className="flex flex-col gap-8 mb-20">
           <TimeIntervalSet 
-            groupJsonData={sortedJsonData["08:00-12:00"]} 
+            groupJsonData={activityData["08:00-12:00"]} 
             config={{
               text:"上午", 
               time:"08:00 ~ 12:00", 
@@ -248,7 +313,7 @@ function JoiningDetailPage(){
               }}
             />
           <TimeIntervalSet 
-            groupJsonData={sortedJsonData["12:00-18:00"]} 
+            groupJsonData={activityData["12:00-18:00"]} 
             config={{
               text:"下午", 
               time:"12:00 ~ 18:00", 
@@ -257,7 +322,7 @@ function JoiningDetailPage(){
             }}
             />
           <TimeIntervalSet 
-            groupJsonData={sortedJsonData["18:00-22:00"]}
+            groupJsonData={activityData["18:00-22:00"]}
             config={{
               text:"晚上", 
               time:"18:00 ~ 22:00", 

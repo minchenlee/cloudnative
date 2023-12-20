@@ -115,11 +115,12 @@ export const putAuthData = async (endpoint, data, token, contentType = 'applicat
   }
 };
 
-export const deleteAuthData = async (endpoint, token, contentType = 'application/json') => {
+// deleteAuthData should not have data
+export const deleteAuthData = async (endpoint, token) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/${endpoint}`, {
+      data: {},
       headers: {
-        'Content-Type': contentType,
         Authorization: `Bearer ${token}`
       }
     });
@@ -129,5 +130,5 @@ export const deleteAuthData = async (endpoint, token, contentType = 'application
     console.error('Error deleting data:', error);
     return error.response
   }
-}
+};
 
