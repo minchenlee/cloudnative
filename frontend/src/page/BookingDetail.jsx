@@ -98,19 +98,20 @@ function BookingDetailPage(){
       let notAvailableList = [];
       if (Object.keys(bookingData).length !== 0){
         const bookingList = bookingData[court.id];
-        for (let booking of bookingList) {
-          // console.log(booking);
-          // 根據 start_time 和 end_time 以及 diff 和 dayjs 來產生 notAvailableList
-          const startHour = parseInt(booking.startHour);
-          const endHour = parseInt(booking.endHour);
-          let currentHour = startHour;
-          while (currentHour < endHour) {
-            notAvailableList.push(`${currentHour.toString().padStart(2, '0')}:00`);
-            currentHour++;
+        if (bookingList !== undefined) {
+          for (let booking of bookingList) {
+            // console.log(booking);
+            // 根據 start_time 和 end_time 以及 diff 和 dayjs 來產生 notAvailableList
+            const startHour = parseInt(booking.startHour);
+            const endHour = parseInt(booking.endHour);
+            let currentHour = startHour;
+            while (currentHour < endHour) {
+              notAvailableList.push(`${currentHour.toString().padStart(2, '0')}:00`);
+              currentHour++;
+            }
           }
         }
       }
-
 
       const courtId = court.id;
       const courtName = `球場 ${String.fromCharCode(65 + i)}`;

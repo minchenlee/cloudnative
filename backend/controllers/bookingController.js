@@ -75,7 +75,7 @@ const bookingController = {
                 const eveningHours = Math.max(booking.endHour - 18, 0) - Math.max(booking.startHour - 18, 0)
                 const afternoonHours = booking.endHour - booking.startHour - morningHours - eveningHours
 
-                console.log(morningHours, afternoonHours, eveningHours)
+                // console.log(morningHours, afternoonHours, eveningHours)
                 data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]] = [0, 0, 0]
                 data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]][0] += morningHours;
                 data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]][1] += afternoonHours;
