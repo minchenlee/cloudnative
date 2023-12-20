@@ -14,7 +14,6 @@ const bookingModel = {
                     date: 'desc'
                 }
             ],
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return bookings;
     },
@@ -28,7 +27,6 @@ const bookingModel = {
                 activitiesRecords: true,
                 stadiumAt: true,
             },
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return booking;
     },
@@ -40,8 +38,7 @@ const bookingModel = {
                     lte: new Date(endDate),
                     gte: new Date(startDate),
                 }
-            },
-            cacheStrategy: { swr: 60, ttl: 60 }
+            }
         });
         return bookings;
     },
@@ -59,7 +56,6 @@ const bookingModel = {
                     startHour: 'asc'
                 }
             ],
-            cacheStrategy: { swr: 60, ttl: 60 }
         });
         return bookings;
     },
