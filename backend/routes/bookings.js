@@ -1,9 +1,10 @@
 import express from 'express';
 import bookingController from '../controllers/bookingController.js';
 const router = express.Router();
+import isAuth from '../middleware/isAuth.js';
 
 // Create a new booking
-router.post('/booking', bookingController.createBooking);
+router.post('/booking', isAuth, bookingController.createBooking);
 // Get bookings by user id
 router.get('/user', bookingController.getBookingsByUserId);
 // Get booking by sport and dates

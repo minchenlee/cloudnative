@@ -11,6 +11,8 @@ router.get('/user', isAuth, activityController.getActivitiesByUserId);
 router.get('/sport/:sport/date/:date', activityController.getActivitiesBySportAndDate);
 // Get activities summary
 router.get('/', activityController.getActivities);
+// Update activity by id
+router.put('/activity/:id', isAuth, activityController.updateActivityById);
 // Delete a activity by id
 router.delete('/activity/:id', isAuth, activityController.deleteActivityById);
 // Join an activity by id

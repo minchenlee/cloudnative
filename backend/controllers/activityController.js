@@ -5,8 +5,7 @@ const activityController = {
     createActivity: async (req, res) => {
         const {note, capacity} = req.body;
         // get user id from jwt
-        // const userId = req.user.id;
-        const userId = 1;
+        const userId = req.user.id;
         const {bookingId} = req.params;
         const isActivity = true;
         try {
@@ -95,19 +94,45 @@ const activityController = {
             }
         });
     },
+    updateActivityById: async (req, res) => {
+        const {id} = req.params;
+        const {note, capacity} = req.body;
+        const isActivity = true;
+        try {
+            const activityRecord = await bookingModel.updateBookingById(id, isActivity, note, capacity);
+            res.status(200).json({
+                msg: "Activity updated successfully.",
+                data: {
+                    activityRecord
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Failed to update activity."
+            });
+        }
+    },
     deleteActivityById: async (req, res) => {
         const {id} = req.params;
-        const activityRecord = await activityModel.deleteActivityById(id);
-        res.status(200).json({
-            msg: "Activity deleted successfully.",
-            data: {
-                activityRecord
-            }
-        });
+        try {
+            const activityRecord = await activityModel.deleteActivityByBookingId(id);
+            res.status(200).json({
+                msg: "Activity deleted successfully.",
+                data: {
+                    activityRecord
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Failed to delete activity."
+            });
+        }
     },
     joinActivity: async (req, res) => {
         const userId = req.user.id;
-        const bookingId = req.params;
+        const {bookingId} = req.params;
         try {
             const activityRecord = await activityModel.joinActivity(userId, bookingId);
             res.status(200).json({
@@ -127,13 +152,20 @@ const activityController = {
         // TODO: user validation
         const userId = req.user.id;
         const bookingId= req.params;
-        const activityRecord = await activityModel.leaveActivity(userId, activityId);
-        res.status(200).json({
-            msg: "Activity left successfully.",
-            data: {
-                activityRecord
-            }
-        });
+        try {
+            const activityRecord = await activityModel.leaveActivity(userId, bookingId);
+            res.status(200).json({
+                msg: "Activity left successfully.",
+                data: {
+                    activityRecord
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Failed to leave activity."
+            });
+        }
     }
 }
 export default activityController;
