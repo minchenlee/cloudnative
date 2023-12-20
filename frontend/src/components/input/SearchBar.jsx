@@ -8,8 +8,6 @@ import { styled } from '@mui/material/styles';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 
-
-
 // search bar
 dayjs.extend(isBetweenPlugin);
 const CustomPickersDay = styled(PickersDay, {
@@ -78,16 +76,16 @@ function SearchBar(props) {
   // .$M + 1 月 => 11+1
   // .$D 日 => 12
 
-  useEffect(() => {
-    console.log(weekPickerOpen)
-  }, [weekPickerOpen])
+  const handleClick = () => {
+    setWeekPickerOpen(!weekPickerOpen)
+  }
 
   return (
     <div className="relative text-dark-gray font-semibold bg-white w-[378px] px-2 py-3 rounded-full border-solid border-silver border-2 shadow-md flex items-center">
       <div className="w-full h-full pe-8 divide-x-2">
         <button className="w-1/2 h-full text-base text-center">所有場地</button>
         <button className="w-1/2 h-full text-base text-start ps-3 font-robotoMono"
-          onClick={() => setWeekPickerOpen(!weekPickerOpen)}> 
+          onClick={handleClick}> 
           {value.startOf('week').$M + 1}/{value.startOf('week').$D} - {value.endOf('week').$M +1}/{value.endOf('week').$D}
         </button>
       </div>

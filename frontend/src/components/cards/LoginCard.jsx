@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { postData } from "../../utilities/api"
 import AllContext from "../../contexts/AllContext";
+import UseAnimations from "react-useanimations";
+import visibility from 'react-useanimations/lib/visibility'
 import toast from 'react-hot-toast';
 import 'ldrs/ring2'
 
@@ -10,6 +12,7 @@ import 'ldrs/ring2'
 function LoginCard({isForAdmin}){
   const { isLogin, setIsLogin } = useContext(AllContext);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [passwordShown, setPasswordShown] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -113,12 +116,24 @@ function LoginCard({isForAdmin}){
             className="border-1 border-solid border-gray rounded-lg px-3 py-1 font-robotoMono focus:outline-none focus:ring-1 ring-primary" placeholder="Email" 
           />
           {errors.email?.type === "required" && HintMessage({text: "請輸入信箱"})}
-          <input 
-            {...register("password", { 
-              required: true,
-            })}
-            className="mt-5 border-1 border-solid border-gray rounded-lg px-3 py-1 font-robotoMono focus:outline-none focus:ring-1 ring-primary" placeholder="Password" 
-          />
+          <div className='w-full relative'>
+            <input 
+              {...register("password", { 
+                required: true,
+              })}
+              className="w-full mt-5 border-1 border-solid border-gray rounded-lg px-3 py-1 font-robotoMono focus:outline-none focus:ring-1 ring-primary" 
+              placeholder="Password" 
+              type="password"
+            />
+             <div  className='absolute right-3 top-5'>
+              <UseAnimations 
+                animation={visibility} 
+                size={32}
+                reverse={true}
+                onClick={() => setPasswordShown(!passwordShown)}
+              />
+            </div>
+          </div>
           {errors.password && HintMessage({text: "請輸入密碼"})}
           <button 
           className="flex items-center justify-center mt-5 bg-primary text-white rounded-full py-2 font-robotoMono hover:bg-black duration-300"

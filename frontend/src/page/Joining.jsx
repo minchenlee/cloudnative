@@ -11,70 +11,6 @@ import dayjs from "dayjs"
 import 'ldrs/mirage'
 
 function JoiningPage(){
-  // Dummy Data
-  let rawJsonData = [
-    {
-      "date": "12/04",
-      "numberOfCourts": "12"
-    },
-    {
-      "date": "12/05",
-      "numberOfCourts": "6"
-    },
-    {
-      "date": "12/06",
-      "numberOfCourts": "3"
-    },
-    {
-      "date": "12/07",
-      "numberOfCourts": "6"
-    },
-    {
-      "date": "12/08",
-      "numberOfCourts": "9"
-    },
-    {
-      "date": "12/09",
-      "numberOfCourts": "2"
-    },
-    {
-      "date": "12/10",
-      "numberOfCourts": "7"
-    }
-  ];
-
-  // Fixed Data, Don't Touch
-  const fixedData = [
-    {
-      "link": "/findmate/join/sun",
-      "dayCode": 0
-    },
-    {
-      "link": "/findmate/join/mon",
-      "dayCode": 1
-    },
-    {
-      "link": "/findmate/join/tue",
-      "dayCode": 2
-    },
-    {
-      "link": "/findmate/join/wen",
-      "dayCode": 3
-    },
-    {
-      "link": "/findmate/join/thu",
-      "dayCode": 4
-    },
-    {
-      "link": "/findmate/join/fri",
-      "dayCode": 5
-    },
-    {
-      "link": "/findmate/join/sat",
-      "dayCode": 6
-    }
-  ];
-
   const [isWaiting, setIsWaiting] = useState(false);
   const {dateCodeTable, setDateCodeTable} = useContext(AllContext); // 用來儲存日期和日期代碼的對應表
   const [activityData, setActivityData] = useState(null);  // 用來儲存球場資料
@@ -186,7 +122,6 @@ function JoiningPage(){
       </div>
     )
   }
-  console.log(activityData);
 
   return(
     <div className="container mx-auto px-24 ">
@@ -248,4 +183,70 @@ function JoiningPage(){
   )
 }
 
+
+  // Dummy Data
+  let rawJsonData = [
+    {
+      "date": "12/04",
+      "numberOfCourts": "12"
+    },
+    {
+      "date": "12/05",
+      "numberOfCourts": "6"
+    },
+    {
+      "date": "12/06",
+      "numberOfCourts": "3"
+    },
+    {
+      "date": "12/07",
+      "numberOfCourts": "6"
+    },
+    {
+      "date": "12/08",
+      "numberOfCourts": "9"
+    },
+    {
+      "date": "12/09",
+      "numberOfCourts": "2"
+    },
+    {
+      "date": "12/10",
+      "numberOfCourts": "7"
+    }
+  ];
+
+  // Fixed Data, Don't Touch
+  const fixedData = [
+    {
+      "link": "/findmate/join/sun",
+      "dayCode": 0
+    },
+    {
+      "link": "/findmate/join/mon",
+      "dayCode": 1
+    },
+    {
+      "link": "/findmate/join/tue",
+      "dayCode": 2
+    },
+    {
+      "link": "/findmate/join/wen",
+      "dayCode": 3
+    },
+    {
+      "link": "/findmate/join/thu",
+      "dayCode": 4
+    },
+    {
+      "link": "/findmate/join/fri",
+      "dayCode": 5
+    },
+    {
+      "link": "/findmate/join/sat",
+      "dayCode": 6
+    }
+  ];
+
+  
 export default JoiningPage

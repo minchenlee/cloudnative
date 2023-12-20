@@ -45,8 +45,8 @@ function JoiningDetailModal(){
       <InfoRow title="場地" content={selectedJoinData["court"]}/>
       <InfoRow title="日期" content={dateCodeTable[selectedDayCode]["date"]}/>
       <InfoRow title="時段" content={`${selectedJoinData["startTime"]} ~ ${selectedJoinData["endTime"]}`}/>
-      <InfoRow title="成員" content={`${selectedJoinData["master"]}, ${selectedJoinData["member"]}`}/>
-      <InfoRow title="聯絡方式" content={`${contact}`}/>
+      <InfoRow title="成員" content={`${selectedJoinData["member"]}`}/>
+      <InfoRow title="聯絡方式" content={`${contact.slice(0, 4)}-${contact.slice(4, 7)}-${contact.slice(7, 10)}`}/>
       <InfoRow title="附註" content={`${selectedJoinData["note"]}`} additionalClass="pe-10 whitespace-pre-line"/>
     </div>
   )
@@ -207,7 +207,7 @@ function JoiningDetailPage(){
 
     let formattedDataList = []
     for (const data of dataList) {
-      // console.log(data);
+      console.log(data);
 
       // 取得 court 資訊
       response = await fetchData(`courts/courts/stadium/${data.stadiumId}`);
@@ -221,6 +221,19 @@ function JoiningDetailPage(){
       const startTime = data.startHour < 10 ? `0${data.startHour}:00` : `${data.startHour}:00`;
       const endTime = data.endHour < 10 ? `0${data.endHour}:00` : `${data.endHour}:00`;
 
+      // 從 participants 中的 id 去打 API 取得名字
+      const memberList = [];
+      for (const id of data.participants) {
+        response = await fetchData(`users/${id}`)
+        const name = response.data.user.username
+        memberList.push(name);
+      }
+
+      // 從 maker 中的 id 去打 API 取得聯絡資訊
+      response = await fetchData(`users/${data.makerId}`)
+      const contact = response.data.user.tel;
+      // console.log(contact);
+
       const formattedData = {
         id: data.id,
         stadium: data.stadium,
@@ -228,10 +241,10 @@ function JoiningDetailPage(){
         startTime: startTime,
         endTime: endTime,
         master: data.maker,
-        member: data.participants.map(item => item.name).join(", "),
+        member: memberList.map(item => item).join(", "),
         alreadyRecruitNumber: data.participants.length,
         recruitNumber: data.capacity + 1,
-        contact: data.contact,
+        contact: contact,
         note: data.note
       }
 

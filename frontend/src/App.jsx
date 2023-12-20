@@ -113,12 +113,12 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log("selectedDayCode: ", selectedDayCode);
-    console.log("selectedSport: ", selectedSport);
+    // console.log("selectedDayCode: ", selectedDayCode);
+    // console.log("selectedSport: ", selectedSport);
   }, [selectedDayCode, selectedSport])
 
   useEffect(() => {
-    console.log("selectedJoinId: ", selectedJoinId);
+    // console.log("selectedJoinId: ", selectedJoinId);
     if (selectedJoinId === undefined) return;
     const data = JSON.parse(window.localStorage.getItem("joinDetailJson"));
     // console.log(data.find(item => item.id === selectedJoinId));

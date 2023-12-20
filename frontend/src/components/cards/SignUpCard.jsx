@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { postData } from "../../utilities/api"
 import AllContext from "../../contexts/AllContext";
+import UseAnimations from "react-useanimations";
+import visibility from 'react-useanimations/lib/visibility'
 import toast from 'react-hot-toast';
 import 'ldrs/ring2'
 
@@ -10,6 +12,7 @@ import 'ldrs/ring2'
 function SignUpCard({isForAdmin}){
   const { isLogin, setIsLogin } = useContext(AllContext);
   const [isWaiting, setIsWaiting] = useState(false);
+  const [passwordShown, setPasswordShown] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -112,21 +115,32 @@ function SignUpCard({isForAdmin}){
         />
         {errors.email?.type === "pattern" && HintMessage({text: errors.email.message, textColor: "text-yellow-500"})}
         {errors.email?.type === "required" && HintMessage({text: "請輸入信箱"})}
-        <input 
-          {...register("password", { 
-            required: true,
-            minLength: {
-              value: 8,
-              message: "密碼長度不得小於 8 個字元"
-            },
-            pattern: {
-              value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/i,
-              message: "密碼需由英文和數字組成"
-            }
-          })}
-          className="mt-5 border-1 border-solid border-gray rounded-lg px-3 py-1 font-robotoMono focus:outline-none focus:ring-1 ring-primary" 
-          placeholder="Password" 
-        />
+        <div className='w-full relative'>
+          <input 
+            {...register("password", { 
+              required: true,
+              minLength: {
+                value: 8,
+                message: "密碼長度不得小於 8 個字元"
+              },
+              pattern: {
+                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/i,
+                message: "密碼需由英文和數字組成"
+              }
+            })}
+            className="w-full mt-5 border-1 border-solid border-gray rounded-lg px-3 py-1 font-robotoMono focus:outline-none focus:ring-1 ring-primary" 
+            placeholder="Password" 
+            type={passwordShown ? "text" : "password"}
+          />
+          <div  className='absolute right-3 top-5'>
+            <UseAnimations 
+              animation={visibility} 
+              size={32}
+              reverse={true}
+              onClick={() => setPasswordShown(!passwordShown)}
+            />
+          </div>
+        </div>
         {errors.password?.type === "required" && HintMessage({text: "請輸入密碼"})}
         {errors.password?.type === "minLength" && HintMessage({text: errors.password.message, textColor: "text-yellow-500"})}
         {errors.password?.type === "pattern" && HintMessage({text: errors.password.message, textColor: "text-yellow-500"})}

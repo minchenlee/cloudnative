@@ -23,6 +23,7 @@ function BookingStadiumPage(){
   const {selectedDayCode, setSelectedDayCode, selectedSport, setSelectedSport} = useContext(AllContext);
   const {dateCodeTable, setDateCodeTable} = useContext(AllContext); // 用來儲存日期和日期代碼的對應表
   const [selectedDate, setSelectedDate] = useState(dayjs()); // SearchBar, MUI Date Picker 會用到
+  const [isWaiting, setIsWaiting] = useState(false);
   
 
   useEffect (() => {
@@ -36,6 +37,7 @@ function BookingStadiumPage(){
 
   // 每當 selectedDate 改變，就會 call API
   const getStadiumData = async () => {
+    setIsWaiting(true);
     const startYear = selectedDate.startOf('week').$y;
     const startMonth = selectedDate.startOf('week').$M + 1;
     const startDay = selectedDate.startOf('week').$D;
@@ -188,9 +190,10 @@ function BookingStadiumPage(){
         }
       })
     }
-    
+
     // console.log(bookingDataList);
     setStadiumData(bookingDataList);
+    setIsWaiting(false);
   }
 
   useEffect(() => {
@@ -248,16 +251,28 @@ function BookingStadiumPage(){
             </div>
           </div>
           {/* using tailwind scrollbar package to control scrollbar*/}
-          <div className="w-full mx-auto relative mt-12 px-8 py-2 flex flex-row justify-start overflow-x-auto gap-[34px] snap-x scrollbar scrollbar-none scroll-smooth" ref={CarouselRef}>
-            { stadiumData.map((stadiumData, index) => {
-              return(
-                <StadiumCard stadiumData={stadiumData} key={index}/>
-              )
-            })}
-            <div className="invisible mx-8">
-              <StadiumCard stadiumData={""}/>
+          {isWaiting ?
+            <div className="w-full h-[544px] flex items-center justify-center" ref={CarouselRef}>
+              <div className="scale-125">
+                <l-mirage
+                size="75"
+                speed="2.5"
+                color="black" 
+                />
+              </div>
             </div>
-          </div>
+            :
+            <div className="w-full mx-auto relative mt-12 px-8 py-2 flex flex-row justify-start overflow-x-auto gap-[34px] snap-x scrollbar scrollbar-none scroll-smooth" ref={CarouselRef}>
+              { stadiumData.map((stadiumData, index) => {
+                return(
+                  <StadiumCard stadiumData={stadiumData} key={index}/>
+                )
+              })}
+              <div className="invisible mx-8">
+                <StadiumCard stadiumData={""}/>
+              </div>
+            </div>
+          }
           <div className="mt-14">
             <SiteStatusDirection/>
           </div>
