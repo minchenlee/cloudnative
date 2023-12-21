@@ -32,6 +32,19 @@ import AdminSignUpPage from "./page/AdminSignUp";
 
 const router = createBrowserRouter([
   {
+    path: "/admin",
+    element: <AdminLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "", element: <AdminMainPage />},
+      { path: "stadium/status", element: <AdminCourtStatusPage />},
+      { path: "stadium/info", element: <AdminStadiumPage />},
+      { path: "stadium/create", element: <AdminCreateStadiumPage />},
+      { path: "login", element: <AdminLoginpage /> },
+      { path: "signup", element: <AdminSignUpPage /> },
+    ],
+  },
+  {
     path: "/",
     element: <Layout />,
     errorElement: <ErrorPage />,
@@ -49,19 +62,6 @@ const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "login", element: <Loginpage /> },
       { path: "signup", element: <SignUpPage /> },
-    ],
-  },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      { path: "", element: <AdminMainPage />},
-      { path: "stadium/status", element: <AdminCourtStatusPage />},
-      { path: "stadium/info", element: <AdminStadiumPage />},
-      { path: "stadium/create", element: <AdminCreateStadiumPage />},
-      { path: "login", element: <AdminLoginpage /> },
-      { path: "signup", element: <AdminSignUpPage /> },
     ],
   }
 ]);

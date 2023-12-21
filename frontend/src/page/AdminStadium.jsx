@@ -102,10 +102,10 @@ function AdminStadiumPage(){
       imgUrl: stadiumData.data.stadium.img_url,
       description: stadiumData.data.stadium.description,
     };
-    console.log(data);
+    // console.log(data);
     setStadiumData(data);
     const newStadiumData = {...data, description: linkWithID(data.description)};
-    console.log(newStadiumData);
+    // console.log(newStadiumData);
     setEditedData(newStadiumData);
     setImages([]);  // 重置 images
   }
@@ -115,10 +115,10 @@ function AdminStadiumPage(){
       return {...item, id: Math.random().toString(36).substr(2, 9)}
     })
   }
-  useEffect(()=>{
-    console.log(editedData);
-  }, [editedData])
-  
+  // useEffect(()=>{
+  //   console.log(editedData);
+  // }, [editedData])
+
   // 初次發送 request 來取得 data
   useEffect(()=>{
     // parse query string
@@ -127,10 +127,6 @@ function AdminStadiumPage(){
     console.log(`send request to get data with id: ${id}`)
     getData(id);
     
-    // setStadiumData(stadiumDataDummy);
-    // const newStadiumData = {...stadiumDataDummy, description: linkWithID(stadiumDataDummy.description)};
-    // setEditedData(newStadiumData);
-    // setImages([]);  // 重置 images
   }, [])
 
 
@@ -138,6 +134,7 @@ function AdminStadiumPage(){
   useEffect(()=>{
     // 當還沒有收到 data 時，不執行
     if (stadiumData.length === 0) return;
+    console.log(stadiumData)
     const newStadiumData = {...stadiumData, description: linkWithID(stadiumData.description)};
     setEditedData(newStadiumData);
   }, [isEditingInfo])
@@ -175,11 +172,16 @@ function AdminStadiumPage(){
   }
 
   // 按下儲存時，將 editedData 傳送給後端
-  const sendData = () => {
+  const sendData = async () => {
     setIsWaiting(true);
+    const query = new URLSearchParams(window.location.search);
+    const id = query.get("id");
+    // console.log(editedData);
+    const response = await api.putData(`stadiums/stadium/${id}`, editedData);
+    console.log(response);
     console.log("send data");
     console.log(editedData);
-    console.log(images);
+    navigate(0);
   }
 
   // 假裝等待後端回應
@@ -190,7 +192,7 @@ function AdminStadiumPage(){
       setIsWaiting(false);
       setIsEditingInfo(false);
       toast.success("儲存成功");
-    }, 1200)
+    }, 2000)
   }
   , [isWaiting])
 

@@ -143,13 +143,16 @@ const stadiumController = {
     updateStadiumById: async (req, res) => {
         const {id} = req.params;
         const {name, sport, isIndoor, time, location, description, img_url, contactInfo, createdById} = req.body;
-        
+        const {openTime, closeTime} = time;
+        const {address, latitude, longitude} = location;
+        const {tel} = contactInfo;
+        console.log(location)
         // validations
         const sports = ["BASKETBALL", "BASEBALL", "VOLLEYBALL", "TENNIS", "TABLETENNIS"];
         if (!sports.includes(sport)) return res.status(400).json({msg: "Sport not found."});
 
         // update stadium
-        const stadium = await stadiumModel.updateStadiumById(name, sport, isIndoor, longitude, latitude, description, img_url, address, tel, openTime, closeTime, createdById);
+        const stadium = await stadiumModel.updateStadiumById(id, name, sport, isIndoor, longitude, latitude, description, img_url, address, tel, openTime, closeTime, createdById);
         res.status(200).json({
             msg: "Update stadium by id successfully.",
             data: {
