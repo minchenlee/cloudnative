@@ -93,7 +93,7 @@ function RecordsPage() {
     }
 
     if (modalCategory === '詳細資訊') {
-      return <DetailModal />
+      return <DetailModal dataList={joiningDataList}/>
     }
 
     if (modalCategory === '取消預約') {
@@ -336,7 +336,7 @@ function RecordList({type, setModalCategory, recuritDataList, setRecuritDataList
       })
     }
 
-    // console.log(formattedDataList)
+    console.log(formattedDataList)
     setJoiningData(formattedDataList);
     setJoiningDataList(formattedDataList);
     setIsWaiting(false);

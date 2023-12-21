@@ -39,7 +39,9 @@ function CancelJoiningModal(props){
     setIsModalOpen(false);
   }
 
+
   if (!data) return null;
+
   
   return (
     <div className="w-full h-full bg-center flex justify-center items-center">
