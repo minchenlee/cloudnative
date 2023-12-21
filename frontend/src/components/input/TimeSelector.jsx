@@ -57,7 +57,7 @@ function TimeSelector(props){
     const time = `${formattedHour}:00`;
     timeList.push(time);
   }
-
+  
   // create not avalible time list
   const notAvailableList = [];
 

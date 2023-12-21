@@ -23,33 +23,47 @@ function AddNewButton(){
 function AdminMainPage(){
   const navigate = useNavigate();
   const {isLogin, setIsLogin} = useContext(AllContext);
+  const [stadiums, setStadiums] = useState([]);
   // 檢查是否有登入
   useEffect(() => {
     const token = window.localStorage.getItem("Stadium-vendor-token")
-    if (token){
-      setIsLogin(true);
-    }
 
     if (!token){
       toast.error("請先登入");
       navigate("/admin/login");
     }
+
+    if (token){
+      setIsLogin(true);
+    }
   }, [])
   
 
   useEffect(()=>{
-    const data = api.fetchData("stadiums/stadiums");
-    console.log(data);
+    getData();
   }, [])
 
+  async function getData(){
+    const token = window.localStorage.getItem("Stadium-vendor-token");
+    if (token) {
+      const userId = parseInt(jwtDecode(token).id);
+      // get admin's stadiums by userId
+      const stadiumData = await api.fetchAuthData(`stadiums/stadiums/user/${userId}`, token);
+      setStadiums(stadiumData.data.stadiums);
+    }
+  }
   return(
     <div className="container mx-auto sm:px-24 px-12">
       <div className="relative w-full max-w-[1280px] mt-12 mb-10 flex flex-col">
         <h1 className="text-2xl font-semibold border-b-1 pb-8 mb-8">所有場地</h1>
         <div className="flex flex-col gap-6">
-          <AdminStadiumCard name="新生籃球場" courtNum={3} id={1}/>
-          <AdminStadiumCard name="新生羽球場" courtNum={5} id={2}/>
-          <AdminStadiumCard name="新生排球場" courtNum={2} id={3}/>
+          {
+            stadiums.map((stadium)=>{
+              return(
+                <AdminStadiumCard name={stadium.name} courtNum={stadium.courtNumber} id={stadium.id}/>
+              )
+            })
+          }
         </div>
       </div>
       <AddNewButton/>

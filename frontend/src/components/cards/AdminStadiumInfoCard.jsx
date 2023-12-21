@@ -136,13 +136,15 @@ function AdminStadiumInfoCard(props){
       </div>
     )
   }
-
+  if (!stadiumData.time) {
+    return;
+  }
   return(
     <div className="flex flex-col gap-7 mt-6">
       <Row title="場地名稱" content={stadiumData.name} align="items-center"/>
       <Row title="室內／外" content={stadiumData.isIndoor ? "室內" : "室外"} align="items-center"/>
       <Row title="場地類型" content={codeSportConverter(stadiumData.sport)} align="items-center"/>
-      <Row title="開放時間" content="08:00 ~ 22:00" align="items-center"/>
+      <Row title="開放時間" content={`${stadiumData.time.openTime} - ${stadiumData.time.closeTime}`} align="items-center"/>
       <Row title="必要資訊" children={<NeccessaryInfoBlock location={location} contactInfo={contactInfo} />}/>
       <Row title="基本資訊" children={<BasicInfoBlock data={description}/>}/>
       <Row title="場地照片" children={<ImageBlock/>}/>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AllContext from "../contexts/AllContext";
 import BackButton from "../components/buttons/BackButton";
 import AdminStadiumInfoCard from "../components/cards/AdminStadiumInfoCard";
@@ -9,6 +9,7 @@ import toggle from 'react-useanimations/lib/toggle';
 import { jwtDecode } from "jwt-decode";
 import toast from 'react-hot-toast';
 import 'ldrs/mirage'
+import * as api from "../utilities/api";
 
 
 // 假資料
@@ -76,26 +77,60 @@ function AdminStadiumPage(){
       navigate("/admin/login");
     }
   }, [])
-  
 
+  async function getData(id){
+    const stadiumData = await api.fetchData(`stadiums/stadium/${id}`);
+
+    const data = {
+      createById: stadiumData.data.stadium.createById,
+      name: stadiumData.data.stadium.name,
+      isIndoor: stadiumData.data.stadium.isIndoor,
+      sport: stadiumData.data.stadium.sport,
+      time: {
+        openTime: stadiumData.data.stadium.openTime,
+        closeTime: stadiumData.data.stadium.closeTime,
+      },
+      location: {
+        address: stadiumData.data.stadium.address,
+        latitude: stadiumData.data.stadium.latitude,
+        longitude: stadiumData.data.stadium.longitude,
+      },
+      contactInfo: {
+        email: "",
+        tel: stadiumData.data.stadium.tel,
+      },
+      imgUrl: stadiumData.data.stadium.img_url,
+      description: stadiumData.data.stadium.description,
+    };
+    console.log(data);
+    setStadiumData(data);
+    const newStadiumData = {...data, description: linkWithID(data.description)};
+    console.log(newStadiumData);
+    setEditedData(newStadiumData);
+    setImages([]);  // 重置 images
+  }
   // 給予 description 的每個 item 一個 id，用來處理刪除的動作
   const linkWithID = (data) => {
     return data.map((item) => {
       return {...item, id: Math.random().toString(36).substr(2, 9)}
     })
   }
-
+  useEffect(()=>{
+    console.log(editedData);
+  }, [editedData])
+  
   // 初次發送 request 來取得 data
   useEffect(()=>{
     // parse query string
     const query = new URLSearchParams(window.location.search);
     const id = query.get("id");
     console.log(`send request to get data with id: ${id}`)
-
-    setStadiumData(stadiumDataDummy);
-    const newStadiumData = {...stadiumDataDummy, description: linkWithID(stadiumDataDummy.description)};
-    setEditedData(newStadiumData);
-    setImages([]);  // 重置 images
+    getData(id);
+    
+    // setStadiumData(stadiumDataDummy);
+    // const newStadiumData = {...stadiumDataDummy, description: linkWithID(stadiumDataDummy.description)};
+    // setEditedData(newStadiumData);
+    // setImages([]);  // 重置 images
   }, [])
 
 
