@@ -8,6 +8,7 @@
   overflow: hidden;
 }
 
+/*  */
 .leaflet-marker-icon{
   filter: drop-shadow(rgb(0, 0, 0, 0.3) 0px 13px 5px);
 }
@@ -17,6 +18,9 @@
   --modal-height: auto;
   --modal-width: auto;
 }
+
+/*  */
+/* Custom CSS for targeting the last child on group hover */
 
 @layer utilities {
   .modal {

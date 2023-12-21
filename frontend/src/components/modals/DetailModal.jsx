@@ -1,17 +1,17 @@
 import { useState, useContext, useEffect } from "react"
 import { useNavigate } from 'react-router-dom'
-import JoinContext from "../../contexts/JoinContext"
+import AllContext from "../../contexts/AllContext"
 
 const DetailModal = () => {
   const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
   const joinDetailData = JSON.parse(window.localStorage.getItem("joinDetailJson")) || [];
-  const { selectedJoinId, selectedDayCode } = useContext(JoinContext);
+  const { selectedJoinId, selectedDayCode } = useContext(AllContext);
   const [selectedJoinData, setSelectedJoinData] = useState();
   function convertNewlinesToBR(inputString) {
     return inputString.replace(/\n/g, '<br/>');
   }
 
-
+  // 當 selectedJoinId 改變時，更新 selectedJoinData
   useEffect(() => {
     setSelectedJoinData(joinDetailData.find(item => item.id === selectedJoinId));
   }, [selectedJoinId])

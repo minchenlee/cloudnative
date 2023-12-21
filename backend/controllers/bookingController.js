@@ -22,6 +22,23 @@ const bookingController = {
             });
         }
     },
+    getBookingById: async (req, res) => {
+        const {id} = req.params;
+        try {
+            const booking = await bookingModel.getBookingById(id);
+            res.status(200).json({
+                msg: "Get booking by id successfully.",
+                data: {
+                    booking
+                }
+            });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({
+                msg: "Internal server error."
+            });
+        }
+    },
     getBookingBySportAndDates: async (req, res) => {
         const { sport } = req.params;
         const { startDate, endDate } = req.body;
@@ -35,12 +52,13 @@ const bookingController = {
         //              "2023-12-06": [ 14, 13, 12]
         //          },
         // }
-        const data = {}
         try {
+            const data = {}
             const stadiums = await stadiumModel.getStadiumsBySport(sport);
             for (const stadium of stadiums) {
                 data[stadium.id] = {
                     "name": stadium.name,
+                    "isIndoor": stadium.isIndoor,
                 }
             }
             // initial date range
@@ -52,15 +70,26 @@ const bookingController = {
             const bookings = await bookingModel.getBookingBySportAndDates(sport, startDate, endDate);
 
             for (const booking of bookings) {
-                // aggregate bookings by stadium and date
-                const morningHours = Math.max(12 - booking.startHour, 0) - Math.max(12 - booking.endHour, 0)
-                const eveningHours = Math.max(booking.endHour - 18, 0) - Math.max(booking.startHour - 18, 0)
-                const afternoonHours = booking.endHour - booking.startHour - morningHours - eveningHours
-                data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]] = [0, 0, 0]
-                data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]][0] += morningHours;
-                data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]][1] += afternoonHours;
-                data[booking.stadiumId][booking.date.toISOString().split('T', 1)[0]][2] += eveningHours;
+                // Calculate hours for each part of the day
+                const morningHours = Math.max(12 - booking.startHour, 0) - Math.max(12 - booking.endHour, 0);
+                const eveningHours = Math.max(booking.endHour - 18, 0) - Math.max(booking.startHour - 18, 0);
+                const afternoonHours = booking.endHour - booking.startHour - morningHours - eveningHours;
+
+                // Convert the booking date to a string
+                const date = booking.date.toISOString().split('T', 1)[0];
+
+                // Check if the date already exists in the data, if not initialize it
+                if (!data[booking.stadiumId][date]) {
+                    data[booking.stadiumId][date] = [0, 0, 0];
+                }
+
+                // Accumulate the hours for each part of the day
+                data[booking.stadiumId][date][0] += morningHours;
+                data[booking.stadiumId][date][1] += afternoonHours;
+                data[booking.stadiumId][date][2] += eveningHours;
             }
+
+            // console.log(data)
             res.status(200).json({
                 msg: "Get bookings by sport and dates successfully.",
                 data
@@ -111,9 +140,10 @@ const bookingController = {
             const stadium = await stadiumModel.getStadiumById(stadiumId);
             const vendorId = stadium.createdById;
             const sport = stadium.sport;
-            await bookingModel.createBooking(userId, vendorId, stadiumId, courtId, sport, bookingDate, bookingStartHour, bookingEndHour);
+            const result = await bookingModel.createBooking(userId, vendorId, stadiumId, courtId, sport, bookingDate, bookingStartHour, bookingEndHour);
             res.status(200).json({
-                msg: "Booking created successfully."
+                msg: "Booking created successfully.",
+                data: result
             });
         } catch (err) {
             console.log(err);

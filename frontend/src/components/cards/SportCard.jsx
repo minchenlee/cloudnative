@@ -1,11 +1,11 @@
 import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom"
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 
 
 function SportCard(props) {
-  const { selectedDayCode, setSelectedDayCode, selectedSport, setSelectedSport } = useContext(JoinContext);
+  const { selectedDayCode, setSelectedDayCode, selectedSport, setSelectedSport } = useContext(AllContext);
   const text = props.text || "";
   const sport = props.sport || "";
   const bg = props.bg || "";

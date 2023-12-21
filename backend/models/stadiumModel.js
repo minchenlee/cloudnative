@@ -118,7 +118,15 @@ const stadiumModel = {
             cacheStrategy: { swr: 60, ttl: 60 }
         });
         return stadiums;
-    }
+    },
+    getStadiumsByUserId: async (userId) => {
+        const stadiums = await prisma.stadium.findMany({
+            where: {
+                createdById: parseInt(userId)
+            }
+        });
+        return stadiums;
+    },
 }
 
 export { stadiumModel };

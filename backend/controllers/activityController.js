@@ -3,9 +3,7 @@ import { activityModel } from '../models/activityModel.js';
 
 const activityController = {
     createActivity: async (req, res) => {
-        const {note, capacity} = req.body;
-        // get user id from jwt
-        const userId = req.user.id;
+        const {userId, note, capacity} = req.body;
         const {bookingId} = req.params;
         const isActivity = true;
         try {
@@ -41,20 +39,22 @@ const activityController = {
         });
     },
     getActivitiesByUserId: async (req, res) => {
-        // const {userId} = req.user.id;
-        const userId = 1;
+        const userId = req.user.id;
         const activities = await activityModel.getActivitiesByUserId(userId);
         const records = []
         for (const activity of activities) {
             const booking = await bookingModel.getBookingById(activity.bookingId);
             records.push({
+                "activityId": activity.id,
                 "id": activity.bookingId,
                 "date": activity.belongs.date.toISOString().split('T')[0],
                 "startHour": activity.belongs.startHour,
                 "endHour": activity.belongs.endHour,
                 "stadium": booking.stadiumAt.name,
+                "stadiumId": booking.stadiumAt.id,
                 "court": booking.courtId,
                 "maker": booking.maker.username,
+                "makerId": booking.maker.id,
                 "capacity": booking.capacity,
                 "note": booking.note,
                 "participants": booking.activitiesRecords.map(record => record.userId)
@@ -63,14 +63,13 @@ const activityController = {
         res.status(200).json({
             msg: "Get activities by user id successfully.",
             data: {
-                activities: records
+                activities: records,
             }
         });
     },
     getActivitiesBySportAndDate: async (req, res) => {
         const {sport, date} = req.params;
         const activities = await activityModel.getActivitiesBySportAndDate(sport, date);
-        console.log(activities)
         const records = []
         for (const activity of activities) {
             records.push({
@@ -79,8 +78,10 @@ const activityController = {
                 "startHour": activity.startHour,
                 "endHour": activity.endHour,
                 "stadium": activity.stadiumAt.name,
+                "stadiumId": activity.stadiumAt.id,
                 "court": activity.courtId,
                 "maker": activity.maker.username,
+                "makerId": activity.maker.id,
                 "capacity": activity.capacity,
                 "note": activity.note,
                 "participants": activity.activitiesRecords.map(record => record.userId)
@@ -151,7 +152,7 @@ const activityController = {
     leaveActivity: async (req, res) => {
         // TODO: user validation
         const userId = req.user.id;
-        const bookingId= req.params;
+        const {bookingId}= req.params;
         try {
             const activityRecord = await activityModel.leaveActivity(userId, bookingId);
             res.status(200).json({

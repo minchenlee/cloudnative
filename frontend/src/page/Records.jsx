@@ -1,25 +1,29 @@
 import { useState, useEffect, useContext } from "react"
-import JoinContext from "../contexts/JoinContext"
+import AllContext from "../contexts/AllContext"
 import BackButton from "../components/buttons/BackButton"
 import BookingCourtCard from "../components/cards/BookingCourtCard"
 import TimeIntervalDirection from "../components/directions/TimeIntervalDirection"
 import separateItemsByTime from "../utilities/seperateByTime"
-import SignUpGameCard from '../components/cards/SignUpGameCard'
+import JoiningCard  from '../components/cards/JoiningCard '
 import Modal from "../components/modals/Modal"
+import { fetchData, fetchAuthData } from "../utilities/api"
 import { useNavigate } from 'react-router-dom'
 import FeatherIcon from "feather-icons-react/build/FeatherIcon"
 
-import CancelModal from "../components/modals/CancelModal"
+import CancelJoiningModal from "../components/modals/CancelJoiningModal"
+import CancelBookingModal from "../components/modals/CancelBookingModal"
 import FindMateModal from "../components/modals/FindMateModal"
 import DetailModal from "../components/modals/DetailModal"
 
 import 'ldrs/ring2'
+import { jwtDecode } from "jwt-decode"
 // dummy data
 const rawJsonData = [
   {
     "id": 1,
     "stadium": "新生籃球場",
     "court": "球場 A",
+    "date": "12/04",
     "startTime": "09:00",
     "endTime": "10:00",
     "master": "Peter",
@@ -33,6 +37,7 @@ const rawJsonData = [
     "id": 2,
     "stadium": "中央籃球場",
     "court": "球場 B",
+    "date": "12/04",
     "startTime": "15:00",
     "endTime": "16:00",
     "master": "Janson",
@@ -46,6 +51,7 @@ const rawJsonData = [
     "id": 3,
     "stadium": "半場籃球場",
     "court": "球場 C",
+    "date": "12/05",
     "startTime": "10:00",
     "endTime": "11:00",
     "master": "Peter",
@@ -59,6 +65,7 @@ const rawJsonData = [
     "id": 4,
     "stadium": "中央籃球場",
     "court": "球場 D",
+    "date": "12/05",
     "startTime": "05:00",
     "endTime": "06:00",
     "master": "Janson",
@@ -71,38 +78,18 @@ const rawJsonData = [
 ]
 
 function RecordsPage() {
+  const [bookingDataList, setBookingDataList] = useState([]);
+  const [recuritDataList, setRecuritDataList] = useState([]);
+  const [joiningDataList, setJoiningDataList] = useState([]);
   const [modalCategory, setModalCategory] = useState('');
 
   // 詳細資訊 modal
-  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(JoinContext);
-  const openModal = (id) => {
-    setIsModalOpen(true);
-    setSelectedJoinId(id);
-  }
-
-  // 送出加入 request
-  const [isProcessing, setIsProcessing] = useState(false);
-  const handleJoin = () => {
-    setIsProcessing(true);
-  }
-
-  // wait 2 sec and then set isProcessing to false, useNavigate to /record
-  // 假裝 call API 並等待 2 秒 (實際上是直接跳轉到 /record)
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (isProcessing) {
-      setTimeout(() => {
-        setIsProcessing(false);
-        navigate("/records");
-      }, 2000);
-    }
-
-  }, [isProcessing])
+  const { isModalOpen, setIsModalOpen, selectedJoinId, setSelectedJoinId } = useContext(AllContext);
 
   // 透過 modalCategory 來決定要顯示哪個 modal
   const modalAuto = () => {
     if (modalCategory === '招募球友') {
-      return <FindMateModal />
+      return <FindMateModal recuritDataList={recuritDataList}/>
     }
 
     if (modalCategory === '詳細資訊') {
@@ -110,11 +97,11 @@ function RecordsPage() {
     }
 
     if (modalCategory === '取消預約') {
-      return <CancelModal />
+      return <CancelBookingModal dataList={bookingDataList}/>
     }
 
     if (modalCategory === '取消報名') {
-      return <CancelModal />
+      return <CancelJoiningModal dataList={joiningDataList}/>
     }
   }
 
@@ -153,6 +140,10 @@ function RecordsPage() {
               type="booked" 
               setModalCategory={setModalCategory} 
               groupJsonData={rawJsonData}
+              recuritDataList={recuritDataList}
+              setRecuritDataList={setRecuritDataList}
+              bookingDataList={bookingDataList}
+              setBookingDataList={setBookingDataList}
             />
           }
         />
@@ -169,6 +160,8 @@ function RecordsPage() {
               type="joined" 
               setModalCategory={setModalCategory} 
               groupJsonData={rawJsonData}
+              joiningDataList={joiningDataList}
+              setJoiningDataList={setJoiningDataList}
             />
           }
         />
@@ -207,21 +200,190 @@ function RecordBlock({ title, children, showBackButton}) {
   )
 }
 
-function RecordList({type, groupJsonData, config, setModalCategory}) {
-  const weekData = JSON.parse(window.localStorage.getItem("joinJson"))
-  const { selectedJoinId, selectedDayCode } = useContext(JoinContext);
-  
+function RecordList({type, setModalCategory, recuritDataList, setRecuritDataList, 
+  bookingDataList, setBookingDataList,
+  joiningDataList, setJoiningDataList,
+}) {
+  const { selectedJoinId, selectedDayCode } = useContext(AllContext);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [bookingData, setBookingData] = useState([]);
+  const [joiningData, setJoiningData] = useState([]);
+  const token = window.localStorage.getItem("Stadium-player-token");
+
+  // useEffect(() => {
+  //   console.log(recuritDataList)
+  // }, [recuritDataList])
+
+  // 初次進入頁面時，call API 取得 booking 資料
+  const getBookingData = async () => {
+    setIsWaiting(true);
+    const response = await fetchAuthData(`bookings/user`, token);
+    const bookingDataList = response.data.bookings;
+    // console.log(dataList)
+
+    // 取得 activity 資訊
+    const activityResponse = await fetchAuthData(`activities/user`, token);
+    const activityDataList = activityResponse.data.activities;
+    // console.log(activityDataList)
+
+    let formattedDataList = [];
+    for (const bookingData of bookingDataList) {
+      // const response = await fetchData(`courts/courts/stadium/${bookingData.court}`);
+      // 取得球場資訊
+      let response = await fetchData(`stadiums/stadium/${bookingData.stadiumId}`);
+      const stadiumData = response.data.stadium;
+      const stadiumName = stadiumData.name;
+
+      // 取得 court 資訊
+      response = await fetchData(`courts/courts/stadium/${bookingData.stadiumId}`);
+      const courtDataList = response.data.courts;
+      // 找出預定的 court 球場是 stadium 中的第幾個
+      const courtIndex = courtDataList.findIndex((court) => court.id === bookingData.courtId);
+      const courtName = `球場 ${String.fromCharCode(65 + courtIndex)}`;
+      
+      // 找出和 bookingId 相同的 activity 資訊
+      let maker = null;
+      let capacity = null;
+      let participantList = []
+      let note = null;
+      let contact = null;
+
+      for (let activityData of activityDataList) {
+        // 如果 maker id 和 user id 相同，就把 activity id 加到 recuritDataList 裡面
+        if (activityData.makerId === jwtDecode(token).id){
+          activityData.courtName = courtName;
+          setRecuritDataList((prev) => [...prev, activityData]);
+        }
+
+        if (activityData.id === bookingData.id) {
+          maker = activityData.maker;
+          capacity = activityData.capacity;
+          participantList = activityData.participants;
+          note = activityData.note;
+          contact = activityData.contact;
+        }
+      }
+
+
+      // 把 bookingData 轉成前端需要的格式
+      formattedDataList.push({
+        "date": bookingData.date.slice(5).split("T")[0].replace("-", "/"),
+        "startTime": bookingData.startHour + ":00",
+        "endTime": bookingData.endHour + ":00",
+        "stadium": stadiumName,
+        "court": courtName,
+        "master": maker,
+        "alreadyRecruitNumber": participantList.length,
+        "recruitNumber": capacity,
+        "contact": contact,
+        "note": note,
+        "member": participantList,
+        "id": bookingData.id
+      })
+    }
+
+    setBookingData(formattedDataList);
+    setBookingDataList(formattedDataList);
+    setIsWaiting(false);
+  }
+
+  // 初次進入頁面時，call API 取得 joining 資料
+  const getJoiningData = async () => {
+    setIsWaiting(true);
+    const response = await fetchAuthData(`activities/user`, token);
+    const dataList = response.data.activities;
+    // console.log(dataList)
+
+    // 留下 user 不是 maker 的 activity
+    const filteredDataList = dataList.filter(data => data.makerId !== jwtDecode(token).id);
+
+    let formattedDataList = [];
+    for (const data of filteredDataList) {
+      // 取得球場資訊
+      let response = await fetchData(`stadiums/stadium/${data.stadiumId}`);
+      const stadiumData = response.data.stadium;
+      const stadiumName = stadiumData.name;
+
+      // 取得 court 資訊
+      response = await fetchData(`courts/courts/stadium/${data.stadiumId}`);
+      const courtDataList = response.data.courts;
+      // console.log(courtDataList)
+      // 找出預定的 court 球場是 stadium 中的第幾個
+      const courtIndex = courtDataList.findIndex((court) => court.id === data.court);
+      const courtName = `球場 ${String.fromCharCode(65 + courtIndex)}`;
+
+      // 如果 maker id 和 user id 相同，就把 activity id 加到 recuritDataList 裡面
+      if (data.makerId === jwtDecode(token).id){
+        data.courtName = courtName;
+        setRecuritDataList((prev) => [...prev, data]);
+      }
+
+      // 把 joiningData 轉成前端需要的格式
+      formattedDataList.push({
+        "activityId": data.activityId,
+        "date": data.date.slice(5).split("T")[0].replace("-", "/"),
+        "startTime": data.startHour + ":00",
+        "endTime": data.endHour + ":00",
+        "stadium": stadiumName,
+        "court": courtName,
+        "master": data.maker,
+        "alreadyRecruitNumber": data.participants.length,
+        "recruitNumber": data.capacity,
+        "contact": data.contact,
+        "note": data.note,
+        "member": data.participants,
+        "id": data.id
+      })
+    }
+
+    // console.log(formattedDataList)
+    setJoiningData(formattedDataList);
+    setJoiningDataList(formattedDataList);
+    setIsWaiting(false);
+  }
+
+  // 初始化，call API
+  useEffect(() => {  
+    if (type === "booked") {
+      getBookingData();
+    }
+
+    if (type === "joined") {
+      getJoiningData();
+    }
+  }, [])
+
+  if (isWaiting) {
+    return (
+      <div className="w-full flex items-center justify-center mt-20">
+        <div className="scale-125">
+          <l-mirage
+          size="75"
+          speed="2.5"
+          color="black"
+          />
+        </div>
+      </div>
+    )
+  }
+
   if (type === "booked") {
     return (
+      bookingData.length === 0 
+      ?
+      <div className="mt-4 h-24">
+        <p className="text-xl font-semibold">還沒有預訂任何球場</p>
+      </div>
+      :
       <div className="w-full flex flex-col mt-10 gap-4">
-        {groupJsonData.map((item, index) => (
+        {bookingData.map((item, index) => (
           <BookingCourtCard
           setModalCategory={setModalCategory} 
           key={index} 
           id={item.id} 
           stadium={item.stadium} 
           court={item.court} 
-          date={weekData[selectedDayCode]["date"]} 
+          date={item.date}
           startTime={item.startTime} 
           endTime={item.endTime} 
           master={item.master} 
@@ -230,20 +392,26 @@ function RecordList({type, groupJsonData, config, setModalCategory}) {
           />
         ))}
       </div>
+
     )
   }
 
   if (type === "joined") {
     return (
+      joiningData.length === 0 ?
+      <div className="mt-4 h-24">
+        <p className="text-xl font-semibold">還沒有加入任何球局</p>
+      </div>
+      :
       <div className="w-full flex flex-col mt-10 gap-4">
-        {groupJsonData.map((item, index) => (
-          <SignUpGameCard 
+        {joiningData.map((item, index) => (
+          <JoiningCard 
           setModalCategory={setModalCategory} 
           key={index} 
           id={item.id} 
           stadium={item.stadium} 
           court={item.court} 
-          date={weekData[selectedDayCode]["date"]} 
+          date={item.date}
           startTime={item.startTime} 
           endTime={item.endTime} 
           master={item.master} 

@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react"
 import { Link } from "react-router-dom"
-import JoinContext from "../../contexts/JoinContext";
+import AllContext from "../../contexts/AllContext";
 import { dayToDayCode, dayCodeToDay, dayCodeToChineseDay } from "../../utilities/DayCodeConverter";
 
 function MateDayStatusCard(props) {
   const date = props.date || "";
-  const numberOfCourts = props.numberOfCourts || "";
+  const activitiesNum = props.activitiesNum;
   const day = props.day || "";
   const link = props.link || "";
 
-  const { selectedDayCode, setSelectedDayCode } = useContext(JoinContext);
+  const { selectedDayCode, setSelectedDayCode } = useContext(AllContext);
   const handleDayClick = (link) => {
     const dayCode = dayToDayCode(link.split("/").pop());
     setSelectedDayCode(dayCode);
@@ -21,7 +21,7 @@ function MateDayStatusCard(props) {
         <p>{day}</p>
         <p className="font-robotoMono">{date}</p>
         <div className="w-20 grid grid-cols-2 gap-3 items-center">
-          <p className="text-2xl text-center font-robotoMono font-semibold">{numberOfCourts}</p>
+          <p className="text-2xl text-center font-robotoMono font-semibold">{activitiesNum}</p>
           <p className="text-center">場</p>
         </div>
       </div>

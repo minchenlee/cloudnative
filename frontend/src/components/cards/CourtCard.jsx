@@ -1,6 +1,7 @@
-import {useState, useEffect, useContext, createContext} from "react"
+import {useState, useEffect, useRef, useContext, createContext} from "react"
 import { useNavigate } from "react-router-dom";
-import JoinContext from "../../contexts/JoinContext";
+import useOutsideClick from "../../utilities/useOutsideClick";
+import AllContext from "../../contexts/AllContext";
 import FeatherIcon from "feather-icons-react";
 import TimePicker from "../input/TimerPicker"
 import TimePickerDirection from "../directions/TimePickerDireaction";
@@ -23,14 +24,21 @@ function SelectMenu({defaultTitle, optionList, addtionalClass, selectedOption, s
     setIsOpen(false);
   };
 
+  // 處理點擊 component 外的事件
+  const handleClickOutside = () => {
+    setIsOpen(false);
+  }
+  const wrapperRef = useRef(null);
+  useOutsideClick(wrapperRef, handleClickOutside);
+
   return (
-    <div className={`absolute z-20 ${addtionalClass} font-robotoMono`} onClick={toggleMenu}>
-      <button className={`w-full ${isOpen ? 'hidden' : ''}`} onClick={toggleMenu}> {selectedOption ? selectedOption : defaultTitle} </button>
-      <div className={`w-28 bg-white text-base text-center border-silver overflow-scroll ${isOpen ? "rounded-3xl border-2 h-52"  : ""}`}>
+    <div className={`relative w-20 font-robotoMono`} onClick={toggleMenu}>
+      <button className={`w-full z-20`} onClick={toggleMenu}> {selectedOption ? selectedOption : defaultTitle} </button>
+      <div ref={wrapperRef} className={`w-28 absolute -left-4 z-20 bg-white text-base text-center border-silver overflow-scroll ${isOpen ? "rounded-3xl border-2 h-52"  : ""}`}>
         {isOpen && (
-          <ul className="cursor-pointer">
+          <ul className="cursor-pointer z-30">
             {optionList.map((option) => (
-              <li className="py-2 hover:bg-silver" key={option} onClick={() => handleOptionClick(option)}>
+              <li className="cursor-pointer py-2 hover:bg-silver" key={option} onClick={() => handleOptionClick(option)}>
                 {option}
               </li>
             ))}
@@ -44,7 +52,7 @@ function SelectMenu({defaultTitle, optionList, addtionalClass, selectedOption, s
 
 function CourtCard({court}){
   const courtName = court.courtName;
-  const courtID = court.id;
+  const courtId = court.courtId;
   const timeList = court.timeList;
   const notAvailableList = court.notAvailableList
   // console.log("notAvailableList: ", notAvailableList);
@@ -150,10 +158,12 @@ function CourtCard({court}){
   // 如果使用者已經選擇過時間，則將時間設定為上次選擇的時間
   useEffect(() => {
     const bookingInfo = JSON.parse(window.localStorage.getItem("Stadium-bookingInfo"));
-    const savedCourtID = bookingInfo.courtID;
-
+    // 如果沒有 bookingInfo，則不載入上次選擇的時間
+    if (!bookingInfo) return;
+    
+    const savedcourtId = bookingInfo.courtId;
     // 如果使用者當初按下預約的場地不是現在這個場地，則不將時間設定為上次選擇的時間
-    if (savedCourtID !== courtID) return;
+    if (savedcourtId !== courtId) return;
 
     const savedStartTime = bookingInfo.startTime;
     const savedEndTime = bookingInfo.endTime;
@@ -177,15 +187,16 @@ function CourtCard({court}){
       return;
     }
 
-    // 將 bookingInfo 存入 localStorage
-    const bookingInfo = {
-      courtID: courtID,
-      courtName: courtName,
-      startTime: startTime,
-      endTime: endTime,
-    }
-    window.localStorage.setItem("Stadium-bookingInfo", JSON.stringify(bookingInfo));
 
+    // 將 bookingInfo 存入 localStorage
+    let bookingInfo = window.localStorage.getItem("Stadium-bookingInfo");
+    bookingInfo = JSON.parse(bookingInfo);
+    bookingInfo.courtId = courtId;
+    bookingInfo.courtName = courtName;
+    bookingInfo.startTime = startTime;
+    bookingInfo.endTime = endTime;
+    window.localStorage.setItem("Stadium-bookingInfo", JSON.stringify(bookingInfo));
+    // date: window.localStorage.getItem("Stadium-selected-day")
     
     // wait 2 sec and then set isProcessing to false, useNavigate to /record
     // 假裝 call API 並等待 2 秒 (實際上是直接跳轉到 /record)
@@ -193,7 +204,7 @@ function CourtCard({court}){
     setTimeout(() => {
       setIsProcessing(false);
       navigate("/booking/confirm");
-    }, 1500);
+    }, 1200);
   }
 
   return (
@@ -204,12 +215,10 @@ function CourtCard({court}){
         <TimePickerDirection timeList={timeList} slotsPerDay={slotsPerDay}/>
       </div>
       <div className="flex flex-row h-10 mt-2 justify-between items-center">
-        <div className="relative">
-          <SelectMenu defaultTitle="開始時間" optionList={startTimeList} addtionalClass="-left-4 -top-3" selectedOption={startTime} setSelectedOption={setStartTime}/>
-          <span  className="absolute left-28 -top-3">
-            <FeatherIcon icon="chevrons-right" width="24" height="24" strokeWidth="2"/>
-          </span>
-          <SelectMenu defaultTitle="結束時間" optionList={endTimeList} addtionalClass="-right-64 -top-3" selectedOption={endTime} setSelectedOption={setEndTime}/>
+        <div className="flex flex-row gap-10">
+          <SelectMenu defaultTitle="開始時間" optionList={startTimeList} selectedOption={startTime} setSelectedOption={setStartTime}/>
+          <FeatherIcon icon="chevrons-right" width="24" height="24" strokeWidth="2"/>
+          <SelectMenu defaultTitle="結束時間" optionList={endTimeList} selectedOption={endTime} setSelectedOption={setEndTime}/>
         </div>
         <button 
         onClick={handleJoin}

@@ -1,4 +1,5 @@
 import { stadiumModel } from '../models/stadiumModel.js';
+import { defaultCourtModel as courtModel } from '../models/courtModel.js';
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from 'crypto';
@@ -165,7 +166,23 @@ const stadiumController = {
                 stadium
             }
         });
-    }
+    },
+    getStadiumsByUserId: async (req, res) => {
+        const {userId} = req.params;
+        const stadiums = await stadiumModel.getStadiumsByUserId(userId);
+        // count each stadium's court number
+        for (const stadium of stadiums) {
+            const courts = await courtModel.getCourtsByStadiumId(stadium.id);
+            stadium.courtNumber = courts.length;
+        }
+        console.log(stadiums)
+        res.status(200).json({
+            message: "Get stadiums by user id successfully.",
+            data: {
+                stadiums
+            }
+        });
+    },
 }
 
 export default stadiumController;

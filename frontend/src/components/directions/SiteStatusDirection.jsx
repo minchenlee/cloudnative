@@ -12,11 +12,21 @@ function DirectionPair(props) {
   )
 }
 
+// function SiteStatusDirection() {
+//   return (
+//     <div className="flex flex-row items-center justify-center gap-6 text-sm font-base text-dark-gray">
+//       <DirectionPair text="還有很多球場" status="plenty"/>
+//       <DirectionPair text="剩一些些" status="some"/>
+//       <DirectionPair text="沒有球場了" status="none"/>
+//     </div>
+//   )
+// }
+
+
 function SiteStatusDirection() {
   return (
     <div className="flex flex-row items-center justify-center gap-6 text-sm font-base text-dark-gray">
-      <DirectionPair text="還有很多球場" status="plenty"/>
-      <DirectionPair text="剩一些些" status="some"/>
+      <DirectionPair text="尚有球場" status="some"/>
       <DirectionPair text="沒有球場了" status="none"/>
     </div>
   )
