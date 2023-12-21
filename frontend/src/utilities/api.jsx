@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // Set up your base URL for the API
-// const API_BASE_URL = 'https://your-api-url.com';
-const API_BASE_URL = 'http://localhost:5000/api/v1';
+const API_BASE_URL = 'http://cnad-alb-419290695.ap-northeast-1.elb.amazonaws.com/api/v1';
+// const API_BASE_URL = 'http://localhost:3000/api/v1';
+// const API_BASE_URL = 'http://localhost:5000/api/v1';
 
 // Function to handle GET requests
 export const fetchData = async (endpoint) => {

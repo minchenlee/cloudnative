@@ -307,7 +307,7 @@ function RecordList({type, setModalCategory, recuritDataList, setRecuritDataList
       // 取得 court 資訊
       response = await fetchData(`courts/courts/stadium/${data.stadiumId}`);
       const courtDataList = response.data.courts;
-      console.log(courtDataList)
+      // console.log(courtDataList)
       // 找出預定的 court 球場是 stadium 中的第幾個
       const courtIndex = courtDataList.findIndex((court) => court.id === data.court);
       const courtName = `球場 ${String.fromCharCode(65 + courtIndex)}`;

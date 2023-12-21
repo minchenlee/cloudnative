@@ -193,7 +193,7 @@ function AdminCreateStadiumPage(){
       let response = await postAuthData("stadiums/stadium", data, token);
       // console.log(response);
       const stadiumId = response.data.stadium.id;
-      console.log(courtData);
+      // console.log(courtData);
       for (let i = 0; i < courtData.length; i++){
         const court = {
           status: courtData[i].isOpen ? "OPEN" : "CLOSED",

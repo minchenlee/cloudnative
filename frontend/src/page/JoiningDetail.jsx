@@ -207,7 +207,7 @@ function JoiningDetailPage(){
 
     let formattedDataList = []
     for (const data of dataList) {
-      console.log(data);
+      // console.log(data);
 
       // 取得 court 資訊
       response = await fetchData(`courts/courts/stadium/${data.stadiumId}`);
